@@ -1,0 +1,5 @@
+# Ignores the .venv virtual environment
+.venv
+
+#Ignores the .env file
+*.env
