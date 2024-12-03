@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
-from app.models import WorkOrder
+from app.models import WorkOrder, UpdateWorkOrder
 from app.database import work_orders_coll
 from pymongo.errors import DuplicateKeyError
 
@@ -71,3 +71,13 @@ def get_work_order(work_id: int):
     work_order_document["_id"] = str(work_order_document["_id"])
     return work_order_document
 
+
+# #Update work order from Created to In Progress
+# @router.put("/workoders/{work_id}",
+#             summary="Updates the work order status from 'Created' to 'In Progress'",
+#             description="This endpoint updates the work_order items with status 'Created', adds the 'actual_start' and 'actual_end' fields, and changes the status of the work_order item",
+#             responses={
+#                 200: {
+#                     "description": "Work order updated successfully"
+#                 }
+#             })
