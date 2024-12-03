@@ -72,7 +72,7 @@ def get_work_order(work_id: int):
     return work_order_document
 
 
-# #Update work order from Created to In Progress
+# #Update work order from Created to Completed
 # @router.put("/workoders/{work_id}",
 #             summary="Updates the work order status from 'Created' to 'In Progress'",
 #             description="This endpoint updates the work_order items with status 'Created', adds the 'actual_start' and 'actual_end' fields, and changes the status of the work_order item",
