@@ -16,6 +16,6 @@ class WorkOrder(BaseModel):
     actual_end: datetime.datetime = Field(default=None, description = "Date when actually the work order ended")
     product_cat_id: int = Field(..., description = "ID of the product catalog, references to the products collection")
     quantity: int = Field(..., description = "Number of units that the work order will produce")
-    status: str = Field(..., description = "Status of the work order it can be 'CREATED', 'IN PROGRESS', 'COMPLETED'")
+    status: str = Field(..., description = "Status of the work order it can be 'CREATED' or 'COMPLETED'")
     materials_used: list = Field(default=[], description="List of JSON documents that store the raw material used to create the final product")
     cost: dict = Field(default={}, description="JSON document that includes the planned and actual cost of the work order")
