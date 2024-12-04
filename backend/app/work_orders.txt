@@ -19,15 +19,158 @@
 //     currency: "USD"
 // }
 
+db.raw_materials.insertMany([
+    {
+        item_code: "aluminum_6061",
+        name: "Aluminum",
+        description: "lightweight aluminum",
+        unit_measurement: "kg",
+        stock: 10000,
+        status: "high",
+        cost_per_part: 3.0,
+        currency: "USD"
+    },
+    {
+        item_code: "hinges_ss",
+        name: "Stainless steel hinge",
+        description: "Stainless steel hinge",
+        unit_measurement: "pieces",
+        stock: 10000,
+        status: "high",
+        cost_per_part: 1.5,
+        currency: "USD"
+    },
+    {
+        item_code: "brackets_gs",
+        name: "Galvanized bracket",
+        description: "Galvanized brackets anti-corrosion",
+        unit_measurement: "pieces",
+        stock: 10000,
+        status: "high",
+        cost_per_part: 2.5,
+        currency: "USD"
+    },
+    {
+        item_code: "screw_ss",
+        name: "Stainless steel screw",
+        description: "Stainless steel screw",
+        unit_measurement: "pieces",
+        stock: 100000,
+        status: "high",
+        cost_per_part: 0.05,
+        currency: "USD"
+    }
+])
 
+db.raw_materials.insertMany([
+    {
+        item_code: "titanium_lw",
+        name: "Lightweight titanium",
+        description: "Lightweight titanium known for its strength and lightweight properties",
+        unit_measurement: "kg",
+        stock: 10000,
+        status: "high",
+        cost_per_part: 30,
+        currency: "USD"
+    },
+    {
+        item_code: "wood_hc",
+        name: "Hickory wood",
+        description: "Durable, lightweight, and shock-resistant, ideal for tool handles.",
+        unit_measurement: "kg",
+        stock: 10000,
+        status: "high",
+        cost_per_part: 4,
+        currency: "USD"
+    },
+    {
+        item_code: "magnet_nm",
+        name: "Neodymium magnet",
+        description: "Strong magnet embedded in the hammer head to hold nails.",
+        unit_measurement: "kg",
+        stock: 10000,
+        status: "high",
+        cost_per_part: 50,
+        currency: "USD"
+    },
+    {
+        item_code: "fasteners_ham",
+        name: "Steel fasteners",
+        description: "Steel fasteners for titanium hammers.",
+        unit_measurement: "kg",
+        stock: 10000,
+        status: "high",
+        cost_per_part: 1,
+        currency: "USD"
+    }
+])
 
 // Products Collection
-{
+
+db.products.insertOne({
+    "product_id" : 2,
+    "product_name": "Titanium Hammer",
+    "description": "itanium Hammer With Curved Hickory Handle",
+    "materials_used" : [
+        {
+            "item_code" : "titanium_lw",
+            "quantity": 0.45,
+            "unit_measurement" : "kg",
+            "cost_per_part": 30
+        },
+        {
+            "item_code" : "wood_hc",
+            "quantity": 0.2,
+            "unit_measurement" : "kg",
+            "cost_per_part": 4
+        },
+        {
+            "item_code" : "magnet_nm",
+            "quantity": 0.01,
+            "unit_measurement" : "kg",
+            "cost_per_part": 50
+        },
+        {
+            "item_code" : "fasteners_ham",
+            "quantity": 0.02,
+            "unit_measurement" : "kg",
+            "cost_per_part": 1
+        }
+    ]
+})
+
+db.products.insertOne({
     "product_id" : 1,
-    "product_name": "Ladder",
-    "description": "Lorem ipsum",
-    "raw_materials" : [1,2,3,4]
-}
+    "product_name": "2 Step ladder",
+    "description": "Two Step Ladder - Folding Small 2 Step Stool 330lbs with Non-Slip Feets, Aluminum Lightweight Metal Step Stool by CHEAGO, Portable Solid Handy Work Ladder for Home, Kitchen, RV, Garage",
+    "materials_used" : [
+        {
+            "item_code" : "aluminum_6061",
+            "quantity": 1.9,
+            "unit_measurement" : "kg",
+            "cost_per_part": 3.0
+        },
+        {
+            "item_code" : "hinges_ss",
+            "quantity": 2,
+            "unit_measurement" : "pieces",
+            "cost_per_part": 1.5
+        },
+        {
+            "item_code" : "brackets_gs",
+            "quantity": 8,
+            "unit_measurement" : "pieces",
+            "cost_per_part": 2.5
+        },
+        {
+            "item_code" : "screw_ss",
+            "quantity": 32,
+            "unit_measurement" : "pieces",
+            "cost_per_part": 0.05
+        }
+    ]
+})
+
 
 
 // Escalera 2 peldaños:
