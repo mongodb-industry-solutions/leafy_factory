@@ -13,3 +13,5 @@ mongo_conn = MongoClient(MONGO_URI)
 
 db = mongo_conn["leafy_factory"]
 work_orders_coll = db["work_orders"]
+products_coll = db["products"]
+raw_materials_coll = db["raw_materials"]
