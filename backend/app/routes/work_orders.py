@@ -26,7 +26,6 @@ router = APIRouter()
                  }
              })
 def create_work_order(work_order: WorkOrder):
-    print(work_order.work_id)
     # Check that the request includes required fields.
     if not work_order.work_id or not work_order.materials_used:
         raise HTTPException(
@@ -110,12 +109,50 @@ def get_work_order():
     return work_order_list
 
 
-# #Update work order from Created to Completed
-# @router.put("/workoders/{work_id}",
-#             summary="Updates the work order status from 'Created' to 'In Progress'",
-#             description="This endpoint updates the work_order items with status 'Created', adds the 'actual_start' and 'actual_end' fields, and changes the status of the work_order item",
-#             responses={
-#                 200: {
-#                     "description": "Work order updated successfully"
-#                 }
-#             })
+#Update work order from Created to Completed
+@router.put("/workorders/{work_id}",
+            summary="Updates the work order status from 'Created' to 'Completed'",
+            description="This endpoint updates the work_order items with status 'Created', adds the 'actual_start' and 'actual_end' and cost.actual fields, and changes the status of the work_order item",
+            responses={
+                200: {
+                    "description": "Work order updated successfully"
+                }
+            })
+def update_work_order(work_id: int, updated_work_order: UpdateWorkOrder):
+    if not updated_work_order.actual_start_date or not updated_work_order.actual_start_date:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="The actual start date and actual end date are required to update the status of the work_order"
+        )
+    try:
+        updated_workorder_json = updated_work_order.model_dump()
+        
+        # Get the work order from the database
+        work_order_doc = work_orders_coll.find_one({"work_id" : work_id})
+
+        # Update the document, adding actual_start_date, actual_end_date and actual.final_product_cost_per_job
+        update_filter = {
+            "work_id" : work_id
+        }
+
+        update_expression = {
+            "$set" : {
+                "actual_start_date" : updated_workorder_json['actual_start_date'],
+                "actual_end_date" : updated_workorder_json['actual_end_date'],
+                "cost.actual.final_product_cost_per_job": updated_workorder_json['final_product_cost_per_job']
+            }
+        }
+
+        update_work_order_result = work_orders_coll.update_one(update_filter, update_expression)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"Result": str(update_work_order_result.acknowledged), 
+                     "Modified Count": str(update_work_order_result.modified_count), 
+                     "Updated Document": str(work_id)}
+        )
+             
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update work order: {str(e)}"
+        )
