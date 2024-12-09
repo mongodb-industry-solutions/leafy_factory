@@ -1,22 +1,65 @@
-# Creation of a work_order example.
+# Creation of a curl example
+
+curl -XPUT \
+  'http://localhost:8000/workorders/2' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "actual_start_date": "2024-12-12T00:00:00.000Z",
+  "actual_end_date": "2024-12-12T00:00:00.000Z",
+  "final_product_cost_per_job" : {
+    "cost_ok_with_overhead" : 12.5,
+    "cost_nok_with_overhead" : 2.5,
+    "nOk_products" : 2,
+    "total_cost" : 15
+  }
+}'
 
 curl -XPOST \
   'http://localhost:8000/workorders/' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "work_id": 77,
+  "work_id": 2,
   "planned_start_date": "2024-12-12T00:00:00.000Z",
   "planned_end_date": "2024-12-12T00:00:00.000Z",
-  "product_cat_id": 1,
+  "product_cat_id": 2,
   "quantity": 10,
   "status": "Created",
-  "materials_used": [{ "item_code": 1, "quantity": 1},{"item_code": 2, "quantity":2}],
-  "cost": {
+  "materials_used": [
+    {"item_code": "aluminum_6061", "quantity": 19},
+    {"item_code": "hinges_ss", "quantity": 20},
+    {"item_code": "brackets_gs", "quantity": 80},
+    {"item_code": "screw_ss", "quantity": 320}
+  ],
+  "cost" : {
     "planned" : {
-      "raw_material_cost_per_part": ".75",
-      "overhead_per_part": ".50",
-      "total_cost_per_part": "1.25"
+      "raw_material_cost_per_product" : 14.82,
+      "overhead_per_product": 0.50,
+      "total_cost_per_product" : 15.32
     }
   }
+}'
+
+curl -XGET 'http://localhost:8000/workorders/'
+curl -XGET 'http://localhost:8000/products_materials/2'
+curl -XGET 'http://localhost:8000/products/2'
+
+curl -XPOST \
+  'http://localhost:8000/jobs/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "job_id": 2,
+  "work_order_id": "2",
+  "factory" : {
+    "factory_id" : "qro_fact_1",
+    "production_lines" : [
+      {
+        "production_line_id" : 1,
+        "machines" : [1, 2]
+      }
+    ]
+  },
+  "target_output": 10
 }'

@@ -13,7 +13,43 @@ router = APIRouter()
             description="This endpoint gets a specified product from the leafy_factory database using the product_id field as filter criteria",
             responses={
                 200: {
-                    "description": "Product retrivied successfully"
+                    "description": "Product retrivied successfully",
+                    "content": {
+                        "application/json":{
+                            "example": {
+                                "_id":"67509e2029e80d360bf423cf",
+                                "product_id":2,
+                                "product_name":"Titanium Hammer",
+                                "description":"Titanium Hammer With Curved Hickory Handle",
+                                "materials_used":[
+                                    {
+                                        "item_code":"titanium_lw",
+                                        "quantity":0.45,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":30
+                                    },
+                                    {
+                                        "item_code":"wood_hc",
+                                        "quantity":0.2,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":4
+                                    },
+                                    {
+                                        "item_code":"magnet_nm",
+                                        "quantity":0.01,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":50
+                                    },
+                                    {
+                                        "item_code":"fasteners_ham",
+                                        "quantity":0.02,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":1
+                                    }
+                                ]
+                            }
+                        }
+                    }
                 }
             })
 def get_product_by_id(product_id: int):
@@ -37,7 +73,39 @@ def get_product_by_id(product_id: int):
             description="This endpoint retrieves the materials_used sub nested document from the product document using product_id as filter criteria",
             responses={
                 200: {
-                    "description": "materials_used retrivied successfully"
+                    "description": "materials_used retrivied successfully",
+                    "content": {
+                        "application/json":{
+                            "example": {
+                                "materials_used":[
+                                    {
+                                        "item_code":"titanium_lw",
+                                        "quantity":0.45,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":30
+                                    },
+                                    {
+                                        "item_code":"wood_hc",
+                                        "quantity":0.2,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":4
+                                    },
+                                    {
+                                        "item_code":"magnet_nm",
+                                        "quantity":0.01,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":50
+                                    },
+                                    {
+                                        "item_code":"fasteners_ham",
+                                        "quantity":0.02,
+                                        "unit_measurement":"kg",
+                                        "cost_per_part":1
+                                    }
+                                ]
+                            }
+                        }
+                    }
                 }
             })
 def get_materials_used_by_id(product_id: int):
