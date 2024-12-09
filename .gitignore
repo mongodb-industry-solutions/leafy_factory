@@ -3,3 +3,7 @@
 
 #Ignores the .env file
 *.env
+
+/node_modules
+/build
+.DS_Store
