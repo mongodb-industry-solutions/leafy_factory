@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
-from app.models import WorkOrder, UpdateWorkOrder
+from app.models.work_orders import WorkOrder, UpdateWorkOrder
 from app.database import work_orders_coll, raw_materials_coll
 from pymongo.errors import DuplicateKeyError
 import datetime
@@ -18,9 +18,7 @@ router = APIRouter()
                      "description": "Work order item successfully inserted",
                      "content": {
                          "application/json":{
-                             "example":[
-                                 {"work_order_id" : "6749f5ecddd88e151653ea33"}
-                             ]
+                             "example": {"work_order_id" : "6749f5ecddd88e151653ea33"}
                          }
                      }
                  }
@@ -88,7 +86,14 @@ def create_work_order(work_order: WorkOrder):
             description="This endpoint gets an array with the 100 last work orders items from the leafy_factory database using the creation_date field as filter criteria",
             responses={
                 200: {
-                    "description": "Work orders list retrivied successfully"
+                    "description": "Work orders list retrivied successfully",
+                    "content": {
+                         "application/json":{
+                             "example":[
+                                 {"_id":"67520135d3401bb2618bf44c","work_id":2,"planned_start_date":"2024-12-12T00:00:00","planned_end_date":"2024-12-12T00:00:00","actual_start_date":"2024-12-12T00:00:00","actual_end_date":"2024-12-12T00:00:00","product_cat_id":2,"quantity":10,"status":"Created","materials_used":[{"item_code":"aluminum_6061","quantity":19},{"item_code":"hinges_ss","quantity":20},{"item_code":"brackets_gs","quantity":80},{"item_code":"screw_ss","quantity":320}],"cost":{"planned":{"raw_material_cost_per_product":14.82,"overhead_per_product":0.5,"total_cost_per_product":15.32},"actual":{"final_product_cost_per_job":{"cost_ok_with_overhead":12.5,"cost_nok_with_overhead":2.5,"nOk_products":2,"total_cost":15}}},"creation_date":"2024-12-05T13:38:29.179000"}
+                             ]
+                         }
+                     }
                 }
             })
 def get_work_order():
@@ -115,7 +120,12 @@ def get_work_order():
             description="This endpoint updates the work_order items with status 'Created', adds the 'actual_start' and 'actual_end' and cost.actual fields, and changes the status of the work_order item",
             responses={
                 200: {
-                    "description": "Work order updated successfully"
+                    "description": "Work order updated successfully",
+                    "content": {
+                         "application/json":{
+                             "example": { "Result" : "True","Modified Count" : "1" , "Updated Document work_id" : "2" }
+                         }
+                     }
                 }
             })
 def update_work_order(work_id: int, updated_work_order: UpdateWorkOrder):
@@ -148,7 +158,7 @@ def update_work_order(work_id: int, updated_work_order: UpdateWorkOrder):
             status_code=status.HTTP_200_OK,
             content={"Result": str(update_work_order_result.acknowledged), 
                      "Modified Count": str(update_work_order_result.modified_count), 
-                     "Updated Document": str(work_id)}
+                     "Updated Document work_id": str(work_id)}
         )
              
     except Exception as e:
