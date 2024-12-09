@@ -1,8 +1,11 @@
-# Ignores the .venv virtual environment
+# Ignores the .venv Python virtual environment
 .venv
 
 #Ignores the .env file
 *.env
+
+#Ignores the .pyv files
+*.pyc
 
 /node_modules
 /build
