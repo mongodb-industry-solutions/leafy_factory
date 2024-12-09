@@ -5,7 +5,9 @@ from app.database import jobs_coll, work_orders_coll
 from pymongo.errors import DuplicateKeyError
 import datetime
 
+
 router = APIRouter()
+
 
 # Create a Job Task 
 @router.post("/jobs/",
