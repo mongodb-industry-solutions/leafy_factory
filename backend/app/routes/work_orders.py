@@ -12,7 +12,7 @@ router = APIRouter()
 # Create a Work Order
 @router.post("/workorders/",
              summary="Creates a new work order",
-             description="This endpoint creates a new work order in the leafy_factory database",
+             description="This endpoint creates a new work order in the leafy_factory database -> work_orders collection",
              responses={
                  201: {
                      "description": "Work order item successfully inserted",
