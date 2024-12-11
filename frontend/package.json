@@ -8,6 +8,7 @@
     "@leafygreen-ui/card": "^11.0.0",
     "@leafygreen-ui/icon": "^11.16.0",
     "@leafygreen-ui/modal": "^13.0.0",
+    "@leafygreen-ui/select": "^13.0.0",
     "@leafygreen-ui/text-input": "^12.1.13",
     "@leafygreen-ui/typography": "^16.5.0",
     "axios": "^1.7.8",
@@ -15,14 +16,15 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
     "lucide-react": "^0.344.0",
+    "process": "^0.11.10",
     "react": "^18.3.1",
+    "react-app-rewired": "^2.2.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.2",
     "react-spinner": "^0.2.7",
     "react-spinners": "^0.14.1",
     "stream-browserify": "^3.0.0",
-    "web-vitals": "^2.1.4",
-    "react-app-rewired": "^2.2.1"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -48,7 +50,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "eslint": "^9.9.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0"
   }
 }
