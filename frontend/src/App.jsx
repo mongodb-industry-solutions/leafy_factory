@@ -3,6 +3,8 @@ import './App.css';
 import TextInput from '@leafygreen-ui/text-input';
 import { Select, Option } from '@leafygreen-ui/select';
 import Button from '@leafygreen-ui/button';
+import 'react-refresh/runtime';
+
 
 function App() {
   const [formData, setFormData] = useState({
