@@ -149,6 +149,7 @@ def update_work_order(work_id: int, updated_work_order: UpdateWorkOrder):
             "$set" : {
                 "actual_start_date" : updated_workorder_json['actual_start_date'],
                 "actual_end_date" : updated_workorder_json['actual_end_date'],
+                "status": "Completed",
                 "cost.actual.final_product_cost_per_job": updated_workorder_json['final_product_cost_per_job']
             }
         }

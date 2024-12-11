@@ -45,6 +45,8 @@ curl -XGET 'http://localhost:8000/workorders/'
 curl -XGET 'http://localhost:8000/products_materials/2'
 curl -XGET 'http://localhost:8000/products/2'
 
+curl -XGET 'http://localhost:8000/jobs/'
+
 curl -XPOST \
   'http://localhost:8000/jobs/' \
   -H 'accept: application/json' \
@@ -62,4 +64,14 @@ curl -XPOST \
     ]
   },
   "target_output": 10
+}'
+
+
+curl -XPUT \
+  'http://localhost:8000/jobs/2' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "nok_products": "2",
+  "quality_rate": "98"
 }'
