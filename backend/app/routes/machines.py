@@ -41,8 +41,44 @@ async def receive_heartbeat(data: MachineHeartbeat):
             "start_date": list_time[0],
             "end_date": list_time[1],
             "factory.factory_id": heartbeat_record["factory_id"],
-            "factory.production_lines": heartbeat_record["factory_id"]
+            "factory.production_lines.machine.machine_id": heartbeat_record["machine_id"]
         }
+
+        # Define the update operation
+        update_query = {
+            "$push": {
+                "measurements": {
+                    "timestamp": heartbeat_record["timestamp"],
+                    "temperature": heartbeat_record["temperature"],
+                    "vibration": heartbeat_record["vibration"]
+                }
+            },
+            "$inc": {
+                "transaction_count": 1,
+                "sum_temperature": heartbeat_record["temperature"],
+                "sum_vibration": heartbeat_record["vibration"]
+            },
+            "$setOnInsert": {
+                "start_date": list_time[0],
+                "end_date": list_time[1],
+                "factory": {
+                    "factory_id": heartbeat_record["factory_id"],
+                    "production_lines": [
+                        {
+                            "production_line_id": heartbeat_record["production_line_id"],
+                            "machine": {
+                                "machine_id": heartbeat_record["machine_id"]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        # Insert or update the bucket
+        update_result = machine_data_coll.update_one(filter_query, update_query, upsert=True)
+        print(f"Upserted ID: {update_result.upserted_id}")
+        print(f"Result: {update_result.acknowledged}")
 
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,

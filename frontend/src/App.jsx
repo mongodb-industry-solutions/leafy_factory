@@ -17,10 +17,12 @@ function App() {
     // Define the function to fetch data
     const fetchData = async () => {
       try {
-        const response_test = await axios.get(`http://localhost:8000/workorders/`);
-        setData(response_test.data);
-        console.log("Test")
-        console.log(response_test)
+        const response_test = await axios.get(`https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/workorders/`,{
+          headers: {
+            "ngrok-skip-browser-warning": "69420"
+          }
+        });
+        console.log(response_test.data)
       } catch (err) {
         setError(err.message); // Save the error message to state
       } finally {
@@ -31,7 +33,7 @@ function App() {
     fetchData();
   }, []);
 
-    // Render the data or loading/error state
+  // Render the data or loading/error state
     return (
       <div>
         <h1>Axios GET Request</h1>
