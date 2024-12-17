@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
 from app.database import machine_data_coll
 from fastapi.responses import JSONResponse
+import json
 import boto3
 
 router = APIRouter()
