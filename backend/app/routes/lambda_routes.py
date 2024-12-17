@@ -14,13 +14,19 @@ lambda_client = boto3.client('lambda', region_name='us-east-2')
 @router.post("/start-simulation")
 async def start_simulation(request: SimulationRequest):
     """Invoke the Lambda function to start a machine simulation."""
+    factory_id = request.factory_id
+    production_line_id = request.production_line_id
     machine_id = request.machine_id
     heartbeat_url = request.heartbeat_url
 
     response = lambda_client.invoke(
         FunctionName='leafyFactoryTest',
         InvocationType='Event',
-        Payload=json.dumps({"machine_id": machine_id, "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/heartbeat"})
+        Payload=json.dumps({
+            "factory_id": factory_id,
+            "production_line_id": production_line_id,
+            "machine_id": machine_id,
+            "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/heartbeat"})
     )
     return {"status": "Simulation started", "machine_id": machine_id}
 

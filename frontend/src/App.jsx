@@ -4,9 +4,12 @@ import TextInput from '@leafygreen-ui/text-input';
 import { Select, Option } from '@leafygreen-ui/select';
 import Button from '@leafygreen-ui/button';
 import 'react-refresh/runtime';
+import axios from 'axios';
 
 
 function App() {
+  const response_test = axios.get(`https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/workorders/`); 
+  console.log(response_test)
   const [formData, setFormData] = useState({
     name: '',
     email: '',

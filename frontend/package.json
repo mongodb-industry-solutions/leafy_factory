@@ -11,7 +11,7 @@
     "@leafygreen-ui/select": "^13.0.0",
     "@leafygreen-ui/text-input": "^12.1.13",
     "@leafygreen-ui/typography": "^16.5.0",
-    "axios": "^1.7.8",
+    "axios": "^0.27.2",
     "buffer": "^6.0.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
