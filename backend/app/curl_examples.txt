@@ -42,6 +42,7 @@ curl -XPOST \
 }'
 
 curl -XGET 'http://localhost:8000/workorders/'
+curl -XGET 'https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/workorders'
 curl -XGET 'http://localhost:8000/products_materials/2'
 curl -XGET 'http://localhost:8000/products/2'
 
@@ -74,4 +75,23 @@ curl -XPUT \
   -d '{
   "nok_products": "2",
   "quality_rate": "98"
+}'
+
+curl -XPOST \
+'http://localhost:8000/lambda/start-simulation' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "machine_id": "Machine_1",
+  "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/test-communication"
+}'
+
+
+curl -XPOST \
+'http://localhost:8000/lambda/start-simulation' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "machine_id": "Machine_1",
+  "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/test-communication"
 }'
