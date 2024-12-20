@@ -3,11 +3,11 @@ DROP DATABASE IF EXISTS leafy_factory;
 CREATE DATABASE leafy_factory;
 USE leafy_factory;
 
-DROP TABLE IF EXISTS products;
-DROP TABLE IF EXISTS work_orders;
-DROP TABLE IF EXISTS raw_materials;
-DROP TABLE IF EXISTS products_raw_materials;
 DROP TABLE IF EXISTS product_cost;
+DROP TABLE IF EXISTS products_raw_materials;
+DROP TABLE IF EXISTS raw_materials;
+DROP TABLE IF EXISTS work_orders;
+DROP TABLE IF EXISTS products;
 
 CREATE TABLE products (
     id_product INT PRIMARY KEY AUTO_INCREMENT,
@@ -59,3 +59,4 @@ CREATE TABLE product_cost(
     product_id INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id_product)
 );
+
