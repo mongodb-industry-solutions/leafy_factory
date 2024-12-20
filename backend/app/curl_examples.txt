@@ -115,3 +115,25 @@ curl -XPOST \
   "machine_id": "1",
   "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/heartbeat"
 }'
+
+curl -XPOST \
+'http://localhost:8000/machines/ts_heartbeat' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "factory_id": "qro_fact_1",
+  "production_line_id": "1",
+  "machine_id": "1",
+  "vibration": "0.05",
+  "temperature": "10"
+}'
+
+
+curl -XGET \
+'http://localhost:8000/machines/machine_details' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "factory_id": "qro_fact_1",
+  "production_line_id": "1"
+}'

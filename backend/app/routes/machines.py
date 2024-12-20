@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
-from app.database import machine_data_coll
-from app.models.machines import MachineHeartbeat
+from app.database import machine_data_coll, raw_sensor_data_coll, factories_data_coll
+from app.models.machines import MachineHeartbeat, MachineStatus, MachineDetails
 from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
 
@@ -16,6 +16,85 @@ def get_bucket_time(timestamp):
     list_time.append(end_date)
 
     return list_time
+
+
+@router.put("/machines/change_status")
+async def update_status_machine(data: MachineStatus):
+    """This endpoint updates the machine status: it could be <available, running, maintenance>"""
+    try:
+        machine_status_record = {
+
+        }
+    except Exception as e:
+        pass
+
+
+@router.post("/machines/ts_heartbeat")
+async def receive_ts_heartbeat(data: MachineHeartbeat):
+    """This endpoint inserts the heartbeat sent in timeseries format to MongoDB time series collection"""
+    try: 
+        # The variable "data" receives the data sent from machine
+        heartbeat_record = {
+            "timestamp": datetime.now(),
+            "metadata": {
+                "factory_id": data.factory_id,
+                "prod_line_id": data.production_line_id,
+                "machine_id": data.machine_id
+            },
+            "vibration": data.vibration,
+            "temperature": data.temperature
+        }
+
+        insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
+        print(f"Inserted ID: {insert_heartbeat_result.inserted_id}")
+
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={"inserted id ": str(insert_heartbeat_result.inserted_id)}
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save heartbeat: {str(e)}")
+
+
+@router.get("/machines/machine_details")
+async def retrieve_machine_details(data: MachineDetails):
+    """This endpoint retrieves the machine details from the factory collection"""
+    try:
+        machine_details_record = {
+            "factory_id": data.factory_id,
+            "production_lines.production_line_id": int(data.production_line_id)
+        }
+
+        machine_details_projection = {
+            "production_lines.machines.$": 1, 
+            "_id": 0
+        }
+
+        machine_details_docs = factories_data_coll.find(machine_details_record, machine_details_projection)
+        machines_docs_to_list = list(machine_details_docs)
+
+        # machines_docs_to_list has an array of documents, however since we are retrieving only one production line, it has just one document, that's why we are accesing the index [0]
+        machines_list = machines_docs_to_list[0]["production_lines"][0]["machines"]
+        
+        # List comprehension to filter only the data that we want
+        filtered_machines_list = [
+            {
+                "machine_id": item["machine_id"],
+                "status": item["status"],
+                "last_maintenance": item["last_maintenance"]
+            }
+            for item in machines_list
+        ]
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"result": filtered_machines_list}
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve machine details: {str(e)}")
+
 
 @router.post("/machines/heartbeat")
 async def receive_heartbeat(data: MachineHeartbeat):
