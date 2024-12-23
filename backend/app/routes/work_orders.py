@@ -1,24 +1,23 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.work_orders import WorkOrder, UpdateWorkOrder
-from app.database import work_orders_coll, raw_materials_coll
+from app.database import work_orders_coll, raw_materials_coll, mariadb_conn
 from pymongo.errors import DuplicateKeyError
 import datetime
 
 
 router = APIRouter()
 
-
-# Create a Work Order
+# Create a Work Order into SQL table.
 @router.post("/workorders/",
              summary="Creates a new work order",
-             description="This endpoint creates a new work order in the leafy_factory database -> work_orders collection",
+             description="This endpoint creates a new work order and inserts it into the leafy_factory MySQL database",
              responses={
                  201: {
                      "description": "Work order item successfully inserted",
                      "content": {
                          "application/json":{
-                             "example": {"work_order_id" : "6749f5ecddd88e151653ea33"}
+                             "example": {"work_order_id" : "1"}
                          }
                      }
                  }
@@ -41,45 +40,143 @@ def create_work_order(work_order: WorkOrder):
 
         # Modifies the raw_material stock from the raw_materials collection.
         for item in workorder_json["materials_used"]:
-            
-            # Sets the filter we will use to find the raw_material 
-            filter_update_raw_materials = {
-                "item_code" : item["item_code"]
-            }
 
             # This is the value we want to update, in this case we want to decrease the stock number of the raw_materials
-            # $inc can be used with negative values to perform a decrease operation.
-            update_value = {
-                "$inc" : {
-                    "stock" : float(item["quantity"]) * -1
-                }
-            }
+            item_code = item["item_code"]
+            item_quantity = item["quantity"]
+            update_raw_materials = f"UPDATE raw_materials SET raw_material_stock = raw_material_stock - {item_quantity} WHERE item_code = %s"
+            
+            with mariadb_conn.cursor() as db_cur:
+                # Update the raw material stock for that specific item_code
+                db_cur.execute(update_raw_materials, (item_code,))
 
-            # Right now the function doensn't validate if there is enough stock
-            # TODO validate that there is enough stock before creating the work order.
-            update_result = raw_materials_coll.update_one(
-                filter_update_raw_materials, 
-                update_value
-            )
+            # Commit the changes
+            mariadb_conn.commit()
 
-        # Insert the work order into MongoDB
-        result_work_order = work_orders_coll.insert_one(workorder_json)
+        #     # Right now the function doensn't validate if there is enough stock
+        #     # TODO validate that there is enough stock before creating the work order.
+
+        # Insert the work order into MariaDB
+        insert_work_order = """
+                            INSERT INTO work_orders (
+                                planned_start_date, 
+                                planned_end_date, 
+                                quantity, 
+                                wo_status, 
+                                creation_date, 
+                                product_id
+                            )
+                            VALUES (?,?,?,?,?,?)
+                            """
+        with mariadb_conn.cursor() as db_insert_cursor:
+            db_insert_cursor.execute(insert_work_order, 
+                                     (workorder_json["planned_start_date"],
+                                      workorder_json["planned_end_date"],
+                                      workorder_json["quantity"],
+                                      workorder_json["status"],
+                                      workorder_json["creation_date"],
+                                      workorder_json["product_cat_id"],
+                                      ))
+            new_work_order_id = db_insert_cursor.lastrowid
+            # Commit the insert operation.
+            mariadb_conn.commit()
+        
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
-            content={"work_order_id": str(result_work_order.inserted_id)}
+            content={"work_order_id": str(new_work_order_id)}
         )
+
     except DuplicateKeyError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="A work order with this work_id already exists"
         )
     except Exception as e:
+        mariadb_conn.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create work order: {str(e)}"
         )
-    
 
+
+#########################################################
+#########################################################
+###### THIS API INSERTS A WORKORDER INTO MONGODB ########
+#########################################################
+#########################################################
+
+# # Create a Work Order
+# @router.post("/workorders/",
+#              summary="Creates a new work order",
+#              description="This endpoint creates a new work order in the leafy_factory database -> work_orders collection",
+#              responses={
+#                  201: {
+#                      "description": "Work order item successfully inserted",
+#                      "content": {
+#                          "application/json":{
+#                              "example": {"work_order_id" : "6749f5ecddd88e151653ea33"}
+#                          }
+#                      }
+#                  }
+#              })
+# def create_work_order(work_order: WorkOrder):
+#     # Check that the request includes required fields.
+#     if not work_order.work_id or not work_order.materials_used:
+#         raise HTTPException(
+#             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+#             detail="Work order ID, or Work order materials used and planned cost required."
+#         )
+    
+#     workorder_json = work_order.model_dump()
+
+#     # It adds the creation_date field to the JSON document.
+#     workorder_json["creation_date"] = datetime.datetime.now()
+
+
+#     try:
+
+#         # Modifies the raw_material stock from the raw_materials collection.
+#         for item in workorder_json["materials_used"]:
+            
+#             # Sets the filter we will use to find the raw_material 
+#             filter_update_raw_materials = {
+#                 "item_code" : item["item_code"]
+#             }
+
+#             # This is the value we want to update, in this case we want to decrease the stock number of the raw_materials
+#             # $inc can be used with negative values to perform a decrease operation.
+#             update_value = {
+#                 "$inc" : {
+#                     "stock" : float(item["quantity"]) * -1
+#                 }
+#             }
+
+#             # Right now the function doensn't validate if there is enough stock
+#             # TODO validate that there is enough stock before creating the work order.
+#             update_result = raw_materials_coll.update_one(
+#                 filter_update_raw_materials, 
+#                 update_value
+#             )
+
+#         # Insert the work order into MongoDB
+#         result_work_order = work_orders_coll.insert_one(workorder_json)
+#         return JSONResponse(
+#             status_code=status.HTTP_201_CREATED,
+#             content={"work_order_id": str(result_work_order.inserted_id)}
+#         )
+#     except DuplicateKeyError:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="A work order with this work_id already exists"
+#         )
+#     except Exception as e:
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail=f"Failed to create work order: {str(e)}"
+#         )
+
+# TODO
+# This API should get the data from MongoDB, the SQL data needs to be inserted into MongoDB to do so.
 # Get the last 100 work orders
 @router.get("/workorders/",
             summary="Gets last 100 work orders",
