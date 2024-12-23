@@ -1,7 +1,7 @@
 # Creation of a curl example
 
 curl -XPUT \
-  'http://localhost:8000/workorders/2' \
+  'http://localhost:8000/workorders/1' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{

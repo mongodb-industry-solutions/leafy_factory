@@ -25,6 +25,7 @@ CREATE TABLE work_orders(
     wo_status VARCHAR(100),
     creation_date DATETIME,
     product_id INT NOT NULL,
+    nOk_products INT,
     FOREIGN KEY (product_id) REFERENCES products(id_product)
 );
 
@@ -50,14 +51,14 @@ CREATE TABLE products_raw_materials(
 
 CREATE TABLE product_cost(
     id_cost INT PRIMARY KEY AUTO_INCREMENT,
-    raw_material_cost_per_product DECIMAL(10, 2) NOT NULL,
-    overhead_per_product DECIMAL(10, 2) NOT NULL,
-    total_cost_per_product DECIMAL(10, 2) NOT NULL,
-    cost_ok_with_overhead DECIMAL(10, 2) NOT NULL,
-    cost_nok_with_overhead DECIMAL(10, 2) NOT NULL,
-    nOk_products INT NOT NULL,
-    product_id INT NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products(id_product)
+    raw_material_cost_per_product DECIMAL(10, 2),
+    overhead_per_product DECIMAL(10, 2),
+    total_cost_per_product DECIMAL(10, 2),
+    cost_ok_with_overhead DECIMAL(10, 2),
+    cost_nok_with_overhead DECIMAL(10, 2),
+    actual_total_cost DECIMAL(10, 2),
+    work_id INT NOT NULL UNIQUE,
+    FOREIGN KEY (work_id) REFERENCES work_orders(id_work)
 );
 
 
@@ -94,5 +95,4 @@ VALUES
 (2, 6),
 (2, 7),
 (2, 8);
-
 
