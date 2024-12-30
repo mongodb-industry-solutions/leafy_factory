@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.job_task import JobTask, UpdateJob
-from app.database import jobs_coll, work_orders_coll
+from app.database import jobs_coll, work_orders_coll, mariadb_conn
 from pymongo.errors import DuplicateKeyError
 import datetime
 
@@ -10,15 +10,16 @@ router = APIRouter()
 
 
 # Create a Job Task 
+# Create a Job Task into an SQL table.
 @router.post("/jobs/",
              summary="Creates a job task",
-             description="This endpoint creates a Job Task in the leafy_factory database",
+             description="This endpoint creates a Job Task in the leafy_factory SQL database",
              responses={
                  201: {
                      "description": "Job task created successfully ",
                      "content": {
                          "application/json":{
-                             "example": {"job_id" : "6749f5ecddd88e151653ea33"}
+                             "example": {"id_job" : "1"}
                          }
                      }
                  }
@@ -32,32 +33,79 @@ def create_job(job_task: JobTask):
         )
     
     job_task_json = job_task.model_dump()
+    work_order_status = "In Progress"
+    machine_status = "Running"
 
     # It adds the creation_date field to the JSON document.
     job_task_json["creation_date"] = datetime.datetime.now()
     job_task_json["status"] = "Created"
 
     try:
-        # Insert the job task into MongoDB
-        result_job_task = jobs_coll.insert_one(job_task_json)
 
-        # Modify the status of the work order from "Created" to "In Progress"
-        wo_filter = {
-            "work_id" : job_task_json['work_order_id']
-        }
+        # Inserts the job task into SQL
+        insert_job_query = """
+                            INSERT INTO jobs(target_output, job_status, creation_date, work_id)
+                            VALUES (?,?,?,?)
+                           """
+        
+        
+        # Inserts a new row into the jobs_machines table
+        insert_job_machine_query =  """
+                                        INSERT INTO jobs_machines(job_id, machine_id)
+                                        VALUES (?,?)
+                                    """
+        
+        # Updates the status from "Created" to "In Progress" and the actual start_date of the work order
+        updates_work_order =    f"""
+                                    UPDATE work_orders 
+                                    SET 
+                                        wo_status = '{work_order_status}',
+                                        actual_start_date = '{job_task_json['creation_date']}'
+                                    WHERE id_work = {job_task_json['work_order_id']}
+                                """
+        
+        # Updates the machine's status.
+        updates_machine_status =    f"""
+                                        UPDATE machines
+                                        SET
+                                            machine_status = "{machine_status}"
+                                        WHERE id_machine = %s
+                                    """
+            
+        
+        with mariadb_conn.cursor() as db_cur:
+            db_cur.execute(insert_job_query, 
+                                (
+                                    job_task_json["target_output"],
+                                    job_task_json["status"],
+                                    job_task_json["creation_date"],
+                                    job_task_json["work_order_id"],
+                                ))
+            
+            new_job_id = db_cur.lastrowid
 
-        update_wo_values = {
-            "$set" : {
-                "status": "In Progress",
-                "actual_start_date": datetime.datetime.now()
-            }
-        }
+            # Updates the work order's status
+            db_cur.execute(updates_work_order)
 
-        update_wo_result = work_orders_coll.update_one(wo_filter, update_wo_values)
+            for machine_id in job_task_json["factory"]["production_lines"][0]["machines"]:
+                print(machine_id)
+                db_cur.execute(insert_job_machine_query, 
+                                (
+                                   new_job_id,
+                                   machine_id,
+                                ))
+                
+                db_cur.execute(updates_machine_status,
+                               (
+                                    machine_id,
+                               ))
+
+        # Commit the changes
+        mariadb_conn.commit()
 
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
-            content={"Created _id: ": str(result_job_task.inserted_id), "job_id": str(job_task_json["job_id"])}
+            content={"job_id": str(new_job_id)}
         )
     except DuplicateKeyError:
         raise HTTPException(
@@ -69,6 +117,75 @@ def create_job(job_task: JobTask):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create the job task: {str(e)}"
         )
+
+
+#########################################################
+#########################################################
+###### THIS API CREATES A JOB WITHIN FROM MONGODB #######
+#########################################################
+#########################################################
+
+
+# # Create a Job Task 
+# @router.post("/jobs/",
+#              summary="Creates a job task",
+#              description="This endpoint creates a Job Task in the leafy_factory database",
+#              responses={
+#                  201: {
+#                      "description": "Job task created successfully ",
+#                      "content": {
+#                          "application/json":{
+#                              "example": {"job_id" : "6749f5ecddd88e151653ea33"}
+#                          }
+#                      }
+#                  }
+#              })
+# def create_job(job_task: JobTask):
+#     # Check that the request includes required fields.
+#     if not job_task.work_order_id or not job_task.factory or not job_task.target_output:
+#         raise HTTPException(
+#             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+#             detail="Work order ID, or target_output or target_output not found on the Job request."
+#         )
+    
+#     job_task_json = job_task.model_dump()
+
+#     # It adds the creation_date field to the JSON document.
+#     job_task_json["creation_date"] = datetime.datetime.now()
+#     job_task_json["status"] = "Created"
+
+#     try:
+#         # Insert the job task into MongoDB
+#         result_job_task = jobs_coll.insert_one(job_task_json)
+
+#         # Modify the status of the work order from "Created" to "In Progress"
+#         wo_filter = {
+#             "work_id" : job_task_json['work_order_id']
+#         }
+
+#         update_wo_values = {
+#             "$set" : {
+#                 "status": "In Progress",
+#                 "actual_start_date": datetime.datetime.now()
+#             }
+#         }
+
+#         update_wo_result = work_orders_coll.update_one(wo_filter, update_wo_values)
+
+#         return JSONResponse(
+#             status_code=status.HTTP_201_CREATED,
+#             content={"Created _id: ": str(result_job_task.inserted_id), "job_id": str(job_task_json["job_id"])}
+#         )
+#     except DuplicateKeyError:
+#         raise HTTPException(
+#             status_code=status.HTTP_400_BAD_REQUEST,
+#             detail="A Job task with this job_id already exists"
+#         )
+#     except Exception as e:
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail=f"Failed to create the job task: {str(e)}"
+#         )
     
 
 # Get the last 100 job tasks
@@ -123,7 +240,7 @@ def get_jobs():
     return job_list
 
 
-#Update jobs from Created to Completed
+#Update jobs from Created to Completed using an SQL database.
 @router.put("/jobs/{job_id}",
             summary="Updates the job task status from 'Created' to 'Completed'",
             description="This endpoint updates the jobs items with status 'Created', adds the completion_date, nok_products, quality_rate, and changes the status of the job task",
@@ -144,27 +261,31 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
             detail="The number of no ok products and quality rate are required."
         )
     try:
+        job_status = "Completed"
+        
         updated_job_json = updated_job_task.model_dump()
+        update_job_query =  f"""
+                                UPDATE 
+                                    jobs 
+                                SET 
+                                    nOk_products = {updated_job_json['nok_products']}, 
+                                    quality_rate = {updated_job_json['quality_rate']},
+                                    job_status = '{job_status}'
+                                WHERE
+                                    id_job = {job_id}
+                            """
 
-        # Update the document, adding actual_start_date, actual_end_date and actual.final_product_cost_per_job
-        update_filter = {
-            "job_id" : job_id
-        }
+        with mariadb_conn.cursor() as db_cur:
+            db_cur.execute(update_job_query)
+            updated_count = db_cur.rowcount
 
-        update_expression = {
-            "$set" : {
-                "completion_date" : datetime.datetime.now(),
-                "nok_products" : updated_job_json['nok_products'],
-                "quality_rate" : updated_job_json['quality_rate'],
-                "status" : "Completed"
-            }
-        }
+        # Commit the changes
+        mariadb_conn.commit()
 
-        update_job_result = jobs_coll.update_one(update_filter, update_expression)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"Result": str(update_job_result.acknowledged), 
-                     "Modified Count": str(update_job_result.modified_count), 
+            content={"Result": "True" if updated_count > 0 else "False", 
+                     "Modified Count": updated_count, 
                      "Updated Document job_id": str(job_id)}
         )
              
@@ -173,3 +294,62 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to update job task: {str(e)}"
         )
+    
+
+#########################################################
+#########################################################
+###### THIS API CREATES A JOB WITHIN FROM MONGODB #######
+#########################################################
+#########################################################
+
+
+#Update jobs from Created to Completed
+# @router.put("/jobs/{job_id}",
+#             summary="Updates the job task status from 'Created' to 'Completed'",
+#             description="This endpoint updates the jobs items with status 'Created', adds the completion_date, nok_products, quality_rate, and changes the status of the job task",
+#             responses={
+#                 200: {
+#                     "description": "Job updated successfully",
+#                     "content": {
+#                          "application/json":{
+#                              "example": { "Result" : "True", "Modified Count" : "1" , "Updated Document job_id" : "2" }
+#                          }
+#                      }
+#                 }
+#             })
+# def update_job_task(job_id: int, updated_job_task: UpdateJob):
+#     if not updated_job_task.nok_products or not updated_job_task.quality_rate:
+#         raise HTTPException(
+#             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+#             detail="The number of no ok products and quality rate are required."
+#         )
+#     try:
+#         updated_job_json = updated_job_task.model_dump()
+
+#         # Update the document, adding actual_start_date, actual_end_date and actual.final_product_cost_per_job
+#         update_filter = {
+#             "job_id" : job_id
+#         }
+
+#         update_expression = {
+#             "$set" : {
+#                 "completion_date" : datetime.datetime.now(),
+#                 "nok_products" : updated_job_json['nok_products'],
+#                 "quality_rate" : updated_job_json['quality_rate'],
+#                 "status" : "Completed"
+#             }
+#         }
+
+#         update_job_result = jobs_coll.update_one(update_filter, update_expression)
+#         return JSONResponse(
+#             status_code=status.HTTP_200_OK,
+#             content={"Result": str(update_job_result.acknowledged), 
+#                      "Modified Count": str(update_job_result.modified_count), 
+#                      "Updated Document job_id": str(job_id)}
+#         )
+             
+#     except Exception as e:
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail=f"Failed to update job task: {str(e)}"
+#         )
