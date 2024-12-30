@@ -8,6 +8,11 @@ DROP TABLE IF EXISTS products_raw_materials;
 DROP TABLE IF EXISTS raw_materials;
 DROP TABLE IF EXISTS work_orders;
 DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS jobs;
+DROP TABLE IF EXISTS factories;
+DROP TABLE IF EXISTS production_lines;
+DROP TABLE IF EXISTS machines;
+DROP TABLE IF EXISTS jobs_machines;
 
 CREATE TABLE products (
     id_product INT PRIMARY KEY AUTO_INCREMENT,
@@ -61,6 +66,54 @@ CREATE TABLE product_cost(
     FOREIGN KEY (work_id) REFERENCES work_orders(id_work)
 );
 
+CREATE TABLE jobs(
+    id_job INT PRIMARY KEY AUTO_INCREMENT,
+    target_output INT NOT NULL,
+    nOk_products INT,
+    quality_rate INT,
+    job_status VARCHAR(100) NOT NULL,
+    creation_date DATETIME
+);
+
+CREATE TABLE factories(
+    id_factory INT PRIMARY KEY AUTO_INCREMENT,
+    factory_name INT VARCHAR(100) NOT NULL,
+    factory_location VARCHAR(100) NOT NULL,
+    factory_timestamp DATETIME NOT NULL
+);
+
+INSERT INTO factories (factory_name, factory_location, factory_timestamp) 
+VALUES 
+(
+    "qro_fact_1",
+    "Plant A",
+    "2024-10-31 14:25:00"
+)
+
+CREATE TABLE production_lines(
+    id_production_line INT PRIMARY KEY AUTO_INCREMENT,
+    factory_id INT NOT NULL,
+    FOREIGN KEY (factory_id) REFERENCES factories(id_factory)
+);
+
+CREATE TABLE machines(
+    id_machine INT PRIMARY KEY AUTO_INCREMENT,
+    machine_status VARCHAR(100) NOT NULL,
+    last_maintenance DATETIME NOT NULL,
+    operator VARCHAR(100) NOT NULL,
+    avg_output DECIMAL(10, 2),
+    reject_count DECIMAL(10, 2),
+    production_line_id INT NOT NULL,
+    FOREIGN KEY (production_line_id) REFERENCES production_lines(id_production_line)
+);
+
+CREATE TABLE jobs_machines(
+    id_jobs_machines INT PRIMARY KEY AUTO_INCREMENT,
+    job_id INT NOT NULL,
+    machine_id INT NOT NULL, 
+    FOREIGN KEY job_id REFERENCES jobs(id_job),
+    FOREIGN KEY machine_id REFERENCES machines(id_machine)
+);
 
 INSERT INTO products (product_name, product_description) 
 VALUES 
@@ -96,3 +149,54 @@ VALUES
 (2, 7),
 (2, 8);
 
+INSERT INTO factories(factory_name, factory_location, factory_timestamp) 
+VALUES 
+(
+    "qro_fact_1",
+    "Plant A",
+    "2024-10-31 14:25:00"
+);
+
+INSERT INTO production_lines(factory_id) 
+VALUES 
+(
+    1
+),
+(
+    2
+);
+
+INSERT INTO machines() 
+VALUES 
+(
+    "Available",
+    "2024-10-31 14:25:00",
+    "Ada Lovelace",
+    3000,
+    25,
+    1
+),
+(
+    "Running",
+    "2024-10-31 14:25:00",
+    "Claude Jones",
+    3000,
+    25,
+    1
+),
+(
+    "Available",
+    "2024-10-31 14:25:00",
+    "Grace Conway",
+    3000,
+    25,
+    2
+),
+(
+    "Running",
+    "2024-10-31 14:25:00",
+    "Frida Sidik",
+    3000,
+    25,
+    2
+);

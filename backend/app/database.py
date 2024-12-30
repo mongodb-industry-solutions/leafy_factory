@@ -32,13 +32,3 @@ mariadb_conn = connect(
     host=MARIADB_HOSTNAME,
     database=MARIADB_DATABASE
 )
-
-# mariadb_cur = mariadb_conn.cursor()
-# item_code = "screw_ss"
-# query = "SELECT * FROM raw_materials WHERE item_code = %s"
-
-# mariadb_cur.execute(query, (item_code,))
-# query_result = mariadb_cur.fetchall()
-
-# for i in query_result:
-#     print(query_result)
