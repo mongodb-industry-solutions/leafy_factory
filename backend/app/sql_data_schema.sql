@@ -72,7 +72,9 @@ CREATE TABLE jobs(
     nOk_products INT,
     quality_rate INT,
     job_status VARCHAR(100) NOT NULL,
-    creation_date DATETIME
+    creation_date DATETIME,
+    work_id INT NOT NULL,
+    FOREIGN KEY (work_id) REFERENCES work_orders (id_work)
 );
 
 CREATE TABLE factories(
@@ -169,7 +171,7 @@ VALUES
     1
 ),
 (
-    "Running",
+    "Available",
     "2024-10-31 14:25:00",
     "Claude Jones",
     3000,
@@ -185,10 +187,11 @@ VALUES
     2
 ),
 (
-    "Running",
+    "Available",
     "2024-10-31 14:25:00",
     "Frida Sidik",
     3000,
     25,
     2
 );
+

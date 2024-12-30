@@ -68,8 +68,27 @@ curl -XPOST \
 }'
 
 
+## SQL CURL to insert a Job
+curl -XPOST \
+  'http://localhost:8000/jobs/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "work_order_id": "1",
+  "factory" : {
+    "factory_id" : "qro_fact_1",
+    "production_lines" : [
+      {
+        "production_line_id" : 1,
+        "machines" : [1, 2]
+      }
+    ]
+  },
+  "target_output": 10
+}'
+
 curl -XPUT \
-  'http://localhost:8000/jobs/2' \
+  'http://localhost:8000/jobs/1' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
