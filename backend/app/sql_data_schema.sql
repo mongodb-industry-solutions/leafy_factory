@@ -77,18 +77,10 @@ CREATE TABLE jobs(
 
 CREATE TABLE factories(
     id_factory INT PRIMARY KEY AUTO_INCREMENT,
-    factory_name INT VARCHAR(100) NOT NULL,
+    factory_name VARCHAR(100) NOT NULL,
     factory_location VARCHAR(100) NOT NULL,
     factory_timestamp DATETIME NOT NULL
 );
-
-INSERT INTO factories (factory_name, factory_location, factory_timestamp) 
-VALUES 
-(
-    "qro_fact_1",
-    "Plant A",
-    "2024-10-31 14:25:00"
-)
 
 CREATE TABLE production_lines(
     id_production_line INT PRIMARY KEY AUTO_INCREMENT,
@@ -111,8 +103,8 @@ CREATE TABLE jobs_machines(
     id_jobs_machines INT PRIMARY KEY AUTO_INCREMENT,
     job_id INT NOT NULL,
     machine_id INT NOT NULL, 
-    FOREIGN KEY job_id REFERENCES jobs(id_job),
-    FOREIGN KEY machine_id REFERENCES machines(id_machine)
+    FOREIGN KEY (job_id) REFERENCES jobs(id_job),
+    FOREIGN KEY (machine_id) REFERENCES machines(id_machine)
 );
 
 INSERT INTO products (product_name, product_description) 
@@ -166,7 +158,7 @@ VALUES
     2
 );
 
-INSERT INTO machines() 
+INSERT INTO machines(machine_status, last_maintenance, operator, avg_output, reject_count, production_line_id) 
 VALUES 
 (
     "Available",
