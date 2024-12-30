@@ -155,7 +155,7 @@ VALUES
     1
 ),
 (
-    2
+    1
 );
 
 INSERT INTO machines(machine_status, last_maintenance, operator, avg_output, reject_count, production_line_id) 
