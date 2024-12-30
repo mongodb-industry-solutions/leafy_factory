@@ -53,7 +53,7 @@ def create_work_order(work_order: WorkOrder):
             # Commit the changes
             mariadb_conn.commit()
 
-        #     # Right now the function doensn't validate if there is enough stock
+        #     # Right now the function doensn't check if there is enough stock
         #     # TODO validate that there is enough stock before creating the work order.
 
         # Insert the work order into MariaDB
