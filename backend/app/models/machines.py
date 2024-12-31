@@ -16,11 +16,11 @@ class MachineStatus(BaseModel):
 
 
 class MachineHeartbeat(BaseModel):
-    factory_id: str = Field(..., description = "Factory ID")
-    production_line_id: str = Field(..., description = "Production Line ID")
-    machine_id: str = Field(..., description = "Machine ID")
-    vibration: float = Field(..., description = "Machine's vibration value")
-    temperature: float = Field(..., description = "Machine's temperature value")
+    factory_id: int = Field(..., description = "Factory ID")
+    production_line_id: int = Field(..., description = "Production Line ID")
+    machine_id: int = Field(..., description = "Machine ID")
+    # vibration: float = Field(..., description = "Machine's vibration value")
+    # temperature: float = Field(..., description = "Machine's temperature value")
 
 
 # Sentence to create the Time series collection
