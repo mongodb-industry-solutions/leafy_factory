@@ -98,7 +98,7 @@ async def retrieve_machine_details(data: MachineDetails):
 
 @router.post("/machines/heartbeat")
 async def receive_heartbeat(data: MachineHeartbeat):
-    """This endpoint inserts the heartbeat data sent from Lambda to MongoDB database"""
+    """This endpoint inserts the heartbeat data sent from Lambda to MongoDB database using bucket pattern"""
     try:
         heartbeat_record = {
             "factory_id": data.factory_id,
