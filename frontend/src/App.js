@@ -10,9 +10,20 @@ function App() {
   return (
     <>
       <workOrderState>
+        <Router>
+          <Header />
+          <Switch>
 
+            <PublicRoute eaxct path="/workorders/" component={createWorkOrder}/>
+            <PublicRoute eaxct path="/workorders/" component={workOrders}/>
+            <PublicRoute eaxct path="/workorders/:work_id" component={workOrderDetails}/>
+           <PublicRoute exact path="/" component={Home} />
+         
+          </Switch>
+        </Router>
       </workOrderState>
-    <>
+
+    </>
   );
 }
 
