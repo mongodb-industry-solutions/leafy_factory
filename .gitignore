@@ -10,3 +10,4 @@
 /node_modules
 /build
 .DS_Store
+kafka_sql_mdb.tar.gz
