@@ -156,3 +156,5 @@ curl -XGET \
   "factory_id": "qro_fact_1",
   "production_line_id": "1"
 }'
+
+curl -XPOST 'http://localhost:8000/start-simulation/'
