@@ -15,10 +15,10 @@ function App() {
           <Header />
           <Routes> 
 
-            <Route path="/workorders/" element={<PublicRoute component={WorkOrders} />} /> 
-            <Route path="/workorders/:work_id" element={<PublicRoute component={WorkOrdersDetails} />} />
-            <Route path="/" element={<PublicRoute component={Home} />} />
-            
+            <Route exact path="/workorders/" element={<PublicRoute component={WorkOrders} />} /> 
+            <Route exact path="/workorders/:work_id" element={<PublicRoute component={WorkOrdersDetails} />} />
+            <Route exact path="/" element={<PublicRoute component={Home} />} />
+
           </Routes>
         </Router>
       </WorkOrderState>

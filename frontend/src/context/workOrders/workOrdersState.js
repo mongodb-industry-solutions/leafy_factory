@@ -14,6 +14,7 @@ const WorkOrderState = (props) => {
     const getAllWorkOrders = async () => {
         try {
             const res = await axiosClient.get("/api/workorders/")
+            //DB
             const work_orders = res.data.data
             dispatch({
                 type: "GET_WORK_ORDERS",
@@ -36,7 +37,7 @@ const WorkOrderState = (props) => {
     return (        //activate supplier to all components
         <WorkOrdersContext.Provider
             value={{
-                workOrder: globalState.workOrder,
+                workOrder: globalState.workOrders,
                 getAllWorkOrders,
                 addWorkOrders
             }}
