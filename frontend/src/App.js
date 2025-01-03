@@ -1,27 +1,27 @@
-import logo from './logo.png';
 import './App.css';
-import {Switch, BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/Header';
 import Home from './components/Home';
-import workOrderState from './context/workOrders/workOrdersState';
+import WorkOrders from './components/workOrders';
+import WorkOrdersDetails from './components/workOrderDetails';
+import WorkOrderState from './context/workOrders/workOrdersState';
 import PublicRoute from './components/Routes/PublicRoute';
 
 function App() {
   return (
     <>
-      <workOrderState>
+      <WorkOrderState>
         <Router>
           <Header />
-          <Switch>
+          <Routes> 
 
-            <PublicRoute eaxct path="/workorders/" component={createWorkOrder}/>
-            <PublicRoute eaxct path="/workorders/" component={workOrders}/>
-            <PublicRoute eaxct path="/workorders/:work_id" component={workOrderDetails}/>
-           <PublicRoute exact path="/" component={Home} />
-         
-          </Switch>
+            <Route path="/workorders/" element={<PublicRoute component={WorkOrders} />} /> 
+            <Route path="/workorders/:work_id" element={<PublicRoute component={WorkOrdersDetails} />} />
+            <Route path="/" element={<PublicRoute component={Home} />} />
+            
+          </Routes>
         </Router>
-      </workOrderState>
+      </WorkOrderState>
 
     </>
   );
