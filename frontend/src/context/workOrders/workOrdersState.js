@@ -13,7 +13,7 @@ const WorkOrderState = (props) => {
     //API
     const getAllWorkOrders = async () => {
         try {
-            const res = await axiosClient.get("/api/workorders/")
+            const res = await axiosClient.get("/workorders/")
             //DB
             const work_orders = res.data.data
             dispatch({
@@ -27,7 +27,7 @@ const WorkOrderState = (props) => {
     const addWorkOrders = async (dataForm) => {
         console.log(dataForm)
         try {
-            await axiosClient.post("/api/workorders/create", dataForm)
+            await axiosClient.post("/workorders/", dataForm)
             return getAllWorkOrders()
         } catch (error) {
             console.log(error)
