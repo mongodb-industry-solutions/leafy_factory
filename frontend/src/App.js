@@ -1,31 +1,24 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Layout/Header';
-import Home from './components/Home';
-import WorkOrders from './components/workOrders';
-import WorkOrdersDetails from './components/workOrderDetails';
-import WorkOrderState from './context/workOrders/workOrdersState';
-import PublicRoute from './components/Routes/PublicRoute';
+import Header from './components/Header';
+import Navbar from './components/Navbar';
+import ArchOverview from './components/Overview';
+import { Route, Routes } from 'react-router-dom';
 
+const text = <h2>Work Orders History and to be submitted here:</h2>;
 
 function App() {
   return (
-    <>
-      <WorkOrderState>
-        <Router>
-          <Header />
-          <Routes> 
-
-            <Route exact path="/workorders/" element={<PublicRoute component={WorkOrders} />} /> 
-            <Route exact path="/workorders/:work_id" element={<PublicRoute component={WorkOrdersDetails} />} />
-            <Route exact path="/" element={<PublicRoute component={Home} />} />
-
-          </Routes>
-        </Router>
-      </WorkOrderState>
-      <div>Hello, World!</div>;
-
-    </>
+    <div className="App">
+      <Navbar />
+    
+      <Routes>
+        <Route path="/overview" element={<ArchOverview />} />
+      </Routes>
+      
+      <Header />
+      <div className="App">{text}</div>
+      
+    </div>
   );
 }
 
