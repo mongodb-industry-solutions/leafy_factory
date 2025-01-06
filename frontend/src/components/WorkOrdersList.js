@@ -20,10 +20,9 @@ const WorkOrdersList = () => {
             try {
                 //const response = await fetch('https://rickandmortyapi.com/api/character')
                 // TODO replace latter with --> axiosClient.get("/workorders/")
-                const response = await fetch('http://localhost:8000/workorders/')
-                const result = await response.json(); // this line will be removed once we have Python api
-                console.log('-- getAllWorkOrders', response)
-                const myWorkOrdersList = response.results // replace with correct access to list from the /wororders/ api
+                const response = await axiosClient.get('http://localhost:8000/workorders/')
+                console.log('-- getAllWorkOrders', response.data)
+                const myWorkOrdersList = response.data
                 dispatch(setAllOrders([...myWorkOrdersList]))
             } catch (error) {
                 console.error("There was a problem with your fetch operation:", error);

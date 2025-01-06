@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.work_orders import WorkOrder, UpdateWorkOrder
-from app.database import work_orders_coll, raw_materials_coll, mariadb_conn
+from app.database import work_orders_coll, raw_materials_coll, mariadb_conn, kfk_work_orders_coll, kfk_products_coll, kfk_product_cost_coll
 from pymongo.errors import DuplicateKeyError
-import datetime
+import datetime, decimal
 
 
 router = APIRouter()
@@ -199,6 +199,86 @@ def create_work_order(work_order: WorkOrder):
 #             detail=f"Failed to create work order: {str(e)}"
 #         )
 
+
+
+# Getting the data from the kafka collections
+# @router.get("/workorders/",
+#             summary="Gets last 100 work orders",
+#             description="This endpoint gets an array with the 100 last work orders items from the leafy_factory database using the creation_date field as filter criteria",
+#             responses={
+#                 200: {
+#                     "description": "Work orders list retrivied successfully",
+#                     "content": {
+#                         "application/json":{
+#                             "example":[
+#                                 {
+#                                     "_id":"67520135d3401bb2618bf44c",
+#                                     "work_id": 2,
+#                                     "planned_start_date":"2024-12-12T00:00:00",
+#                                     "planned_end_date":"2024-12-12T00:00:00",
+#                                     "actual_start_date":"2024-12-12T00:00:00",
+#                                     "actual_end_date":"2024-12-12T00:00:00",
+#                                     "product_cat_id":2,
+#                                     "quantity":10,
+#                                     "status":"Created",
+#                                     "materials_used":[
+#                                         {
+#                                             "item_code":"aluminum_6061",
+#                                             "quantity":19
+#                                         },
+#                                         {
+#                                             "item_code":"hinges_ss",
+#                                             "quantity":20
+#                                         },
+#                                         {
+#                                             "item_code":"brackets_gs",
+#                                             "quantity":80
+#                                         },
+#                                         {
+#                                             "item_code":"screw_ss",
+#                                             "quantity":320
+#                                         }
+#                                     ],
+#                                     "cost": {
+#                                         "planned": {
+#                                             "raw_material_cost_per_product":14.82,
+#                                             "overhead_per_product":0.5,
+#                                             "total_cost_per_product":15.32
+#                                         },
+#                                         "actual": {
+#                                             "final_product_cost_per_job": {
+#                                                 "cost_ok_with_overhead":12.5,
+#                                                 "cost_nok_with_overhead":2.5,
+#                                                 "nOk_products":2,"total_cost":15
+#                                             }
+#                                         }
+#                                     },
+#                                     "creation_date":"2024-12-05T13:38:29.179000"}
+#                             ]
+#                         }
+#                      }
+#                 }
+#             })
+# def get_work_order():
+#     work_order_list= []
+#     work_order_cursor = work_orders_coll.find().limit(100).sort({"creation_date": -1})
+
+#     for workorder_item in work_order_cursor:
+#         workorder_item["_id"] = str(workorder_item["_id"])
+#         work_order_list.append(workorder_item)
+
+
+#     if not work_order_list:
+#         raise HTTPException (
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             detail=f"Work orders not found"
+#         )
+    
+#     #Returns a list of JSON documents (work_order_list)
+#     return work_order_list
+
+
+# Getting the data from the kafka collections
 # TODO
 # This API should get the data from MongoDB, the SQL data needs to be inserted into MongoDB to do so.
 # Get the last 100 work orders
@@ -209,21 +289,58 @@ def create_work_order(work_order: WorkOrder):
                 200: {
                     "description": "Work orders list retrivied successfully",
                     "content": {
-                         "application/json":{
-                             "example":[
-                                 {"_id":"67520135d3401bb2618bf44c","work_id":2,"planned_start_date":"2024-12-12T00:00:00","planned_end_date":"2024-12-12T00:00:00","actual_start_date":"2024-12-12T00:00:00","actual_end_date":"2024-12-12T00:00:00","product_cat_id":2,"quantity":10,"status":"Created","materials_used":[{"item_code":"aluminum_6061","quantity":19},{"item_code":"hinges_ss","quantity":20},{"item_code":"brackets_gs","quantity":80},{"item_code":"screw_ss","quantity":320}],"cost":{"planned":{"raw_material_cost_per_product":14.82,"overhead_per_product":0.5,"total_cost_per_product":15.32},"actual":{"final_product_cost_per_job":{"cost_ok_with_overhead":12.5,"cost_nok_with_overhead":2.5,"nOk_products":2,"total_cost":15}}},"creation_date":"2024-12-05T13:38:29.179000"}
-                             ]
-                         }
+                        "application/json":{
+                            "example":[
+                                {
+                                    "_id": {"id_work":2},
+                                    "id_work":2,
+                                    "planned_start_date":"2024-12-11T18:00:00",
+                                    "planned_end_date":"2024-12-11T18:00:00",
+                                    "actual_start_date":"2025-01-06T11:12:04",
+                                    "actual_end_date":"2025-01-06T11:43:36",
+                                    "quantity":10,
+                                    "wo_status":"Completed",
+                                    "creation_date":"2025-01-06T11:06:37",
+                                    "product_id":2,
+                                    "nOk_products":2,
+                                    "product_name":"Titanium Hammer",
+                                    "planned_cost":"15.32",
+                                    "actual_cost":null
+                                }
+                            ]
+                        }
                      }
                 }
             })
 def get_work_order():
     work_order_list= []
-    work_order_cursor = work_orders_coll.find().limit(100).sort({"creation_date": -1})
+    work_order_cursor = kfk_work_orders_coll.find({},).limit(100).sort({"creation_date": -1})
 
     for workorder_item in work_order_cursor:
-        workorder_item["_id"] = str(workorder_item["_id"])
+        
+        product_item = kfk_products_coll.find_one({"id_product" : workorder_item["product_id"]})
+        total_cost_wo = kfk_product_cost_coll.find_one({"work_id": workorder_item["id_work"]})
+        
+        workorder_item["product_name"] = product_item["product_name"]
+        workorder_item["planned_cost"] = str(total_cost_wo["total_cost_per_product"])
+        workorder_item["actual_cost"] = total_cost_wo["actual_total_cost"]
+
+        # Change datetime format from epoch to timestamp
+        workorder_item["planned_start_date"] = datetime.datetime.fromtimestamp(workorder_item["planned_start_date"]/1000)
+        workorder_item["planned_end_date"] = datetime.datetime.fromtimestamp(workorder_item["planned_end_date"]/1000)
+        workorder_item["creation_date"] = datetime.datetime.fromtimestamp(workorder_item["creation_date"]/1000)
+
+        
+        # In case the actual_start_date and actual_end_date is not set
+        if workorder_item["actual_start_date"] != None:
+            workorder_item["actual_start_date"] = datetime.datetime.fromtimestamp(workorder_item["actual_start_date"]/1000)
+
+        if workorder_item["actual_end_date"] != None:
+            workorder_item["actual_end_date"] = datetime.datetime.fromtimestamp(workorder_item["actual_end_date"]/1000)
+            
+
         work_order_list.append(workorder_item)
+
 
     if not work_order_list:
         raise HTTPException (

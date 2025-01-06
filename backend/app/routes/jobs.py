@@ -274,9 +274,23 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                                 WHERE
                                     id_job = {job_id}
                             """
+        
+        update_work_order_query =  f"""
+                                UPDATE 
+                                    work_orders 
+                                SET 
+                                    nOk_products = {updated_job_json['nok_products']},
+                                    actual_end_date = '{datetime.datetime.now()}',
+                                    wo_status = '{job_status}'
+                                WHERE
+                                    id_work = {job_id}
+                            """
+        print(update_work_order_query)
+        
 
         with mariadb_conn.cursor() as db_cur:
             db_cur.execute(update_job_query)
+            db_cur.execute(update_work_order_query)
             updated_count = db_cur.rowcount
 
         # Commit the changes
