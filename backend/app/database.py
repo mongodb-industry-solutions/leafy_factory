@@ -18,12 +18,16 @@ mongo_conn = MongoClient(MONGO_URI)
 
 db = mongo_conn["leafy_factory"]
 work_orders_coll = db["work_orders"]
+kfk_work_orders_coll = db["kafka.leafy_factory.work_orders"]
 products_coll = db["products"]
+kfk_products_coll = db["kafka.leafy_factory.products"]
 raw_materials_coll = db["raw_materials"]
 jobs_coll = db["jobs"]
 machine_data_coll = db["machine_data"]
 raw_sensor_data_coll = db["raw_sensor_data"]
 factories_data_coll = db["factories"]
+kfk_product_cost_coll = db["kafka.leafy_factory.product_cost"]
+
 
 # Access the MariaDB values.
 mariadb_conn = connect(
