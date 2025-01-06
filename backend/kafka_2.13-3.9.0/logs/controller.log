@@ -290,3 +290,7 @@ java.io.IOException: Connection to 192.168.1.5:9092 (id: 0 rack: null) failed.
 [2025-01-06 17:46:03,694] TRACE [Controller id=0] Checking need to trigger auto leader balancing (kafka.controller.KafkaController)
 [2025-01-06 17:46:03,701] DEBUG [Controller id=0] Topics not in preferred replica for broker 0 HashMap() (kafka.controller.KafkaController)
 [2025-01-06 17:46:03,704] TRACE [Controller id=0] Leader imbalance ratio for broker 0 is 0.0 (kafka.controller.KafkaController)
+[2025-01-06 17:51:03,709] INFO [Controller id=0] Processing automatic preferred replica leader election (kafka.controller.KafkaController)
+[2025-01-06 17:51:03,710] TRACE [Controller id=0] Checking need to trigger auto leader balancing (kafka.controller.KafkaController)
+[2025-01-06 17:51:03,714] DEBUG [Controller id=0] Topics not in preferred replica for broker 0 HashMap() (kafka.controller.KafkaController)
+[2025-01-06 17:51:03,714] TRACE [Controller id=0] Leader imbalance ratio for broker 0 is 0.0 (kafka.controller.KafkaController)

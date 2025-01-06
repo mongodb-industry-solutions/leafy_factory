@@ -305,7 +305,7 @@ def create_work_order(work_order: WorkOrder):
                                     "nOk_products":2,
                                     "product_name":"Titanium Hammer",
                                     "planned_cost":"15.32",
-                                    "actual_cost":null
+                                    "actual_cost": "null"
                                 }
                             ]
                         }
