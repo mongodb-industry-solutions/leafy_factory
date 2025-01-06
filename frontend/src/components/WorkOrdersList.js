@@ -4,8 +4,8 @@ import {
     useSelector // to ACCESS the store
 } from "react-redux";
 import axiosClient from '../config/axios';
-import ExpandableCard from '@leafygreen-ui/expandable-card';
-import Card from '@leafygreen-ui/card';
+//import ExpandableCard from '@leafygreen-ui/expandable-card';
+//import Card from '@leafygreen-ui/card';
 
 import { setAllOrders } from '../redux/slices/WorkOrderslice';
 
@@ -18,11 +18,12 @@ const WorkOrdersList = () => {
 
         const fetchWorkOrders = async () => {
             try {
-                const response = await fetch('https://rickandmortyapi.com/api/character')
+                //const response = await fetch('https://rickandmortyapi.com/api/character')
                 // TODO replace latter with --> axiosClient.get("/workorders/")
+                const response = await fetch('http://localhost:8000/workorders/')
                 const result = await response.json(); // this line will be removed once we have Python api
-                console.log('-- getAllWorkOrders', result)
-                const myWorkOrdersList = result.results // replace with correct access to list from the /wororders/ api
+                console.log('-- getAllWorkOrders', response)
+                const myWorkOrdersList = response.results // replace with correct access to list from the /wororders/ api
                 dispatch(setAllOrders([...myWorkOrdersList]))
             } catch (error) {
                 console.error("There was a problem with your fetch operation:", error);
@@ -43,7 +44,7 @@ const WorkOrdersList = () => {
                         </Card>; */}
                         <div class="leafygreen-ui-1lu17q2 card-styles card">
 
-                        {order.id} - {order.name}
+                        {order.work_id} - {order.status}
                         </div>
                         {/* <ExpandableCard
                             title='hola'
