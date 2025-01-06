@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Navbar from './components/Navbar';
 import ArchOverview from './components/Overview';
 import { Route, Routes } from 'react-router-dom';
+import ErrorPage from './components/ErrorPage'
 
 const text = <h2>Work Orders History and to be submitted here:</h2>;
 
@@ -14,6 +15,7 @@ function App() {
 
       <Routes>
         <Route path="/overview" element={<ArchOverview />} />
+        <Route component={ErrorPage} />
       </Routes>
       
       <div className="App">{text}</div>
