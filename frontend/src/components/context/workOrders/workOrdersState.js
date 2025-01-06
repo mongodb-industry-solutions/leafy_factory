@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
 import WorkOrdersContext from './workOrdersContext'
 import WorkOrdersReducer from './workOrdersReducer'
-import axiosClient from './../../config/axios'
+import axiosClient from '../../../config/axios'
 
 const WorkOrderState = (props) => {
     const initialState = {
@@ -13,12 +13,15 @@ const WorkOrderState = (props) => {
     //API
     const getAllWorkOrders = async () => {
         try {
+            console.log('getAllWorkOrders')
             const res = await axiosClient.get("/workorders/")
             //DB
+            console.log(res)
             const work_orders = res.data.data
             dispatch({
                 type: "GET_WORK_ORDERS",
                 payload: work_orders
+                
             })
         } catch (error) {
             console.log(error)
