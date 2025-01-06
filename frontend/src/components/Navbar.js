@@ -1,7 +1,7 @@
 import React from 'react';
 import navImage from '../images/factory.png';
 import { Link,} from 'react-router-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+//import { BrowserRouter as Router } from 'react-router-dom';
 
 function Navbar() {
     return (
