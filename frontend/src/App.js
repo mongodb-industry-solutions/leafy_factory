@@ -10,14 +10,14 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-    
+      <Header />
+
       <Routes>
         <Route path="/overview" element={<ArchOverview />} />
       </Routes>
       
-      <Header />
       <div className="App">{text}</div>
-      
+
     </div>
   );
 }
