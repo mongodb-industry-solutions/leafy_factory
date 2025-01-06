@@ -1,34 +1,15 @@
 import React, { useReducer } from 'react'
+import WorkOrdersContext from './workOrdersContext'
+import WorkOrdersReducer from './workOrdersReducer'
 import axiosClient from './../../config/axios'
 
-const WorkOrders = (props) => {
+const WorkOrderState = (props) => {
     const initialState = {
         workOrders: []
     }
-    //config de reducers -> update
+    //config de reducers
     const [globalState, dispatch] = useReducer(WorkOrdersReducer, initialState)
 
-    const reducer = (globalState, action) => {
-
-        switch (action.type) {
-            case "GET_WORK_ORDERS":
-                return {
-                    ...globalState,
-                    workOrders: action.payload
-                }
-            case "ADD_WORKORDER":
-                return {
-                    ...globalState,
-                    workOrders: [
-                        ...globalState.workOrders,
-                        action.payload
-                    ]
-                }
-            default:
-                return globalState
-        }
-    }
-    
     //API
     const getAllWorkOrders = async () => {
         try {
@@ -53,8 +34,8 @@ const WorkOrders = (props) => {
         }
     }
 
-    return (        
-        <WorkOrdersContext.Provider //declared above
+    return (        //activate supplier to all components
+        <WorkOrdersContext.Provider
             value={{
                 workOrder: globalState.workOrders,
                 getAllWorkOrders,
@@ -66,6 +47,4 @@ const WorkOrders = (props) => {
     )
 }
 
-
-
-export default WorkOrders
+export default WorkOrderState
