@@ -74,6 +74,8 @@ async def retrieve_machine_details(data: MachineDetails):
         machine_details_docs = factories_data_coll.find(machine_details_record, machine_details_projection)
         machines_docs_to_list = list(machine_details_docs)
 
+        print(machines_docs_to_list)
+
         # machines_docs_to_list has an array of documents, however since we are retrieving only one production line, it has just one document, that's why we are accesing the index [0]
         machines_list = machines_docs_to_list[0]["production_lines"][0]["machines"]
         
