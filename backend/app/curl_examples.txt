@@ -47,6 +47,7 @@ curl -XGET 'http://localhost:8000/products_materials/2'
 curl -XGET 'http://localhost:8000/products/2'
 
 curl -XGET 'http://localhost:8000/jobs/'
+curl -XGET 'http://localhost:8000//machines/machine_details/'
 
 curl -XPOST \
   'http://localhost:8000/jobs/' \
