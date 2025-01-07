@@ -47,14 +47,13 @@ curl -XGET 'http://localhost:8000/products_materials/2'
 curl -XGET 'http://localhost:8000/products/2'
 
 curl -XGET 'http://localhost:8000/jobs/'
-curl -XGET 'http://localhost:8000//machines/machine_details/'
 
 curl -XPOST \
   'http://localhost:8000/jobs/' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "work_order_id": "8",
+  "work_order_id": "12",
   "factory" : {
     "factory_id" : "qro_fact_1",
     "production_lines" : [
@@ -88,7 +87,7 @@ curl -XPOST \
 }'
 
 curl -XPUT \
-  'http://localhost:8000/jobs/4' \
+  'http://localhost:8000/jobs/6' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
