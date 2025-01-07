@@ -43,7 +43,7 @@ const WorkOrdersList = () => {
                         </Card>; */}
                         <div class="leafygreen-ui-1lu17q2 card-styles card">
 
-                        {order.work_id} - {order.status}
+                        {order.id_work} - {order.wo_status}
                         </div>
                         {/* <ExpandableCard
                             title='hola'
