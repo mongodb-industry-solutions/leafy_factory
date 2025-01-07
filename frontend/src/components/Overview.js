@@ -5,10 +5,13 @@ import demoImage from '../images/demoOverview.png';
 function ArchOverview () {
     return(
         <div className="overview">
-            <Link exact to="/overview" style={{ display: 'flex', alignItems: 'center' }}/>
-            <img id="overview-img" src={demoImage} alt="Leafy Factory Demo Architecture" />
+            <Link exact to="/overview"/>
+            
+            <div className="img-container">
+                <img className="overview-img" id="overview-img" src={demoImage} alt="Leafy Factory Demo Architecture" />
+            </div>
         </div>
     );
 }
 
-export default ArchOverview
+export default ArchOverview;
