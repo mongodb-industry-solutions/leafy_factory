@@ -183,10 +183,15 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
         )
     try:
         job_status = "Completed"
+        machine_status = "Available"
         
         updated_job_json = updated_job_task.model_dump()
 
         query_get_work_id = f"SELECT work_id FROM jobs WHERE id_job = {job_id}"
+        query_get_machines = f"SELECT machine_id FROM jobs_machines WHERE job_id = {job_id}"
+        
+        # List of machines that are executing the job.
+        machine_id_list = []
 
         with mariadb_conn.cursor() as db_cur_query:
             db_cur_query.execute(query_get_work_id)
@@ -194,6 +199,14 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
             # The result of this operation is a tuple, i.e: (9,)
             work_tuple = db_cur_query.fetchone()
             work_id = work_tuple[0]
+
+            db_cur_query.execute(query_get_machines)
+            machines_result_query = db_cur_query.fetchall()
+            
+            for machine_details in machines_result_query:
+                # The index [0] stores the machine_id of the query result
+                machine_id_list.append(machine_details[0])
+            
 
         update_job_query =  f"""
                                 UPDATE 
@@ -218,18 +231,40 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                             """
 
         with mariadb_conn.cursor() as db_cur:
+            # Adding this query inside the with block, since we are updating more than one machine.
             db_cur.execute(update_job_query)
+            updated_job_count = db_cur.rowcount
+            
+            # Initially this variable is set to 0, it will be increased according to the number of machines that are updated
+            updated_machines_count = 0
+            
             db_cur.execute(update_work_order_query)
-            updated_count = db_cur.rowcount
+            updated_wo_count = db_cur.rowcount
+
+            for machine_id in machine_id_list:
+                update_machines =  f"""
+                                    UPDATE 
+                                        machines 
+                                    SET 
+                                        machine_status = '{machine_status}'
+                                    WHERE
+                                        id_machine = {machine_id}
+                                """
+                db_cur.execute(update_machines)
+                updated_machines_count += db_cur.rowcount
 
         # Commit the changes
         mariadb_conn.commit()
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"Result": "True" if updated_count > 0 else "False", 
-                     "Modified Count": updated_count, 
-                     "Updated Document job_id": str(job_id)}
+            content = {
+                "Result": "True" if updated_job_count and updated_wo_count and updated_machines_count > 0 else "False", 
+                "Modified Job Count": updated_job_count, 
+                "Modified Work Order Count": updated_wo_count, 
+                "Modified Machines Count": updated_machines_count, 
+                "Updated Document job_id": str(job_id)
+            }
         )
              
     except Exception as e:
