@@ -264,6 +264,16 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
         job_status = "Completed"
         
         updated_job_json = updated_job_task.model_dump()
+
+        query_get_work_id = f"SELECT work_id FROM jobs WHERE id_job = {job_id}"
+
+        with mariadb_conn.cursor() as db_cur_query:
+            db_cur_query.execute(query_get_work_id)
+            
+            # The result of this operation is a tuple, i.e: (9,)
+            work_tuple = db_cur_query.fetchone()
+            work_id = work_tuple[0]
+
         update_job_query =  f"""
                                 UPDATE 
                                     jobs 
@@ -283,10 +293,8 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                                     actual_end_date = '{datetime.datetime.now()}',
                                     wo_status = '{job_status}'
                                 WHERE
-                                    id_work = {job_id}
+                                    id_work = {work_id}
                             """
-        print(update_work_order_query)
-        
 
         with mariadb_conn.cursor() as db_cur:
             db_cur.execute(update_job_query)

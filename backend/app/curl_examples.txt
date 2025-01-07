@@ -53,8 +53,7 @@ curl -XPOST \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "job_id": 2,
-  "work_order_id": "2",
+  "work_order_id": "9",
   "factory" : {
     "factory_id" : "qro_fact_1",
     "production_lines" : [
@@ -88,7 +87,7 @@ curl -XPOST \
 }'
 
 curl -XPUT \
-  'http://localhost:8000/jobs/1' \
+  'http://localhost:8000/jobs/3' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
