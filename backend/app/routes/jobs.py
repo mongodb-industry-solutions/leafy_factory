@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.job_task import JobTask, UpdateJob
-from app.database import jobs_coll, work_orders_coll, mariadb_conn, kfk_work_jobs_coll
+from app.database import mariadb_conn, kfk_work_jobs_coll
 from pymongo.errors import DuplicateKeyError
 import datetime
 
