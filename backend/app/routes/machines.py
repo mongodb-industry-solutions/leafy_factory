@@ -1,8 +1,10 @@
 from fastapi import APIRouter, HTTPException, status
-from app.database import machine_data_coll, raw_sensor_data_coll, factories_data_coll
+from app.database import machine_data_coll, raw_sensor_data_coll, factories_data_coll, kfk_machines_coll
 from app.models.machines import MachineHeartbeat, MachineStatus, MachineDetails
 from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
+from bson import Decimal128
+from decimal import Decimal
 
 router = APIRouter()
 
@@ -58,40 +60,31 @@ async def receive_ts_heartbeat(data: MachineHeartbeat):
 
 
 @router.get("/machines/machine_details")
-async def retrieve_machine_details(data: MachineDetails):
+async def retrieve_machine_details():
     """This endpoint retrieves the machine details from the factory collection"""
     try:
-        machine_details_record = {
-            "factory_id": data.factory_id,
-            "production_lines.production_line_id": int(data.production_line_id)
-        }
 
-        machine_details_projection = {
-            "production_lines.machines.$": 1, 
-            "_id": 0
-        }
-
-        machine_details_docs = factories_data_coll.find(machine_details_record, machine_details_projection)
+        machine_details_docs = kfk_machines_coll.find()
         machines_docs_to_list = list(machine_details_docs)
 
-        print(machines_docs_to_list)
-
-        # machines_docs_to_list has an array of documents, however since we are retrieving only one production line, it has just one document, that's why we are accesing the index [0]
-        machines_list = machines_docs_to_list[0]["production_lines"][0]["machines"]
+        for machine_item in machines_docs_to_list:
+            machine_item['avg_output'] = float(machine_item['avg_output'].to_decimal())
+            machine_item['reject_count'] = float(machine_item['reject_count'].to_decimal())
+            machine_item['last_maintenance'] = str(datetime.fromtimestamp(machine_item["last_maintenance"]/1000))
         
-        # List comprehension to filter only the data that we want
-        filtered_machines_list = [
-            {
-                "machine_id": item["machine_id"],
-                "status": item["status"],
-                "last_maintenance": item["last_maintenance"]
-            }
-            for item in machines_list
-        ]
+        # # List comprehension to filter only the data that we want
+        # filtered_machines_list = [
+        #     {
+        #         "machine_id": item["machine_id"],
+        #         "status": item["status"],
+        #         "last_maintenance": item["last_maintenance"]
+        #     }
+        #     for item in machines_list
+        # ]
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"result": filtered_machines_list}
+            content={"result": machines_docs_to_list}
         )
 
     except Exception as e:

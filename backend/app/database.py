@@ -28,7 +28,7 @@ machine_data_coll = db["machine_data"]
 raw_sensor_data_coll = db["raw_sensor_data"]
 factories_data_coll = db["factories"]
 kfk_product_cost_coll = db["kafka.leafy_factory.product_cost"]
-
+kfk_machines_coll = db["kafka.leafy_factory.machines"]
 
 # Access the MariaDB values.
 mariadb_conn = connect(
