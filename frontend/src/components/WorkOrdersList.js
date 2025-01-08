@@ -6,6 +6,7 @@ import {
 import axiosClient from "../config/axios";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+import Table from 'react-bootstrap/Table';
 import { setAllOrders } from "../redux/slices/WorkOrderslice";
 
 const WorkOrdersList = () => {
@@ -56,8 +57,16 @@ const WorkOrdersList = () => {
             <h2>Work Orders</h2>
             {workOrders.map((order) => (
               <div key={order.id_work} className="work-order-details">
-                <h4>Order ID: {order.id_work}</h4>
+                <h4>Work Order ID: {order.id_work}</h4>
                 <p>Status: {order.wo_status}</p>
+                <p>Planned Start Date: {order.planned_start_date}</p>
+                <p>Planned End Date: {order.planned_end_date}</p>
+                <p>Quantity: {order.quantity}</p>
+                <p>Cost: {order.cost}</p>
+                <p>Product ID: {order.product_id}</p>
+                <p>Materials Used: {order.materials_used}</p>
+
+
               </div>
             ))}
           </div>
