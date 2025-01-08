@@ -5,8 +5,6 @@ import {
   useSelector // to ACCESS the factory
 } from "react-redux";
 import axiosClient from "../config/axios";
-//import Tab from "react-bootstrap/Tab";
-//import Tabs from "react-bootstrap/Tabs";
 import Table from "react-bootstrap/Table";
 import { setAllOrders } from "../redux/slices/WorkOrderslice";
 
@@ -14,7 +12,6 @@ const Factory = () => {
   const dispatch = useDispatch(); // dispatch to MODIFY redux state
   const workOrders = useSelector(state => state.WorkOrders.workOrders);
 
-  //const [activeTabs, setActiveTabs] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(
@@ -44,15 +41,10 @@ const Factory = () => {
     [dispatch]
   );
 
-  //  function handleTabSelect(key) {
-  //    setActiveTabs(key);
-  //  }
-
   return (
     <div>
       <h2>Work Orders</h2>
 
-      {/* Show loading message while fetching data */}
       {isLoading ? (
         <p>Loading work orders...</p>
       ) : workOrders.length > 0 ? (
