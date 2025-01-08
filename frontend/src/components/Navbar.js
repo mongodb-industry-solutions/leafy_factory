@@ -1,3 +1,4 @@
+//Navbar.js
 import React from 'react';
 import navImage from '../images/factory.png';
 import { Link,} from 'react-router-dom';
