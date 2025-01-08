@@ -4,6 +4,7 @@ from app.routes.work_orders import router as work_orders_router
 from app.routes.products import router as products_router
 from app.routes.jobs import router as jobs_router
 from app.routes.machine_simulator import router as machines_router
+from app.routes.machines import router as machines_status
 
 app = FastAPI(title="Leafy Factory APIs")
 
@@ -22,3 +23,4 @@ app.include_router(products_router)
 app.include_router(jobs_router)
 # app.include_router(lambda_routes, prefix="/lambda", tags=["Lambda Operations"])
 app.include_router(machines_router)
+app.include_router(machines_status)

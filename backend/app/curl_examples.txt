@@ -53,7 +53,7 @@ curl -XPOST \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "work_order_id": "12",
+  "work_order_id": "14",
   "factory" : {
     "factory_id" : "qro_fact_1",
     "production_lines" : [
@@ -87,12 +87,12 @@ curl -XPOST \
 }'
 
 curl -XPUT \
-  'http://localhost:8000/jobs/6' \
+  'http://localhost:8000/jobs/8' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "nok_products": "2",
-  "quality_rate": "98"
+  "nok_products": "1",
+  "quality_rate": "99"
 }'
 
 curl -XPOST \
@@ -157,3 +157,4 @@ curl -XGET \
 }'
 
 curl -XPOST 'http://localhost:8000/start-simulation/'
+curl -XGET 'http://localhost:8000/machines/machine_details'
