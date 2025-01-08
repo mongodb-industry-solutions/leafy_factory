@@ -11,13 +11,11 @@ function Navbar() {
 
     return (
         <nav className="navbar">
-          {/* Logo and Title */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <img id="nav-img" src={navImage} alt="Leafy Factory Logo" style={{ height: '50px', marginRight: '10px' }} />
             <h1 className="navtext">Leafy Factory</h1>
           </div>
     
-          {/* Tabs Container */}
           <div className="w-100 d-flex justify-content-center mt-3">
             <Tabs
               id="navbar-tabs"
