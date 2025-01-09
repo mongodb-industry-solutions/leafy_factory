@@ -34,7 +34,12 @@ def create_work_order(work_order: WorkOrder):
 
     # It adds the creation_date field to the JSON document.
     workorder_json["creation_date"] = datetime.datetime.now()
-
+    workorder_json["materials_used"] = [
+        {"item_code": "aluminum_6061", "quantity": 19},
+        {"item_code": "hinges_ss", "quantity": 20},
+        {"item_code": "brackets_gs", "quantity": 80},
+        {"item_code": "screw_ss", "quantity": 320}
+    ]
 
     try:
 
