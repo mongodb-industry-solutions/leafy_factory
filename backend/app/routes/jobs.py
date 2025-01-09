@@ -88,6 +88,7 @@ def create_job(job_task: JobTask):
             db_cur.execute(updates_work_order)
 
             for machine_id in job_task_json["factory"]["production_lines"][0]["machines"]:
+                print(machine_id)
                 db_cur.execute(insert_job_machine_query, 
                                 (
                                    new_job_id,
