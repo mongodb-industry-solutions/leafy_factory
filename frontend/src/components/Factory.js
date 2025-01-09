@@ -44,7 +44,7 @@ const Factory = () => {
 
   return (
     <div className="container-fluid">
-      <h2 className="text-center">Work Orders</h2>
+      <h2 className="text-center">Work Orders History</h2>
 
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
@@ -56,49 +56,33 @@ const Factory = () => {
           {isLoading
             ? <p>Loading work orders...</p>
             : workOrders.length > 0
-              ? <Table
-                  striped
-                  bordered
-                  hover
-                  responsive
-                  className="table-dark-green"
-                >
+              ? <Table striped bordered hover responsive className="table-dark-green">
                   <thead>
                     <tr>
                       <th>ID</th>
                       <th>Status</th>
+                      <th>Creation Date</th>
+                      <th>Product Name</th>
                       <th>Planned Start Date</th>
                       <th>Planned End Date</th>
                       <th>Quantity</th>
-                      <th>Creation Date</th>
-                      <th>Product ID</th>
+                      {/*<th>Product ID</th>*/}
+                      <th>Planned Cost</th>
                     </tr>
                   </thead>
                   <tbody>
                     {workOrders.map(order =>
-                      <tr key={order.id_work}>
-                        <td>
-                          {order.id_work}
-                        </td>
-                        <td>
-                          {order.wo_status}
-                        </td>
-                        <td>
-                          {order.planned_start_date}
-                        </td>
-                        <td>
-                          {order.planned_end_date}
-                        </td>
-                        <td>
-                          {order.quantity}
-                        </td>
-                        <td>
-                          {order.creation_date}
-                        </td>
-                        <td>
-                          {order.product_id}
-                        </td>
-                      </tr>
+                    <tr key={order.id_work}>
+                      <td>{order.id_work}</td>
+                      <td>{order.wo_status}</td>
+                      <td>{order.creation_date}</td>
+                      <td>{order.product_name}</td>
+                      <td>{order.planned_start_date}</td>
+                      <td>{order.planned_end_date}</td>
+                      <td>{order.quantity}</td>
+                      {/*<td>{order.product_id}</td>*/}
+                      <td>{order.planned_cost}</td>
+                    </tr>
                     )}
                   </tbody>
                 </Table>
