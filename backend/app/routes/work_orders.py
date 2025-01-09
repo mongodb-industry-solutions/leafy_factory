@@ -40,6 +40,14 @@ def create_work_order(work_order: WorkOrder):
         {"item_code": "brackets_gs", "quantity": 80},
         {"item_code": "screw_ss", "quantity": 320}
     ]
+    
+    workorder_json["cost"] = {
+        "planned" : {
+            "raw_material_cost_per_product" : 14.82,
+            "overhead_per_product": 0.50,
+            "total_cost_per_product" : 15.32
+        }
+    }
 
     try:
 
