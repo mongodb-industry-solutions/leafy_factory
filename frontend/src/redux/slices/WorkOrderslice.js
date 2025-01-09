@@ -3,14 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const WorkOrderslice = createSlice({
     name: "WorkOrders",
     initialState: {
-        workOrders: []
+        workOrders: [],
     },
     reducers: {
         addOrder: (state, action) => {
-            return {
-                ...state,
-                workOrders: [...state.workOrders, {...action.payload}]
-            }
+          state.workOrders.push(action.payload);
         },
         removeOrder: (state, action) => {
             // TODO develop after
