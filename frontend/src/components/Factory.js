@@ -41,47 +41,40 @@ const Factory = () => {
     [dispatch]
   );
 
-
   return (
     <div>
       <h2>Work Orders</h2>
 
-      {isLoading ? (
-        <p>Loading work orders...</p>
-      ) : workOrders.length > 0 ? (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Status</th>
-              <th>Planned Start Date</th>
-              <th>Planned End Date</th>
-              <th>Quantity</th>
-              <th>Creation Date</th>
-              <th>Product Name</th>
-              <th>Product ID</th>
-              <th>Planned Cost</th>
-            </tr>
-          </thead>
-          <tbody>
-            {workOrders.map((order) => (
-              <tr key={order.id_work}>
-                <td>{order.id_work}</td>
-                <td>{order.wo_status}</td>
-                <td>{order.planned_start_date}</td>
-                <td>{order.planned_end_date}</td>
-                <td>{order.quantity}</td>
-                <td>{order.creation_date}</td>
-                <td>{order.product_name}</td>
-                <td>{order.product_id}</td>
-                <td>{order.planned_cost}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      ) : (
-        <p>No work orders available.</p>
-      )}
+      {isLoading
+        ? <p>Loading work orders...</p>
+        : workOrders.length > 0
+          ? <Table striped bordered hover responsive>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Status</th>
+                  <th>Planned Start Date</th>
+                  <th>Planned End Date</th>
+                  <th>Quantity</th>
+                  <th>Creation Date</th>
+                  <th>Product ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                {workOrders.map(order =>
+                  <tr key={order.id_work}>
+                    <td>{order.id_work}</td>
+                    <td>{order.wo_status}</td>
+                    <td>{order.planned_start_date}</td>
+                    <td>{order.planned_end_date}</td>
+                    <td>{order.quantity}</td>
+                    <td>{order.creation_date}</td>
+                    <td>{order.product_id}</td>
+                  </tr>
+                )}
+              </tbody>
+            </Table>
+          : <p>No work orders available.</p>}
     </div>
   );
 };
