@@ -26,7 +26,7 @@ const CreateForm = () => {
 
   useEffect(() => {
     const startDate = new Date(plannedStartDate);
-    startDate.setDate(startDate.getDate() + 7); // Add 7 days to planned start date
+    startDate.setDate(startDate.getDate() + 10);
     setPlannedEndDate(startDate.toLocaleDateString());
   }, [plannedStartDate]); 
   

@@ -9,7 +9,7 @@ import { Table, Row, Col } from "react-bootstrap";
 import { setAllOrders } from "../redux/slices/WorkOrderslice";
 import CreateForm from "./CreateForm";
 
-const Factory = () => {
+const WorkOrders = () => {
   const dispatch = useDispatch(); // dispatch to MODIFY redux state
   const workOrders = useSelector(state => state.WorkOrders.workOrders);
 
@@ -25,8 +25,8 @@ const Factory = () => {
             "http://localhost:8000/workorders/"
           );
           console.log("-- getAllWorkOrders", response.data);
-          const factory = response.data;
-          dispatch(setAllOrders([...factory]));
+          const workOrders = response.data;
+          dispatch(setAllOrders([...workOrders]));
         } catch (error) {
           console.error(
             "There was a problem with your fetch operation:",
@@ -93,4 +93,4 @@ const Factory = () => {
   );
 };
 
-export default Factory;
+export default WorkOrders;
