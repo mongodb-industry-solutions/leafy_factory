@@ -5,8 +5,9 @@ import {
   useSelector // to ACCESS the factory
 } from "react-redux";
 import axiosClient from "../config/axios";
-import Table from "react-bootstrap/Table";
+import { Table, Row, Col } from "react-bootstrap";
 import { setAllOrders } from "../redux/slices/WorkOrderslice";
+import CreateForm from "./CreateForm";
 
 const Factory = () => {
   const dispatch = useDispatch(); // dispatch to MODIFY redux state
@@ -42,39 +43,68 @@ const Factory = () => {
   );
 
   return (
-    <div>
-      <h2>Work Orders</h2>
+    <div className="container-fluid">
+      <h2 className="text-center">Work Orders</h2>
 
-      {isLoading
-        ? <p>Loading work orders...</p>
-        : workOrders.length > 0
-          ? <Table striped bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Status</th>
-                  <th>Planned Start Date</th>
-                  <th>Planned End Date</th>
-                  <th>Quantity</th>
-                  <th>Creation Date</th>
-                  <th>Product ID</th>
-                </tr>
-              </thead>
-              <tbody>
-                {workOrders.map(order =>
-                  <tr key={order.id_work}>
-                    <td>{order.id_work}</td>
-                    <td>{order.wo_status}</td>
-                    <td>{order.planned_start_date}</td>
-                    <td>{order.planned_end_date}</td>
-                    <td>{order.quantity}</td>
-                    <td>{order.creation_date}</td>
-                    <td>{order.product_id}</td>
-                  </tr>
-                )}
-              </tbody>
-            </Table>
-          : <p>No work orders available.</p>}
+      <Row className="align-items-start mx-0">
+        <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
+          <h4>Create Work Order</h4>
+          <CreateForm />
+        </Col>
+
+        <Col lg={7} md={6} sm={12} className="table-wrapper px-2">
+          {isLoading
+            ? <p>Loading work orders...</p>
+            : workOrders.length > 0
+              ? <Table
+                  striped
+                  bordered
+                  hover
+                  responsive
+                  className="table-dark-green"
+                >
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Status</th>
+                      <th>Planned Start Date</th>
+                      <th>Planned End Date</th>
+                      <th>Quantity</th>
+                      <th>Creation Date</th>
+                      <th>Product ID</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {workOrders.map(order =>
+                      <tr key={order.id_work}>
+                        <td>
+                          {order.id_work}
+                        </td>
+                        <td>
+                          {order.wo_status}
+                        </td>
+                        <td>
+                          {order.planned_start_date}
+                        </td>
+                        <td>
+                          {order.planned_end_date}
+                        </td>
+                        <td>
+                          {order.quantity}
+                        </td>
+                        <td>
+                          {order.creation_date}
+                        </td>
+                        <td>
+                          {order.product_id}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              : <p>No work orders available.</p>}
+        </Col>
+      </Row>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import "./styles.css";
 import React from "react";
 import navImage from "../images/factory.png";
 import { useNavigate } from "react-router-dom";
@@ -11,31 +12,21 @@ function Navbar() {
     navigate(`/${key}`);
   };
 
+  const handleClick = () => {
+    navigate("/");
+  };
+
   return (
     <nav className="navbar">
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-      >
-        <img
-          id="nav-img"
-          src={navImage}
-          alt="Leafy Factory Logo"
-          style={{ height: "50px", marginRight: "10px" }}
-        />
-        <h1 className="navtext">Leafy Factory</h1>
+      <div className="navbar-content">
+        <img id="nav-img" src={navImage} alt="Leafy Factory Logo" className="nav-logo" onClick={handleClick}/>
+        <h1 className="navtext" onClick={handleClick}>
+          Leafy Factory
+        </h1>
       </div>
 
       <div className="w-100 d-flex justify-content-center mt-3">
-        <Tabs
-          id="navbar-tabs"
-          onSelect={handleTabSelector}
-          className="mb-3"
-          justify
-        >
+        <Tabs id="navbar-tabs" onSelect={handleTabSelector} className="mb-3" justify>
           <Tab eventKey="workorders" title="Work Orders" />
           <Tab eventKey="jobs" title="Jobs" />
           <Tab eventKey="shopfloor" title="Shopfloor Simulator" disabled />

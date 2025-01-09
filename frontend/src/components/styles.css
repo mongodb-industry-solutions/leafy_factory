@@ -1,9 +1,130 @@
-html {
-    font-family: "Euclid Circular A", "Akzidenz", Helvetica, Arial, sans-serif;
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 120px;
+  padding: 10px 0;
+  background-color: #006400;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.03);
+  padding-right: 40px;
+  margin-left: 10px;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#nav-img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.navtext {
+  color: white;
+  font-size: 30px;
+  margin: 0;
+  cursor: pointer;
+  line-height: 50px;
+}
+
+.navbar .nav-tabs {
+  width: 100%;
+}
+
+.navbar .nav-link {
+  font-size: 20px;
+  padding: 10px 20px;
+  color: white;
+  background-color: #006400;
+  border: 1px solid #004d00;
+  border-radius: 10px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.navbar .nav-link.active {
+  color: #004d00;
+  border-color: #00ED64;
+}
+
+.navbar .nav-item.show .nav-link,
+.navbar .nav-link:hover {
+  background-color: #00ED64;
+  color: #004d00;
+}
+
+.form-wrapper {
+  margin-top: 20px;
+  padding: 50px;
+  border: 2px solid #ddd;
+  background-color: #f8f9fa;
+  border-radius: 28px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+}
+
+.table-dark-green {
+  background-color: #006400;
+  color: white;
+  width: 100%;
+}
+
+.table-dark-green th {
+  background-color: #00ED64;
+}
+
+.table-dark-green td {
+  background-color: #E3FCF7;
+}
+
+.table-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  margin-bottom: 20px;
+  padding-right: 20px;
+}
+
+.table-dark-green th,
+.table-dark-green td {
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
   }
-  
-  body {
-    margin: 0;
+
+  .navbar-left {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
   }
-  
- 
+
+  .image-container {
+    max-width: 90%;
+    padding: 0 10px;
+  }
+
+  .navbar .nav-link {
+    font-size: 18px;
+    padding: 10px 15px;
+  }
+}
+
+.form-wrapper {
+  padding: 20px;
+}
+
+.table-dark-green th,
+.table-dark-green td {
+  font-size: 14px;
+  padding: 8px;
+}

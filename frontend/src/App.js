@@ -15,7 +15,7 @@ function App() {
       <Navbar />
       <Header />
 
-      <div className="routes"> {/* Main content for tab content */}
+      <div className="routes">
         <Routes>
           <Route path="/" element={<Factory />} />
           <Route path="/workorders" element={<Factory />} />
