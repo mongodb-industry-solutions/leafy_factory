@@ -24,7 +24,7 @@ router = APIRouter()
              })
 def create_work_order(work_order: WorkOrder):
     # Check that the request includes required fields.
-    if not work_order.work_id or not work_order.materials_used:
+    if not work_order.materials_used:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="Work order ID, or Work order materials used and planned cost required."

@@ -20,7 +20,6 @@ curl -XPOST \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "work_id": 2,
   "planned_start_date": "2024-12-12T00:00:00.000Z",
   "planned_end_date": "2024-12-12T00:00:00.000Z",
   "product_cat_id": 2,
