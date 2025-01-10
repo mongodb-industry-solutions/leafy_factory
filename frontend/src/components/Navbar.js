@@ -20,9 +20,7 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-content">
         <img id="nav-img" src={navImage} alt="Leafy Factory Logo" className="nav-logo" onClick={handleClick}/>
-        <h1 className="navtext" onClick={handleClick}>
-          Leafy Factory
-        </h1>
+        <h1 className="navtext" onClick={handleClick}>Leafy Factory         |</h1>
       </div>
 
       <div className="w-100 d-flex justify-content-center mt-3">
