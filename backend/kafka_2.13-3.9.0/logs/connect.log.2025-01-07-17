@@ -1,1 +1,0 @@
-[2025-01-07 17:20:59,307] INFO [Worker clientId=connect-192.168.1.5:8083, groupId=connect-cluster] Session key updated (org.apache.kafka.connect.runtime.distributed.DistributedHerder:2510)

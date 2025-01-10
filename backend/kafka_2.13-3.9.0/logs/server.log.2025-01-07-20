@@ -1,4 +1,0 @@
-[2025-01-07 20:33:00,241] INFO [GroupCoordinator 0]: Member connect-192.168.1.5:8083-e2f71a3c-0c48-4053-b377-334832323acb in group connect-cluster has failed, removing it from the group (kafka.coordinator.group.GroupCoordinator)
-[2025-01-07 20:33:00,247] INFO [GroupCoordinator 0]: Preparing to rebalance group connect-cluster in state PreparingRebalance with old generation 7 (__consumer_offsets-13) (reason: removing member connect-192.168.1.5:8083-e2f71a3c-0c48-4053-b377-334832323acb on heartbeat expiration) (kafka.coordinator.group.GroupCoordinator)
-[2025-01-07 20:33:00,248] INFO [GroupCoordinator 0]: Group connect-cluster with generation 8 is now empty (__consumer_offsets-13) (kafka.coordinator.group.GroupCoordinator)
-[2025-01-07 20:48:42,566] INFO [GroupMetadataManager brokerId=0] Group connect-cluster transitioned to Dead in generation 8 (kafka.coordinator.group.GroupMetadataManager)
