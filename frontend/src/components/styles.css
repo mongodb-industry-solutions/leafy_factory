@@ -5,8 +5,8 @@
   flex-direction: column;
   height: 120px;
   padding: 10px 0;
-  background-color: #006400;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.03);
+  background-color: #FFFFFF;
+  box-shadow: 0px 4px 10px #001E2B;
   padding-right: 40px;
   margin-left: 10px;
 }
@@ -25,7 +25,7 @@
 }
 
 .navtext {
-  color: white;
+  color: #00684A;
   font-size: 30px;
   margin: 0;
   cursor: pointer;
@@ -40,16 +40,16 @@
   font-size: 20px;
   padding: 10px 20px;
   color: white;
-  background-color: #006400;
-  border: 1px solid #004d00;
+  background-color: #004d00;
+  border: 1px solid #023430;
   border-radius: 10px;
   text-align: center;
   transition: background-color 0.3s ease;
 }
 
 .navbar .nav-link.active {
-  color: #004d00;
-  border-color: #00ED64;
+  color: #004d00; 
+  border-color: #004d00;
 }
 
 .navbar .nav-item.show .nav-link,
@@ -69,17 +69,17 @@
   max-width: 800px;
 }
 
-.table-dark-green {
-  background-color: #006400;
-  color: white;
+.table {
+  background-color: #001E2B;
   width: 100%;
 }
 
-.table-dark-green th {
-  background-color: #00ED64;
+.table th {
+  background-color: #023430;
+  color: white;
 }
 
-.table-dark-green td {
+.table td {
   background-color: #E3FCF7;
 }
 
@@ -119,12 +119,12 @@
   }
 }
 
-.form-wrapper {
-  padding: 20px;
-}
+  .form-wrapper {
+    padding: 20px;
+  }
 
-.table-dark-green th,
-.table-dark-green td {
-  font-size: 14px;
-  padding: 8px;
-}
+  .table-dark-green th,
+  .table-dark-green td {
+    font-size: 14px;
+    padding: 8px;
+  }
