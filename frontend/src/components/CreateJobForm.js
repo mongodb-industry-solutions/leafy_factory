@@ -8,7 +8,7 @@ const CreateJobForm = () => {
   const dispatch = useDispatch();
   
   const [status] = useState("Created");
-  const [creationDate] = useState(new Date().toLocaleDateString());
+  const [creationDate] = useState(new Date().toISOString());
   
   const handleSubmit = async (event) => {
     event.preventDefault();
