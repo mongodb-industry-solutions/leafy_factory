@@ -11,23 +11,23 @@ const CreateForm = () => {
   const [product, setProduct] = useState("Titanium Hammer");
   const [quantity, setQuantity] = useState(1);
   //const [plannedCost, setPlannedCost] = useState(getPlannedCost("Titanium Hammer"));
-  const [creationDate] = useState(new Date().toLocaleDateString());
+  const [creationDate] = useState(new Date().toISOString());
   const [plannedStartDate] = useState(() => {
     const today = new Date();
     today.setDate(today.getDate() + 2);
-    return today.toLocaleDateString();
+    return today.toISOString();
   });
 
   const [plannedEndDate, setPlannedEndDate] = useState(() => {
     const startDate = new Date(plannedStartDate);
     startDate.setDate(startDate.getDate() + 10);
-    return startDate.toLocaleDateString();
+    return startDate.toISOString();
   });
 
   useEffect(() => {
     const startDate = new Date(plannedStartDate);
     startDate.setDate(startDate.getDate() + 10);
-    setPlannedEndDate(startDate.toLocaleDateString());
+    setPlannedEndDate(startDate.toISOString());
   }, [plannedStartDate]); 
   
   const handleSubmit = async (event) => {

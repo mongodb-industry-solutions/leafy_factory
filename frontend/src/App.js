@@ -7,6 +7,7 @@ import ArchOverview from './components/Overview';
 import { Route, Routes } from 'react-router-dom';
 import ErrorPage from './components/ErrorPage'
 import WorkOrders from './components/workOrders';
+import Jobs from './components/Jobs';
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<WorkOrders />} />
           <Route path="/workorders" element={<WorkOrders />} />
-          <Route path="/jobs" element={<h3>Jobs Tab</h3>} />
+          <Route path="/jobs" element={<Jobs />} />
           <Route path="/shopfloor" element={<h3>Shopfloor Simulator (Disabled)</h3>} />
           <Route path="/overview" element={<ArchOverview />} />
           <Route path="*" element={<ErrorPage />} />
