@@ -56,7 +56,7 @@ const WorkOrders = () => {
           {isLoading
             ? <p>Loading work orders...</p>
             : workOrders.length > 0
-              ? <Table striped bordered hover responsive className="table-dark-green">
+              ? <Table striped bordered hover responsive className="table">
                   <thead>
                     <tr>
                       <th>ID</th>
