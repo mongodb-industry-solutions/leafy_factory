@@ -1,0 +1,3 @@
+[2025-01-07 16:03:12,574] INFO [mariadb-connector|task-0] 9 records sent during previous 00:25:39.257, last recorded offset of {server=kafka} partition is {ts_sec=1736287392, file=mariadb-bin.000001, pos=0, row=1, server_id=1} (io.debezium.connector.common.BaseSourceTask:351)
+[2025-01-07 16:03:16,340] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 4 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-07 16:20:59,303] INFO [Worker clientId=connect-192.168.1.5:8083, groupId=connect-cluster] Session key updated (org.apache.kafka.connect.runtime.distributed.DistributedHerder:2510)
