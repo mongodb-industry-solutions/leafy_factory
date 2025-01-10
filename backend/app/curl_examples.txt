@@ -15,6 +15,7 @@ curl -XPUT \
   }
 }'
 
+
 curl -XPOST \
   'http://localhost:8000/workorders/' \
   -H 'accept: application/json' \
@@ -24,13 +25,40 @@ curl -XPOST \
   "planned_end_date": "2024-12-12T00:00:00.000Z",
   "product_cat_id": 2,
   "quantity": 10,
+  "status": "Created"
+}'
+
+
+curl -XPOST \
+  'http://localhost:8000/workorders/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "planned_start_date": "01/21/2025 00:00:00.00",
+  "planned_end_date": "01/21/2025 00:00:00.00",
+  "product_cat_id": 2,
+  "quantity": 10,
   "status": "Created",
-  "materials_used": [
-    {"item_code": "aluminum_6061", "quantity": 19},
-    {"item_code": "hinges_ss", "quantity": 20},
-    {"item_code": "brackets_gs", "quantity": 80},
-    {"item_code": "screw_ss", "quantity": 320}
-  ],
+  "cost" : {
+    "planned" : {
+      "raw_material_cost_per_product" : 14.82,
+      "overhead_per_product": 0.50,
+      "total_cost_per_product" : 15.32
+    }
+  }
+}'
+
+
+curl -XPOST \
+  'http://localhost:8000/workorders/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "planned_start_date": "2024-12-12 00:00:00.00",
+  "planned_end_date": "2024-12-12 00:00:00",
+  "product_cat_id": 2,
+  "quantity": 10,
+  "status": "Created",
   "cost" : {
     "planned" : {
       "raw_material_cost_per_product" : 14.82,
