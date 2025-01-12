@@ -48,23 +48,21 @@ const Jobs = () => {
               ? <Table striped bordered hover responsive className="table-dark-green">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Status</th>
+                      <th>Job ID</th>
+                      <th>Target Output</th>
+                      <th>Job Status</th>
                       <th>Creation Date</th>
-                      <th>Planned Start Date</th>
-                      <th>Planned End Date</th>
-                      <th>Quantity</th>
+                      <th>Work Order ID</th>
                     </tr>
                   </thead>
                   <tbody>
                     {jobs.map((order) => (
                       <tr key={order.id_job}>
                         <td>{order.id_job}</td>
-                        <td>{order.status}</td>
+                        <td>{order.target_output}</td>
+                        <td>{order.job_status}</td>
                         <td>{order.creation_date}</td>
-                        <td>{order.planned_start_date}</td>
-                        <td>{order.planned_end_date}</td>
-                        <td>{order.quantity}</td>
+                        <td>{order.work_id}</td>
                       </tr>
                     ))}
                   </tbody>

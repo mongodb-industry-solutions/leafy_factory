@@ -38,7 +38,7 @@ const CreateForm = () => {
       planned_start_date: plannedStartDate,
       planned_end_date: plannedEndDate,
       quantity: quantity,
-      wo_status: "Created",
+      status: "Created",
       //planned_cost: plannedCost,
       creation_date: creationDate,
       product_cat_id: product === "Titanium Hammer" ? 1 : product === "2 Step ladder" ? 2 : 0,
