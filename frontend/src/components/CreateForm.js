@@ -129,7 +129,7 @@ const CreateForm = () => {
         </Form.Group>
       </Row>
 
-      <Button variant="primary" type="submit">Create Work Order</Button>
+      <Button type="submit" className="button">Submit Work Order</Button>
     </Form>
   );
 };

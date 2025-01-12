@@ -3,8 +3,6 @@ import React from "react";
 import navImage from "../images/factory.png";
 import { useNavigate } from "react-router-dom";
 import { Tab, Tabs } from "react-bootstrap";
-//import ArchOverview from "./Overview";
-//import Factory from "./Factory";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -20,7 +18,7 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-content">
         <img id="nav-img" src={navImage} alt="Leafy Factory Logo" className="nav-logo" onClick={handleClick}/>
-        <h1 className="navtext" onClick={handleClick}>Leafy Factory         |</h1>
+        <h1 className="navtext" onClick={handleClick}>Leafy Factory</h1>
       </div>
 
       <div className="w-100 d-flex justify-content-center mt-3">

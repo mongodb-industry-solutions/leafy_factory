@@ -49,9 +49,7 @@ const CreateJobForm = () => {
         </Form.Group>
       </Row>
 
-      <Button variant="primary" type="submit">
-        Create Job
-      </Button>
+      <Button type="submit" className="button">Create Job</Button>
     </Form>
   );
 };
