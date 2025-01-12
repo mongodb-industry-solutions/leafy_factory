@@ -27,7 +27,7 @@ function Navbar() {
         <Tabs id="navbar-tabs" onSelect={handleTabSelector} className="mb-3" justify>
           <Tab eventKey="workorders" title="Work Orders" />
           <Tab eventKey="jobs" title="Jobs" />
-          <Tab eventKey="shopfloor" title="Shopfloor Simulator" disabled />
+          <Tab eventKey="shopfloor" title="Shopfloor Simulator" />
           <Tab eventKey="overview" title="Demo Overview" />
         </Tabs>
       </div>
