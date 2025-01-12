@@ -44,15 +44,15 @@ const WorkOrders = () => {
 
   return (
     <div className="container-fluid">
-      <h2 className="text-center">Work Orders History</h2>
+      <h2 className="history-header">Work Orders History</h2>
 
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
-          <h4>Create Work Order</h4>
+          <h4>Create a New Work Order</h4>
           <CreateForm />
         </Col>
 
-        <Col lg={7} md={6} sm={12} className="table-wrapper px-2">
+        <Col lg={7} md={6} sm={12} className="table-wrapper">
           {isLoading
             ? <p>Loading work orders...</p>
             : workOrders.length > 0

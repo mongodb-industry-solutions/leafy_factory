@@ -97,6 +97,7 @@
   background-color: #001e2b;
   width: 100%;
   margin-left: 2%;
+  font-size: 18px;
 }
 
 .table th {
@@ -117,6 +118,26 @@
 .table-dark-green th,
 .table-dark-green td {
   text-align: center;
+}
+
+.card {
+  margin-bottom: 30px;
+  margin-left: 12%;
+  margin-right: 12%;
+}
+
+.card-body {
+  font-size: 24px;
+  text-align: center;
+  background-color: #E3FCF7;
+}
+
+.overview-img {
+  display: flex;
+  align-items: center;
+  margin-left: 12%;
+  margin-right: 12%;
+  margin-bottom: 4%;
 }
 
 @media screen and (max-width: 768px) {
