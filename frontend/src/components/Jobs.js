@@ -33,7 +33,7 @@ const Jobs = () => {
 
   return (
     <div className="container-fluid">
-      <h2 className="text-center">Jobs</h2>
+      <h2 className="history-header">Jobs</h2>
 
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
@@ -41,11 +41,11 @@ const Jobs = () => {
           <CreateJobForm />
         </Col>
 
-        <Col lg={7} md={6} sm={12} className="table-wrapper px-2">
+        <Col lg={7} md={6} sm={12} className="table-wrapper">
           {isLoading
             ? <p>Loading jobs...</p>
             : jobs.length > 0
-              ? <Table striped bordered hover responsive className="table-dark-green">
+              ? <Table striped bordered hover responsive className="table">
                   <thead>
                     <tr>
                       <th>Job ID</th>
