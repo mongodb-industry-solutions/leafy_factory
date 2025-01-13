@@ -33,7 +33,7 @@ const Jobs = () => {
 
   return (
     <div className="container-fluid">
-      <h2 className="history-header">Jobs</h2>
+      <h2 className="history-header">Jobs History</h2>
 
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
