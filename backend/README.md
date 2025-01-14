@@ -157,3 +157,12 @@ For the purpose of this demo, kafka is installed locally.
     kafka.leafy_factory.raw_materials
     kafka.leafy_factory.work_orders
     ```
+
+### Starts the backend server.
+Now that all the dependencies are installed and configured, the last step is to run the python backend server. 
+1. Navigate to the backend directory
+    1. `cd leafy_factory/backend`
+2. Start the backend directory, make sure that you activated the virtual environment (.venv)
+    1. `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
+
+The backend should be up and running on **http://localhost:8000** If it doesn't work, ensure that you have followed all the steps and provided the correct environment variables.
