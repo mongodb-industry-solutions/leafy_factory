@@ -48,3 +48,18 @@ Git is going to be used to clone the [demo app source code from GitHub](https://
     1. `git clone https://github.com/mongodb-industry-solutions/leafy_factory.git`
 4. After running the git clone command, a new directory with the repository's name will be created in your chosen directory. To navigate into the cloned repository, use the cd command:
     1. `cd leafy_factory/`
+
+### Configuration of Python Virtual Environment and installation of Pip packages.
+Python virtual environments help decouple and isolate Python installs and associated [pip packages](https://pypi.org/). This allows end-users to install and manage their own set of packages that are independent of those provided by the system or used by other projects.
+
+1. First let’s create a python virtual environment within the leafy_factory directory. Navigate to the `leafy_factory` directory:
+    1. `cd leafy_factory/`
+2. Once there, create a virtual environment named `.venv`
+    1. `python -m venv .venv`
+3. Activate the created virtual environment.
+    1. `source .venv/bin/Activate`
+    2. You should see the (.venv) at the beginning of your command prompt
+4. Go to the backend directory which is located inside the leafy_factory directory.
+    1. `cd backend/`
+5. Install the required Python packages listed in `requirements.txt`
+    1. `pip install -r requirements.txt`
