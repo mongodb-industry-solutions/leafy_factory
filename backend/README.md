@@ -1,4 +1,7 @@
-# Installation of Leafy Factory backend
+# Leafy Factory backend
+
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+![Python](https://img.shields.io/badge/python-3.12-blue.svg))
 
 ## Prerequisites.
 
