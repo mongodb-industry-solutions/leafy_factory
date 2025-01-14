@@ -3,10 +3,83 @@ from fastapi.responses import JSONResponse
 from app.models.job_task import JobTask, UpdateJob
 from app.database import mariadb_conn, kfk_work_jobs_coll
 from pymongo.errors import DuplicateKeyError
-import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
+import datetime, random, time, requests
+from dotenv import load_dotenv
+import os
 
+# Load values from .env file
+load_dotenv()
+
+# Access the MongoDB_URI and MARIADB variables.
+BACKEND_URL = os.getenv("BACKEND_URL")
+
+# Initialize APScheduler
+scheduler = BackgroundScheduler()
+scheduler.start()
 
 router = APIRouter()
+
+
+def complete_job_task(job_id, quantity, machines_list):
+    # Represents the time that it takes the machine to produce a brand new part, by default 2 seconds
+    time_to_produce_part = 2
+    nok_products = 0
+    ok_products = 0
+
+    try:
+        for item in range(0, quantity):
+            machine_to_insert = random.choice(machines_list)
+            part_status = "OK"
+            
+            if part_status == "nOK":
+                nok_products += 1
+            else:
+                ok_products += 1
+
+            insert_part_query =  """
+                                INSERT INTO production_data(machine_id, part_status, job_id, creation_date)
+                                VALUES (?,?,?,?)
+                            """
+            
+            db_cur = mariadb_conn.cursor()
+            
+            db_cur.execute(insert_part_query, 
+                                (
+                                    machine_to_insert,
+                                    part_status,
+                                    job_id,
+                                    datetime.datetime.now(),
+                                ))
+            print(f"Part ID: {db_cur.lastrowid}, Status: Created")
+            time.sleep(time_to_produce_part)
+        mariadb_conn.commit()
+
+        backend_update_job_url = f"{BACKEND_URL}/jobs/{job_id}"
+        quality_rate = ((quantity - nok_products) * 100) / quantity
+        
+
+        payload = {
+            "nok_products": nok_products,
+            "quality_rate": quality_rate
+        }
+
+        print(payload)
+
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        response = requests.put(backend_update_job_url, json=payload, headers=headers)
+        # Check response status of update job API
+        if response.status_code == 200:
+            print(f"API called successfully for work_order_id: {job_id}")
+        else:
+            print(f"Failed to call API: {response.status_code}, {response.text}")
+    except mariadb_conn.Error as e:
+        print(f"Error completing Jobs: {e}")
+    except requests.RequestException as e:
+        print(f"Error calling API: {e}")
 
 
 # Create a Job Task 
@@ -102,6 +175,16 @@ def create_job(job_task: JobTask):
         # Commit the changes
         mariadb_conn.commit()
 
+        # Schedule the completion of the work order
+        scheduler.add_job(
+            func=complete_job_task,
+            trigger="date",
+            run_date=datetime.datetime.now() + datetime.timedelta(seconds=2),  # Change 20 seconds to the desired time
+            
+            # This function receives as argument the Job ID, the quantity of items to bre produces, and the machines to perform the job.
+            args=[new_job_id, job_task_json["target_output"], job_task_json["factory"]["production_lines"][0]["machines"]],
+        )
+
         return JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content={"job_id": str(new_job_id)}
@@ -175,7 +258,7 @@ def get_jobs():
                 }
             })
 def update_job_task(job_id: int, updated_job_task: UpdateJob):
-    if not updated_job_task.nok_products or not updated_job_task.quality_rate:
+    if not updated_job_task.quality_rate:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="The number of no ok products and quality rate are required."
