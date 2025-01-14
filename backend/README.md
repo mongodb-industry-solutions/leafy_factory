@@ -26,8 +26,6 @@
 
 6. **Git:** Ensure you have Git installed on your development machine. You can download it from [Git's official website](https://git-scm.com/downloads):
 
-## Prerequisites.
-
 ### Obtain your Connection String
 Once the MongoDB Atlas Cluster is set up, locate your newly created cluster, click the "Connect" button and select the "Compass" section. Copy the provided connection string. It should resemble something like this:
 
@@ -38,3 +36,15 @@ mongodb+srv://<username>:<password>@cluster-name.xxxxx.mongodb.net/
 > [!Note]
 > You will need the connection string to set up your environment variables later (`MONGODB_URI`).
 > Modify the username and password, make sure to use valid MongoDB credentials.
+
+### Cloning the github repo.
+Git is going to be used to clone the [demo app source code from GitHub](https://github.com/mongodb-industry-solutions/leafy_factory/tree/dev) to the development machine where the backend is going to be run.
+
+1. Open a terminal or command prompt.
+2. Navigate to your desired installation directory using the `cd` command.
+    1. `cd /path/to/your/desired/directory`
+    2. Remember this directory path, as you'll reference it later (INSTALLATION_PATH)
+3. Clone the repository using the following command with the actual URL from the IST GitHub repo:
+    1. `git clone https://github.com/mongodb-industry-solutions/leafy_factory.git`
+4. After running the git clone command, a new directory with the repository's name will be created in your chosen directory. To navigate into the cloned repository, use the cd command:
+    1. `cd leafy_factory/`
