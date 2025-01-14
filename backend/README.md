@@ -63,3 +63,53 @@ Python virtual environments help decouple and isolate Python installs and associ
     1. `cd backend/`
 5. Install the required Python packages listed in `requirements.txt`
     1. `pip install -r requirements.txt`
+
+### Database configuration (MariaDB)
+Once you make sure that MariaDB is installed and running, execute the following commands to configure the server.
+
+1. Navigate to the app directory within leafy_factory/backend
+    1. `cd app/`
+2. Create a file named `.env` and add the following lines, replacing placeholders with your actual credentials:
+
+    ```
+    MONGO_URI="mongodb+srv://leafy_factory:6CZpgCe3qWuWBGqd@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority&appName=IST-Shared"
+    BACKEND_URL="http://localhost:8000/"
+    MARIADB_USERNAME="root"
+    MARIADB_PASSWORD="LeafyFactoryDemo"
+    MARIADB_HOSTNAME="localhost"
+    MARIADB_DATABASE="leafy_factory"
+    ```
+
+3. Navigate to the directory where the MariaDB configuration file is located by using the following command:
+    1. `cd /opt/homebrew/etc/`
+
+> [!Note]
+> The previous command is executed based on a MariaDB installation executed with homebrew on MacOS. This could vary depending on your operating system, for Linux, the folder usually is `/etc/mariadb`.
+
+4. Add the following lines to the MariaDB config file ´my.cnf´
+    ```
+    [mysqld]
+    log_bin = /opt/homebrew/var/mysql/mariadb-bin
+    binlog_format=ROW
+    server_id = 1
+    ```
+5. Restart the MariaDB service, this command depends on the operating system. For MacOS and homembrew run the following command.
+    1. `brew services restart mariadb`
+6. Log in to MariaDB for the first time.
+    1. `sudo mysql -u root`
+7. For security reasons it’s required to set a password for the root user, execute the following two queries on the MariaDB command prompt.
+    ```
+    SET PASSWORD FOR 'root'@'localhost' = PASSWORD('LeafyFactoryDemo');
+    FLUSH PRIVILEGES;
+    ```
+8. Close the MariaDB command prompt by typing the word “exit” on the prompt and log in again.
+    1. `exit`
+9. Navigate to the `leafy_factory/backend/app directory`.
+10. Log in to MariaDB with your newly set password.
+    1. `mysql -u root -p`
+    2. Type your password when prompted: `LeafyFactoryDemo`.
+11. Import the database schema. You can get `YOUR_PATH` by typing the `pwd` command, you’ll get something like this `/Users/ec2-user/leafy_factory/backend/app`.
+    1. `pwd`
+    2. `source <YOUR_PATH>/leafy_factory/backend/app/sql_data_schema.sql`
+12. Exit MariaDB by typing exit in your terminal
+    1. exit
