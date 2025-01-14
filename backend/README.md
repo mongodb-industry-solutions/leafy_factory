@@ -1,7 +1,9 @@
 # Leafy Factory backend
 
 ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
-![Python](https://img.shields.io/badge/python-3.12-blue.svg))
+![Python](https://img.shields.io/badge/python?style=for-the-badge&logo=Python&logoColor=white)
+![Kafka](https://img.shields.io/badge/Apache%20Kafka-6DA55F?style=for-the-badge&logo=Apache-Kafka&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-%23323330.svg?style=for-the-badge&logo=MariaDB&logoColor=%23F7DF1E)
 
 ## Prerequisites.
 
