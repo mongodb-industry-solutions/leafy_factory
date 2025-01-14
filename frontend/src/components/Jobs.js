@@ -63,7 +63,8 @@ const Jobs = () => {
                         <td>{order.id_job}</td>
                         <td>{order.target_output}</td>
                         <td>{order.job_status}</td>
-                        <td>{new Date (order.creation_date).toISOString()}</td>
+                        {/*<td>{new Date (order.creation_date).toISOString()}</td>*/}
+                        <td> {order.creation_date ? (!isNaN(new Date(order.creation_date)) ? new Date(order.creation_date).toISOString() : "Invalid date") : "Loading"} </td>
                         <td>{order.work_id}</td>
                       </tr>
                     ))}
