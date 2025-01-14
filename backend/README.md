@@ -25,3 +25,16 @@
 5. **Install Java JDK (Minimum version 23):** Install the Java JDK [from the official website](https://www.oracle.com/java/technologies/downloads/) and add it to your system's PATH environment variable. Java JDK is essential for running Kafka and its plugins.
 
 6. **Git:** Ensure you have Git installed on your development machine. You can download it from [Git's official website](https://git-scm.com/downloads):
+
+## Prerequisites.
+
+### Obtain your Connection String
+Once the MongoDB Atlas Cluster is set up, locate your newly created cluster, click the "Connect" button and select the "Compass" section. Copy the provided connection string. It should resemble something like this:
+
+```
+mongodb+srv://<username>:<password>@cluster-name.xxxxx.mongodb.net/
+```
+
+> [!Note]
+> You will need the connection string to set up your environment variables later (`MONGODB_URI`).
+> Modify the username and password, make sure to use valid MongoDB credentials.
