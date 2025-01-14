@@ -42,8 +42,8 @@ const stopSimulation = async () => {
 
   return (
     <div>
-      <Button onClick={toggleSimulation}>
-        {isRunning ? "Stop Shopfloor" : "Start Shopfloor"}
+      <Button className="button-sim" onClick={toggleSimulation}>
+        {isRunning ? "Stop Shopfloor Simulator" : "Start Shopfloor Simulator"}
       </Button>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
     </div>
