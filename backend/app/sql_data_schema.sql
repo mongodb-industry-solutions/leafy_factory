@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS factories;
 DROP TABLE IF EXISTS production_lines;
 DROP TABLE IF EXISTS machines;
 DROP TABLE IF EXISTS jobs_machines;
+DROP TABLE IF EXISTS production_data;
 
 CREATE TABLE products (
     id_product INT PRIMARY KEY AUTO_INCREMENT,
@@ -108,6 +109,18 @@ CREATE TABLE jobs_machines(
     FOREIGN KEY (job_id) REFERENCES jobs(id_job),
     FOREIGN KEY (machine_id) REFERENCES machines(id_machine)
 );
+
+
+CREATE TABLE production_data(
+    id_production_data INT PRIMARY KEY AUTO_INCREMENT,
+    part_status VARCHAR(100) NOT NULL,
+    creation_date DATETIME NOT NULL,
+    machine_id INT NOT NULL, 
+    job_id INT NOT NULL,
+    FOREIGN KEY (job_id) REFERENCES jobs(id_job),
+    FOREIGN KEY (machine_id) REFERENCES machines(id_machine)
+);
+
 
 INSERT INTO products (product_name, product_description) 
 VALUES 
