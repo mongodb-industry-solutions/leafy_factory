@@ -95,9 +95,18 @@
 
 .button-sim {
   margin-top: 35px;
+  margin-bottom: 45px;
   background-color: #e3fcf7;
   font-size:x-large;
   color: black;
+}
+
+.prod-line-img {
+  align-items: center
+}
+
+.prod-card {
+  margin-left: 15%;
 }
 
 .table {
