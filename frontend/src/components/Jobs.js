@@ -33,7 +33,7 @@ const Jobs = () => {
 
   return (
     <div className="container-fluid">
-      <h2 className="text-center">Jobs</h2>
+      <h2 className="history-header">Jobs History</h2>
 
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
@@ -41,30 +41,28 @@ const Jobs = () => {
           <CreateJobForm />
         </Col>
 
-        <Col lg={7} md={6} sm={12} className="table-wrapper px-2">
+        <Col lg={7} md={6} sm={12} className="table-wrapper">
           {isLoading
             ? <p>Loading jobs...</p>
             : jobs.length > 0
-              ? <Table striped bordered hover responsive className="table-dark-green">
+              ? <Table striped bordered hover responsive className="table">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Status</th>
+                      <th>Job ID</th>
+                      <th>Target Output</th>
+                      <th>Job Status</th>
                       <th>Creation Date</th>
-                      <th>Planned Start Date</th>
-                      <th>Planned End Date</th>
-                      <th>Quantity</th>
+                      <th>Work Order ID</th>
                     </tr>
                   </thead>
                   <tbody>
                     {jobs.map((order) => (
                       <tr key={order.id_job}>
                         <td>{order.id_job}</td>
-                        <td>{order.status}</td>
+                        <td>{order.target_output}</td>
+                        <td>{order.job_status}</td>
                         <td>{order.creation_date}</td>
-                        <td>{order.planned_start_date}</td>
-                        <td>{order.planned_end_date}</td>
-                        <td>{order.quantity}</td>
+                        <td>{order.work_id}</td>
                       </tr>
                     ))}
                   </tbody>

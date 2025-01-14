@@ -1,3 +1,5 @@
+//To enable only if Redux is not in use
+
 import { useState, useEffect } from "react";
 
 function WorkOrders (props) {
