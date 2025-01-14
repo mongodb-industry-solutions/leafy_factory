@@ -8,9 +8,9 @@
 
 3. MongoDB Atlas Cluster (8.0.4 or higher): MongoDB will be used as a unified namespace for the SQL systems: You can get If you don't have an account, you can sign up for free at MongoDB Atlas. Follow these steps to set up a minimum free tier cluster:
 
-    a. Log in to your MongoDB Atlas account.
-    b. Create a new project or use an existing one, and then click “create a new database”.
-    c. Choose the free tier option (M0).
-    d. You can choose the cloud provider of your choice but we recommend using the same provider and region both for the cluster and the app hosting in order to improve performance.
-    e. Configure the cluster settings according to your preferences and then click “finish and close” on the bottom right.
-    f. Finally, add your IP to the network access list so you can access your cluster remotely.
+    a) Log in to your MongoDB Atlas account.
+    b) Create a new project or use an existing one, and then click “create a new database”.
+    c) Choose the free tier option (M0).
+    d) You can choose the cloud provider of your choice but we recommend using the same provider and region both for the cluster and the app hosting in order to improve performance.
+    e) Configure the cluster settings according to your preferences and then click “finish and close” on the bottom right.
+    f) Finally, add your IP to the network access list so you can access your cluster remotely.
