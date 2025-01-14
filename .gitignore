@@ -11,4 +11,4 @@
 /build
 .DS_Store
 kafka_sql_mdb.tar.gz
-/backend/kafka_2.13-3.9.0/
+kafka*

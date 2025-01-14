@@ -1,3 +1,5 @@
+//To enable only if Redux is not in use
+
 const reducer = (globalState, action) => {
 
     switch (action.type) {

@@ -3,10 +3,10 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 120px;
+  height: 110px;
   padding: 10px 0;
-  background-color: #FFFFFF;
-  box-shadow: 0px 4px 10px #001E2B;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 10px #001e2b;
   padding-right: 40px;
   margin-left: 10px;
 }
@@ -25,21 +25,29 @@
 }
 
 .navtext {
-  color: #00684A;
-  font-size: 30px;
+  color: #00684a;
+  font-size: 40px;
   margin: 0;
   cursor: pointer;
-  line-height: 50px;
+  line-height: 80px;
 }
 
-.navbar .nav-tabs {
+.navbar {
   width: 100%;
+  max-width: 100%;
+}
+
+.nav-tabs {
+  width: 97%;
+  display: flex;
+  justify-content: space-around;
+  padding-right: 8%;
 }
 
 .navbar .nav-link {
-  font-size: 20px;
-  padding: 10px 20px;
-  color: white;
+  font-size: 25px;
+  padding: 8px 15px;
+  color: #ffffff;
   background-color: #004d00;
   border: 1px solid #023430;
   border-radius: 10px;
@@ -48,30 +56,48 @@
 }
 
 .navbar .nav-link.active {
-  color: #004d00; 
+  color: #004d00;
   border-color: #004d00;
 }
 
 .navbar .nav-item.show .nav-link,
 .navbar .nav-link:hover {
-  background-color: #00ED64;
+  background-color: #00ed64;
   color: #004d00;
+}
+
+.history-header {
+  font-size: 3em;
+  color: #023430;
+  text-shadow: #00684a;
+  margin-top: 35px;
+  margin-bottom: 30px;
 }
 
 .form-wrapper {
   margin-top: 20px;
-  padding: 50px;
+  padding: 45px;
   border: 2px solid #ddd;
   background-color: #f8f9fa;
-  border-radius: 28px;
+  border-radius: 25px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 800px;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.button {
+  background-color: #00ed64;
+  font-size: large;
+  color: black;
 }
 
 .table {
-  background-color: #001E2B;
+  background-color: #001e2b;
   width: 100%;
+  margin-left: 2%;
+  font-size: 18px;
 }
 
 .table th {
@@ -80,19 +106,38 @@
 }
 
 .table td {
-  background-color: #E3FCF7;
+  background-color: #e3fcf7;
 }
 
 .table-wrapper {
   max-width: 100%;
   overflow-x: auto;
   margin-bottom: 20px;
-  padding-right: 20px;
 }
 
 .table-dark-green th,
 .table-dark-green td {
   text-align: center;
+}
+
+.card {
+  margin-bottom: 30px;
+  margin-left: 12%;
+  margin-right: 12%;
+}
+
+.card-body {
+  font-size: 24px;
+  text-align: center;
+  background-color: #E3FCF7;
+}
+
+.overview-img {
+  display: flex;
+  align-items: center;
+  margin-left: 12%;
+  margin-right: 12%;
+  margin-bottom: 4%;
 }
 
 @media screen and (max-width: 768px) {
@@ -114,17 +159,25 @@
   }
 
   .navbar .nav-link {
-    font-size: 18px;
-    padding: 10px 15px;
+    font-size: 16px;
+    padding: 7px 10px;
   }
 }
 
   .form-wrapper {
-    padding: 20px;
+    padding: 10px;
   }
 
   .table-dark-green th,
   .table-dark-green td {
     font-size: 14px;
-    padding: 8px;
+  }
+
+  .navtext,
+  .history-header,
+  .table th,
+  .table td,
+  body,
+  .navtext {
+    font-family: "Lato", sans-serif;
   }

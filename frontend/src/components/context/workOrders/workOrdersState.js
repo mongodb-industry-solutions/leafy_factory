@@ -1,3 +1,5 @@
+//To enable only if Redux is not in use
+
 import React, { useReducer } from 'react'
 import WorkOrdersContext from './workOrdersContext'
 import WorkOrdersReducer from './workOrdersReducer'
