@@ -41,11 +41,12 @@ const CreateForm = () => {
       status: "Created",
       //planned_cost: plannedCost,
       creation_date: creationDate,
-      product_cat_id: product === "Titanium Hammer" ? 1 : product === "2 Step ladder" ? 2 : 0,
+      product_cat_id: product === "2 Step ladder" ? 1 : product === "Titanium Hammer" ? 2 : 0
     };
 
     try {
-      const response = await axios.post("http://localhost:8000/workorders/", addWorkOrder);
+      //const response = await axios.post("http://localhost:8000/workorders/", addWorkOrder);
+      const response = await axios.post("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/workorders/", addWorkOrder);
       console.log("Work order created successfully", response.data);
       dispatch(addOrder(response.data));
 
