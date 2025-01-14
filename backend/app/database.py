@@ -14,7 +14,7 @@ MARIADB_HOSTNAME=os.getenv("MARIADB_HOSTNAME")
 MARIADB_DATABASE=os.getenv("MARIADB_DATABASE")
 
 # This file defines the connection to our database, in this case the MongoDB Cluster.
-mongo_conn = MongoClient(MONGO_URI)
+mongo_conn = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
 
 db = mongo_conn["leafy_factory"]
 work_orders_coll = db["work_orders"]
