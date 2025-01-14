@@ -21,9 +21,8 @@ const WorkOrders = () => {
       const fetchWorkOrders = async () => {
         try {
           //const response = await fetch('https://rickandmortyapi.com/api/character')
-          const response = await axiosClient.get(
-            "http://localhost:8000/workorders/"
-          );
+          //const response = await axiosClient.get("http://localhost:8000/workorders/");
+          const response = await axiosClient.get("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/workorders/")
           console.log("-- getAllWorkOrders", response.data);
           const workOrders = response.data;
           dispatch(setAllOrders([...workOrders]));

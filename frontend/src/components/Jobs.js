@@ -18,7 +18,9 @@ const Jobs = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axiosClient.get("http://localhost:8000/jobs/");
+        //const response = await axiosClient.get("http://localhost:8000/jobs/");
+        const response = await axiosClient.get("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/jobs/")
+
         console.log("-- getAllJobs", response.data);
         dispatch(setAllJobs(response.data));
       } catch (error) {
@@ -61,7 +63,7 @@ const Jobs = () => {
                         <td>{order.id_job}</td>
                         <td>{order.target_output}</td>
                         <td>{order.job_status}</td>
-                        <td>{order.creation_date}</td>
+                        <td>{new Date (order.creation_date).toISOString()}</td>
                         <td>{order.work_id}</td>
                       </tr>
                     ))}
