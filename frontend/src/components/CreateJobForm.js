@@ -8,7 +8,7 @@ const CreateJobForm = () => {
   const dispatch = useDispatch();
 
   const workOrders = useSelector(state => state.WorkOrders.workOrders);
-  const [creationDate] = useState(new Date().toISOString());
+  //const [creationDate] = useState(new Date().toISOString());
 
   const productionLines = [
     { production_line_id: 1, name: "Line 1" },
@@ -19,7 +19,7 @@ const CreateJobForm = () => {
     workId: "",
     targetOutput: 0,
     jobStatus: "Created",
-    creationDate: creationDate,
+    //creationDate: creationDate,
     productionLineId: "",
     machines: [],
   });
@@ -33,7 +33,7 @@ const CreateJobForm = () => {
     const fetchMachines = async () => {
       setLoadingMachines(true);
       try {
-        const response = await axios.get("/machines/machine_details");
+        const response = await axios.get("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/machines/machine_details");
         console.log("Fetched machines from API:", response.data.result);
         setAllMachines(response.data.result);
       } catch (error) {
@@ -98,7 +98,7 @@ const CreateJobForm = () => {
       console.log("Job Data to Submit:", addJobData);
   
       try {
-        const response = await axios.post("/jobs/", addJobData);
+        const response = await axios.post("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/jobs/", addJobData);
         console.log("Job created successfully", response.data);
         dispatch(addJob(response.data));
       } catch (error) {
@@ -164,10 +164,10 @@ const CreateJobForm = () => {
         <Form.Control type="number" name="targetOutput" value={jobData.targetOutput} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed",}}/>
       </Form.Group>
 
-      <Form.Group as={Col} controlId="creation_date">
+      {/*<Form.Group as={Col} controlId="creation_date">
         <Form.Label>Creation Date</Form.Label>
         <Form.Control type="text" value={jobData.creationDate} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed",}}/>
-      </Form.Group>
+      </Form.Group>*/}
     </Row>
 
     <Button type="submit" className="button">Create Job</Button>
