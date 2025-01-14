@@ -72,7 +72,7 @@ Once you make sure that MariaDB is installed and running, execute the following 
 2. Create a file named `.env` and add the following lines, replacing placeholders with your actual credentials:
 
     ```
-    MONGO_URI="mongodb+srv://leafy_factory:6CZpgCe3qWuWBGqd@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority&appName=IST-Shared"
+    MONGO_URI="mongodb+srv://<USER>:<PASSWORD>@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority&appName=IST-Shared"
     BACKEND_URL="http://localhost:8000/"
     MARIADB_USERNAME="root"
     MARIADB_PASSWORD="LeafyFactoryDemo"
@@ -98,6 +98,7 @@ Once you make sure that MariaDB is installed and running, execute the following 
 6. Log in to MariaDB for the first time.
     1. `sudo mysql -u root`
 7. For security reasons it’s required to set a password for the root user, execute the following two queries on the MariaDB command prompt.
+
     ```
     SET PASSWORD FOR 'root'@'localhost' = PASSWORD('LeafyFactoryDemo');
     FLUSH PRIVILEGES;
@@ -112,4 +113,47 @@ Once you make sure that MariaDB is installed and running, execute the following 
     1. `pwd`
     2. `source <YOUR_PATH>/leafy_factory/backend/app/sql_data_schema.sql`
 12. Exit MariaDB by typing exit in your terminal
-    1. exit
+    1. `exit`
+
+### Kafka Installation and execution.
+For the purpose of this demo, kafka is installed locally.
+1. Download the kafka tar file from the following URL, ensure that the downloaded file is placed on the following directory `/leafy_factory/backend/`
+    1. [Download Kafka](https://drive.google.com/file/d/1h_nU6uobU1-gbE-DQWU5ZIbUPPXn5yZs/view?usp=drive_link)
+2. Extract the content of the tar file file with the following command, this is going to create a directory with kafka packages
+    1. `tar -xvzf kafka_sql_mdb.tar.gz`
+3. Navigate to the kafka config path which is located on the following directory:
+    1. `cd /leafy_factory/backend/kafka_2.13-3.9.0/config/`
+4. Add the following variable to the end of the file “connect-distributed.properties”, comment the variable in case it was added by default.
+    1. `plugin.path=<YOUR_PATH>/leafy_factory/backend/kafka_2.13-3.9.0/plugins`
+5. If you’re in the config directory, navigate to the following directory **kafka_2.13-3.9.0:**
+    1. `cd..`
+6. Execute the following command to start **zookeeper**.
+    1. `bash bin/zookeeper-server-start.sh config/zookeeper.properties > zookeeper.logs 2>&1 & disown`
+7. Execute the following command to start **kafka server**.
+    1. `bash bin/kafka-server-start.sh config/server.properties > kafka_server.logs 2>&1 & disown`
+8. Execute the following command to start kafka connect:
+    1. `bash bin/connect-distributed.sh config/connect-distributed.properties > connect_server.logs 2>&1 & disown`
+9. Make sure that you’re located in the kafka_2.13-3.9.0 directory.
+    1. `cd /leafy_factory/backend/kafka_2.13-3.9.0`
+10. Execute the following command to start the **MariaDB connecto**r
+    1. `curl -X POST -H "Content-Type: application/json" --data @config/mariadb-connector.json http://localhost:8083/connectors`
+11. Once the MariaDB connector is started, execute the following command to start the **MongoDB connector.**
+    1. `curl -X POST -H "Content-Type: application/json" --data @config/mongodb-sink1.json http://localhost:8083/connectors`
+12. Verify that kafka connectors were created successfully. First navigate to the following directory.
+    1. `cd /leafy_factory/backend/kafka_2.13-3.9.0/`
+13. Execute the following command, which lists all the existing **kafka topics**.
+    1. `bash bin/kafka-topics.sh --list --bootstrap-server localhost:9092`
+14. You should see listed the following topics:
+    ```
+    kafka.leafy_factory.factories
+    kafka.leafy_factory.jobs
+    kafka.leafy_factory.jobs_machines
+    kafka.leafy_factory.machines
+    kafka.leafy_factory.product_cost
+    kafka.leafy_factory.production_lines
+    kafka.leafy_factory.production_data
+    kafka.leafy_factory.products
+    kafka.leafy_factory.products_raw_materials
+    kafka.leafy_factory.raw_materials
+    kafka.leafy_factory.work_orders
+    ```
