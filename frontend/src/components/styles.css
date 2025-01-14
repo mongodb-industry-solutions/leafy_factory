@@ -93,6 +93,13 @@
   color: black;
 }
 
+.button-sim {
+  margin-top: 35px;
+  background-color: #e3fcf7;
+  font-size:x-large;
+  color: black;
+}
+
 .table {
   background-color: #001e2b;
   width: 100%;
