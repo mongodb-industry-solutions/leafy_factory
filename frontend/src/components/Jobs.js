@@ -18,8 +18,8 @@ const Jobs = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await axiosClient.get("http://localhost:8000/jobs/");
-        //const response = await axiosClient.get("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/jobs/")
+        // const response = await axiosClient.get("http://localhost:8000/jobs/");
+        const response = await axiosClient.get("/jobs/")
 
         console.log("-- getAllJobs", response.data);
         dispatch(setAllJobs(response.data));
