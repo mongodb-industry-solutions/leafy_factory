@@ -62,7 +62,7 @@
 
 .navbar .nav-item.show .nav-link,
 .navbar .nav-link:hover {
-  background-color: #00ed64;
+  background-color: #00ED64;
   color: #004d00;
 }
 
@@ -88,7 +88,7 @@
 }
 
 .button {
-  background-color: #00ed64;
+  background-color: #00ED64;
   font-size: large;
   color: black;
 }
@@ -96,13 +96,26 @@
 .button-sim {
   margin-top: 35px;
   margin-bottom: 45px;
-  background-color: #e3fcf7;
-  font-size:x-large;
-  color: black;
+  background-color: #00ED64;
+  font-size: x-large;
+  color: #023430;
+  border-radius: 10px;
+  padding: 10px 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.button-sim:hover {
+  background-color: #023430;
+  color: #ffffff;
 }
 
 .prod-line-img {
-  align-items: center
+  display: flex;
+  align-items: center;
+  align-self: center;
+  width: calc(100% / 2);
+  height: auto
 }
 
 .prod-card {
@@ -157,13 +170,35 @@
 }
 
 .stepper-img {
-  margin-top: 35px;
+  margin: 20px 12% 0 12%;
   align-items: center;
-  margin-left: 12%;
-  margin-right: 12%;
   width: calc(100% / 2.5);
-  height: auto;
+  height: auto
 }
+
+.chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 30, 43, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1000px !important;  
+  height: 800px;
+  margin: 50px auto;
+}
+
+.button-chart {
+  margin-top: 10px;
+  margin-bottom: 3px;
+  background-color: #E3FCF7;
+  font-size: medium;
+  color: #023430;
+  transition: background-color 0.3s ease; 
+}
+
 
 @media screen and (max-width: 768px) {
   .navbar {
@@ -193,6 +228,13 @@
     padding: 10px;
   }
 
+  .chart {
+    width: 95%;
+    max-width: 100%;
+    height: 400px;
+    padding: 15px;
+  }
+
   .table-dark-green th,
   .table-dark-green td {
     font-size: 14px;
@@ -203,6 +245,7 @@
   .table th,
   .table td,
   body,
-  .navtext {
+  .button,
+  .button-sim {
     font-family: "Lato", sans-serif;
   }

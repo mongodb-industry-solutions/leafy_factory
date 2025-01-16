@@ -1,10 +1,12 @@
 import "./styles.css";
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startShopfloor, stopShopfloor, shopfloorFailure } from "../redux/slices/ShopFloorslice";
 import axiosClient from "../config/axios";
 import { Button, Row, Col, Card, ListGroup } from "react-bootstrap";
-import ProdLineImag from '../images/ProdLine.png'
+//import ProgressBar from "react-bootstrap";
+import ProdLineImag from '../images/ProdLine.png';
+import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom'
 
 function ShopfloorComponent() {
     const dispatch = useDispatch();
@@ -12,6 +14,9 @@ function ShopfloorComponent() {
     const { isRunning, error } = shopfloorState;
     const [prodLine1, setProdLine1] = useState([]);
     const [prodLine2, setProdLine2] = useState([]);
+    const chartDiv = useRef(null);
+    const chartRef = useRef(null);
+    //const progressLevel = 60
 
     useEffect(() => {
 
@@ -29,34 +34,68 @@ function ShopfloorComponent() {
             }
         };
         fetchMachineDetails();
-    }, []);
 
-    const toggleSimulation = async () => {
-        if (isRunning) {
-            await stopSimulation();
-        } else {
-            await startSimulation();
-        }
-    };
 
-    const startSimulation = async () => {
-        try {
-            const response = await axiosClient.post("/start-simulation");
-            console.log(response.data.message);
-            dispatch(startShopfloor());
-        } catch (error) {
-            dispatch(shopfloorFailure(error.response?.data?.detail || "Failed to start the simulation"));
+        // MongoDB Chart declaration and refresh of data per minute
+        const sdk = new ChartsEmbedSDK({
+            baseUrl: "https://charts.mongodb.com/charts-jeffn-zsdtj"
+        });
+        const chart = sdk.createChart({
+            chartId: "4f846f1e-0268-473c-b00b-90b4ccf4cb2e"
+            });
+        chartRef.current = chart; (async () => {
+            try {
+            await chart.render(chartDiv.current);
+            console.log("Chart info returned");
+            } catch (error) {
+            console.error("Error rendering the chart:", error);
+            }
+        })();
+
+        const interval = setInterval(() => {
+            if (chartRef.current) {
+              chartRef.current.refresh();
+              console.log("Chart refreshed automatically");
+            }
+          }, 60000);
+          return () => clearInterval(interval);
+        }, []);
+        
+        const refreshChart = () => {
+        if (chartRef.current) {
+            chartRef.current.refresh();
+            console.log("Update (manual) for chart refresh received");
         }
-    };
-    const stopSimulation = async () => {
-        try {
-            const response = await axiosClient.post("/stop-simulation");
-            console.log(response.data.message);
-            dispatch(stopShopfloor());
-        } catch (error) {
-            dispatch(shopfloorFailure(error.response?.data?.detail || "Failed to stop the simulation"));
-        }
-    };
+        };
+
+        //Simulation enablement
+        const toggleSimulation = async () => {
+            if (isRunning) {
+                await stopSimulation();
+            } else {
+                await startSimulation();
+            }
+        };
+
+        const startSimulation = async () => {
+            try {
+                const response = await axiosClient.post("/start-simulation");
+                console.log(response.data.message);
+                dispatch(startShopfloor());
+            } catch (error) {
+                dispatch(shopfloorFailure(error.response?.data?.detail || "Failed to start the simulation"));
+            }
+        };
+        const stopSimulation = async () => {
+            try {
+                const response = await axiosClient.post("/stop-simulation");
+                console.log(response.data.message);
+                dispatch(stopShopfloor());
+            } catch (error) {
+                dispatch(shopfloorFailure(error.response?.data?.detail || "Failed to stop the simulation"));
+            }
+        };
+
 
     return (
         <div className="shopfloor-container">
@@ -74,7 +113,7 @@ function ShopfloorComponent() {
                         <ListGroup variant="flush">
                         {prodLine1.map(machines => (
                         <ListGroup.Item key={machines.id_machine}>
-                        <strong>ID:</strong> {machines.id_machine}, <strong>Status:</strong> {machines.machine_status}, <strong>Operator:</strong> {machines.operator}
+                        <strong>Machine ID:</strong> {machines.id_machine}, <strong>Status:</strong> {machines.machine_status}, <strong>Operator:</strong> {machines.operator}
                         </ListGroup.Item>
                             ))}
                         </ListGroup>
@@ -90,7 +129,7 @@ function ShopfloorComponent() {
                         <ListGroup variant="flush">
                         {prodLine2.map(machines => (
                         <ListGroup.Item key={machines.id_machine}>
-                        <strong>ID:</strong> {machines.id_machine}, <strong>Status:</strong> {machines.machine_status}, <strong>Operator:</strong> {machines.operator}
+                        <strong>Machine ID:</strong> {machines.id_machine}, <strong>Status:</strong> {machines.machine_status}, <strong>Operator:</strong> {machines.operator}
                         </ListGroup.Item>
                             ))}
                         </ListGroup>
@@ -98,7 +137,16 @@ function ShopfloorComponent() {
                 </Card>
                 </Col>
             </Row>
-        </div>
+                {/*<Card className="prod-card">
+                    <ProgressBar now={progressLevel} label={`${progressLevel}%`} animated />
+                </Card>*/}
+
+            <Button onClick={refreshChart} className="button-chart">Refresh Chart</Button>
+
+            <div className="chart">
+                <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
+            </div>
+        </div>   
     );
 }
 
