@@ -3,7 +3,8 @@ from fastapi.responses import JSONResponse
 from app.models.work_orders import WorkOrder, UpdateWorkOrder
 from app.database import work_orders_coll, raw_materials_coll, mariadb_conn, kfk_work_orders_coll, kfk_products_coll, kfk_product_cost_coll
 from pymongo.errors import DuplicateKeyError
-import datetime, decimal
+import datetime
+from bson.decimal128 import Decimal128
 
 
 router = APIRouter()
@@ -233,8 +234,7 @@ def get_work_order():
         
         workorder_item["product_name"] = product_item["product_name"]
         workorder_item["planned_cost"] = str(total_cost_wo["total_cost_per_wo"])
-        workorder_item["actual_cost"] = total_cost_wo["actual_total_cost"]
-
+        workorder_item["actual_cost"] = float(total_cost_wo["actual_total_cost"].to_decimal())if total_cost_wo["actual_total_cost"] != None else None
 
         # Change datetime format from epoch to timestamp
         workorder_item["planned_start_date"] = datetime.datetime.fromtimestamp(workorder_item["planned_start_date"]/1000)
