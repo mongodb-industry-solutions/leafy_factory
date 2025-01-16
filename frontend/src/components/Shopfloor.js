@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startShopfloor, stopShopfloor, shopfloorFailure } from "../redux/slices/ShopFloorslice";
 import axiosClient from "../config/axios";
-import { Button, Row, Col, Card, ListGroup } from "react-bootstrap";
+import { Button, Row, Col, Card, ListGroup, Spinner } from "react-bootstrap";
 //import ProgressBar from "react-bootstrap";
 import ProdLineImag from '../images/ProdLine.png';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom'
@@ -12,8 +12,9 @@ function ShopfloorComponent() {
     const dispatch = useDispatch();
     const shopfloorState = useSelector((state) => state.ShopFloor);
     const { isRunning, error } = shopfloorState;
-    const [prodLine1, setProdLine1] = useState([]);
-    const [prodLine2, setProdLine2] = useState([]);
+    const [machines, setMachines] = useState([]);
+    //const [prodLine1, setProdLine1] = useState([]);
+    //const [prodLine2, setProdLine2] = useState([]);
     const chartDiv = useRef(null);
     const chartRef = useRef(null);
     //const progressLevel = 60
@@ -24,11 +25,7 @@ function ShopfloorComponent() {
             try {
                 const response = await axiosClient.get("/machines/machine_details");
                 console.log("Fetched Machine Details: ", response.data.result);
-
-                const prodLine1 = response.data.result.filter(machines => machines.production_line_id === 1);
-                const prodLine2 = response.data.result.filter(machines => machines.production_line_id === 2);
-                setProdLine1(prodLine1);
-                setProdLine2(prodLine2);
+                setMachines(response.data.result);
             } catch (error) {
                 console.error("Error fetching machine details:", error);
             }
@@ -105,50 +102,48 @@ function ShopfloorComponent() {
             {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
             <Row>
-                <Col md={3} className="prod-card">
-                <Card className="prod-card">
-                    <Card.Img className="prod-line-img" variant="top" src={ProdLineImag} alt="Production Line 1" />
-                    <Card.Body className="card-body">
-                    <Card.Title>Production Line 1 Detailed</Card.Title>
-                        <ListGroup variant="flush">
-                        {prodLine1.map(machines => (
-                        <ListGroup.Item key={machines.id_machine}>
-                        <strong>Machine ID:</strong> {machines.id_machine}, <strong>Status:</strong> {machines.machine_status}, <strong>Operator:</strong> {machines.operator}
-                        </ListGroup.Item>
-                            ))}
-                        </ListGroup>
-                    </Card.Body>
-                </Card>
-                </Col>
-
-                <Col md={3} className="prod-card">
+                {machines.map(machine => (
+                <Col md={3} key={machine.id_machine} className="prod-card">
                     <Card className="prod-card">
-                        <Card.Img className="prod-line-img" variant="top" src={ProdLineImag} alt="Production Line 2" />
-                        <Card.Body className="card-body">
-                        <Card.Title>Production Line 2 Detailed</Card.Title>
+                    <Card.Img className="prod-line-img" variant="top" src={ProdLineImag} alt={`Production Line for Machine ${machine.id_machine}`} />
+                    <Card.Body className="card-body">
                         <ListGroup variant="flush">
-                        {prodLine2.map(machines => (
-                        <ListGroup.Item key={machines.id_machine}>
-                        <strong>Machine ID:</strong> {machines.id_machine}, <strong>Status:</strong> {machines.machine_status}, <strong>Operator:</strong> {machines.operator}
+                        <ListGroup.Item>{machine.machine_status === "Available" ? (
+                            <Button variant="success" disabled>
+                                <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
+                                Machine {machine.id_machine}: Available
+                            </Button>
+                            ) : machine.machine_status === "Running" ? (
+                            <Button variant="warning" disabled>
+                                <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
+                                Machine {machine.id_machine}: Running
+                            </Button>
+                            ) : (
+                            <Button variant="secondary" disabled>
+                                Machine {machine.id_machine}: {machine.machine_status}
+                            </Button>
+                            )}
                         </ListGroup.Item>
-                            ))}
+                        <ListGroup.Item><strong>Operator:</strong> {machine.operator}</ListGroup.Item>
                         </ListGroup>
                     </Card.Body>
-                </Card>
+                    </Card>
                 </Col>
+                ))}
             </Row>
-                {/*<Card className="prod-card">
-                    <ProgressBar now={progressLevel} label={`${progressLevel}%`} animated />
-                </Card>*/}
+
+            {/*<Card className="prod-card">
+                <ProgressBar now={progressLevel} label={`${progressLevel}%`} animated />
+            </Card>*/}
 
             <Button onClick={refreshChart} className="button-chart">Refresh Chart</Button>
-
             <div className="chart">
                 <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
             </div>
-        </div>   
+
+        </div>
     );
-}
+} 
+
 
 export default ShopfloorComponent;
-
