@@ -63,6 +63,7 @@ CREATE TABLE product_cost(
     total_cost_per_product DECIMAL(10, 2),
     cost_ok_with_overhead DECIMAL(10, 2),
     cost_nok_with_overhead DECIMAL(10, 2),
+    total_cost_per_wo DECIMAL(10, 2),
     actual_total_cost DECIMAL(10, 2),
     work_id INT NOT NULL UNIQUE,
     FOREIGN KEY (work_id) REFERENCES work_orders(id_work)
