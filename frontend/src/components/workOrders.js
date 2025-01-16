@@ -66,7 +66,7 @@ const WorkOrders = () => {
                       <th>Planned Start Date</th>
                       <th>Planned End Date</th>
                       {/*<th>Product ID</th>*/}
-                      {/*<th>Planned Cost</th>*/}
+                      <th>Planned Cost</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -80,7 +80,7 @@ const WorkOrders = () => {
                       <td>{order.planned_start_date}</td>
                       <td>{order.planned_end_date}</td>
                       {/*<td>{order.product_id}</td>*/}
-                      {/*<td>{order.planned_cost}</td>*/}
+                      <td>{order.planned_cost}</td>
                     </tr>
                     )}
                   </tbody>
