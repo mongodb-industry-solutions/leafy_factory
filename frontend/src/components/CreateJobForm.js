@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Col, Row } from "react-bootstrap";
 import axios from "axios";
+import axiosClient from "../config/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addJob } from "../redux/slices/JobSlice";
 
@@ -33,7 +34,7 @@ const CreateJobForm = () => {
     const fetchMachines = async () => {
       setLoadingMachines(true);
       try {
-        const response = await axios.get("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/machines/machine_details");
+        const response = await axiosClient.get("/machines/machine_details");
         console.log("Fetched machines from API:", response.data.result);
         setAllMachines(response.data.result);
       } catch (error) {
@@ -98,7 +99,7 @@ const CreateJobForm = () => {
       console.log("Job Data to Submit:", addJobData);
   
       try {
-        const response = await axios.post("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/jobs/", addJobData);
+        const response = await axiosClient.post("/jobs/", addJobData);
         console.log("Job created successfully", response.data);
         dispatch(addJob(response.data));
       } catch (error) {

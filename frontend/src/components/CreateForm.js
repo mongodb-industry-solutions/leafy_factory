@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Col, Row } from "react-bootstrap";
 import axios from "axios";
+import axiosClient from "../config/axios";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../redux/slices/WorkOrderslice";
 
@@ -46,7 +47,7 @@ const CreateForm = () => {
 
     try {
       //const response = await axios.post("http://localhost:8000/workorders/", addWorkOrder);
-      const response = await axios.post("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/workorders/", addWorkOrder);
+      const response = await axiosClient.post("/workorders/", addWorkOrder);
       console.log("Work order created successfully", response.data);
       dispatch(addOrder(response.data));
 

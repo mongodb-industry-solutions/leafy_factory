@@ -1,6 +1,2 @@
-[2025-01-16 16:28:07,671] INFO [Worker clientId=connect-192.168.1.5:8083, groupId=connect-cluster] Session key updated (org.apache.kafka.connect.runtime.distributed.DistributedHerder:2510)
-[2025-01-16 16:49:40,584] INFO [mariadb-connector|task-0] 48 records sent during previous 04:50:16.612, last recorded offset of {server=kafka} partition is {ts_sec=1737067780, file=mariadb-bin.000001, pos=0, row=1, server_id=1} (io.debezium.connector.common.BaseSourceTask:351)
-[2025-01-16 16:49:41,968] INFO [mongodb-sink-connector|task-0] Opened connection [connectionId{localValue:45, serverValue:656578}] to ist-shared-shard-00-02.n0kts.mongodb.net:27017 (org.mongodb.driver.connection:71)
-[2025-01-16 16:49:45,989] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 6 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
-[2025-01-16 16:50:06,002] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 6 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
-[2025-01-16 16:50:46,024] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 25 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-16 17:17:46,648] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 6 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-16 17:18:06,665] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 16 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
