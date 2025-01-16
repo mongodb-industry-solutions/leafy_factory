@@ -44,7 +44,8 @@ CREATE TABLE raw_materials(
     raw_material_stock int NOT NULL,
     raw_material_status VARCHAR(100) NOT NULL,
     raw_material_currency VARCHAR(100) NOT NULL,
-    cost_per_part DECIMAL(10, 2) NOT NULL
+    cost_per_part DECIMAL(10, 2) NOT NULL,
+    quantity DECIMAL(10, 2) NOT NULL
 );
 
 CREATE TABLE products_raw_materials(
@@ -134,16 +135,16 @@ VALUES
 );
 
 
-INSERT INTO raw_materials (item_code, raw_material_name, raw_material_description, unit_measurement, raw_material_stock, raw_material_status, cost_per_part, raw_material_currency)
+INSERT INTO raw_materials (item_code, raw_material_name, raw_material_description, unit_measurement, raw_material_stock, raw_material_status, cost_per_part, raw_material_currency, quantity)
 VALUES 
-( "hinges_ss", "Stainless steel hinge", "Stainless steel hinge", "pieces", 10000, "high", 1.5, "USD" ),
-( "screw_ss", "Stainless steel screw", "Stainless steel screw", "pieces", 100000, "high", 0.05, "USD" ),
-( "aluminum_6061", "Aluminum", "lightweight aluminum", "kg", 10000, "high", 3, "USD" ),
-( "brackets_gs", "Galvanized bracket", "Galvanized brackets anti-corrosion", "pieces", 10000, "high", 2.5, "USD" ),
-( "titanium_lw", "Lightweight titanium", "Lightweight titanium known for its strength and lightweight properties", "kg", 10000, "high", 30, "USD"),
-( "wood_hc", "Hickory wood", "Durable, lightweight, and shock-resistant, ideal for tool handles.", "kg", 10000, "high", 4, "USD"),
-( "magnet_nm", "Neodymium magnet", "Strong magnet embedded in the hammer head to hold nails.", "kg", 10000, "high", 50, "USD"),
-( "fasteners_ham", "Steel fasteners", "Steel fasteners for titanium hammers.", "kg", 10000, "high", 1, "USD");
+( "hinges_ss", "Stainless steel hinge", "Stainless steel hinge", "pieces", 10000, "high", 1.5, "USD", 2.0 ),
+( "screw_ss", "Stainless steel screw", "Stainless steel screw", "pieces", 100000, "high", 0.05, "USD", 32.0 ),
+( "aluminum_6061", "Aluminum", "lightweight aluminum", "kg", 10000, "high", 3, "USD", 1.9 ),
+( "brackets_gs", "Galvanized bracket", "Galvanized brackets anti-corrosion", "pieces", 10000, "high", 2.5, "USD", 8.0 ),
+( "titanium_lw", "Lightweight titanium", "Lightweight titanium known for its strength and lightweight properties", "kg", 10000, "high", 30, "USD", 0.45),
+( "wood_hc", "Hickory wood", "Durable, lightweight, and shock-resistant, ideal for tool handles.", "kg", 10000, "high", 4, "USD", 0.2),
+( "magnet_nm", "Neodymium magnet", "Strong magnet embedded in the hammer head to hold nails.", "kg", 10000, "high", 50, "USD", 0.01),
+( "fasteners_ham", "Steel fasteners", "Steel fasteners for titanium hammers.", "kg", 10000, "high", 1, "USD", 0.02);
 
 INSERT INTO products_raw_materials (product_id, raw_material_id)
 VALUES
