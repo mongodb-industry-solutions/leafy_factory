@@ -34,22 +34,72 @@ def create_work_order(work_order: WorkOrder):
 
     # It adds the creation_date field to the JSON document.
     workorder_json["creation_date"] = datetime.datetime.now()
-    workorder_json["materials_used"] = [
-        {"item_code": "aluminum_6061", "quantity": 19},
-        {"item_code": "hinges_ss", "quantity": 20},
-        {"item_code": "brackets_gs", "quantity": 80},
-        {"item_code": "screw_ss", "quantity": 320}
-    ]
-    
-    workorder_json["cost"] = {
-        "planned" : {
-            "raw_material_cost_per_product" : 14.82,
-            "overhead_per_product": 0.50,
-            "total_cost_per_product" : 15.32
-        }
-    }
+    product_id = workorder_json["product_cat_id"]
+    workorder_json["materials_used"] = []
+    total_cost_work_order = 0
+    overhead_per_product = 0.50
 
     try:
+        query_get_raw_materials_id = """
+                                        SELECT 
+                                            raw_material_id, 
+                                            item_code,
+                                            cost_per_part,
+                                            quantity,
+                                            (quantity * cost_per_part) as cost_per_product
+                                        FROM 
+                                            products_raw_materials 
+                                        INNER JOIN 
+                                            raw_materials 
+                                        ON 
+                                            id_raw_material = raw_material_id 
+                                        WHERE 
+                                            product_id = %s
+                                     """
+        
+
+        with mariadb_conn.cursor() as db_cur:
+            # Retrieve the raw_materials_ids from the products_raw_materials table
+            db_cur.execute(query_get_raw_materials_id, (product_id,))
+            
+            # Result example [(1,"hinges_ss", 1.50, 2),(2, "screw_ss", 0.05, 32),(3, "aluminum_6061", 3.00, 1.90), (4, "brackets_gs", 2.50, 8)]
+            # item[0] = raw_material_id
+            # item[1] = item_code
+            # item[2] = cost_per_part
+            # item[3] = quantity (Units need to create one product)
+            # item[4] = cost_per_product
+            raw_materials_list = db_cur.fetchall()
+            
+        
+        for item in raw_materials_list:
+            workorder_json["materials_used"].append(
+                {   
+                    "item_code": item[1], 
+                    # Total Raw Material used per work order: quantity = (Quantity of products to create) * (quantity of every raw material)
+                    # Example: 
+                    # total_screw_ss = (10 units work order) * 32 (which is the total number of screws to create one unit of the product)
+                    # Result:
+                    # total_screw_ss = 320
+                    "quantity": workorder_json["quantity"] * item[3],
+                    "cost_per_part": item[2],
+                    "cost_per_product": item[4]
+                }
+            )
+
+            total_cost_work_order += item[4]
+            print(total_cost_work_order)
+        
+        total_cost_per_product = float(total_cost_work_order) + overhead_per_product
+        total_cost_per_wo = workorder_json["quantity"] * total_cost_per_product
+
+        workorder_json["cost"] = {
+            "planned" : {
+                "raw_material_cost_per_product" : float(total_cost_work_order),
+                "overhead_per_product": overhead_per_product,
+                "total_cost_per_product" : total_cost_per_product,
+                "total_cost_per_wo": total_cost_per_wo
+            }
+        }
 
         # Modifies the raw_material stock from the raw_materials collection.
         for item in workorder_json["materials_used"]:
@@ -87,9 +137,10 @@ def create_work_order(work_order: WorkOrder):
                                     raw_material_cost_per_product,
                                     overhead_per_product,
                                     total_cost_per_product,
+                                    total_cost_per_wo,
                                     work_id
                                 )
-                                VALUES (?,?,?,?)
+                                VALUES (?,?,?,?,?)
                                 """
         
         with mariadb_conn.cursor() as db_insert_cursor:
@@ -110,6 +161,7 @@ def create_work_order(work_order: WorkOrder):
                                          workorder_json["cost"]["planned"]["raw_material_cost_per_product"],
                                          workorder_json["cost"]["planned"]["overhead_per_product"],
                                          workorder_json["cost"]["planned"]["total_cost_per_product"],
+                                         workorder_json["cost"]["planned"]["total_cost_per_wo"],
                                          new_work_order_id,
                                      ))
             
