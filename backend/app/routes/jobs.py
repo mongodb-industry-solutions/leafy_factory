@@ -271,9 +271,13 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
 
         query_get_work_id = f"SELECT work_id FROM jobs WHERE id_job = {job_id}"
         query_get_machines = f"SELECT machine_id FROM jobs_machines WHERE job_id = {job_id}"
+        query_cost_product = f"SELECT total_cost_per_product, total_cost_per_wo FROM product_cost WHERE work_id = %s"
         
         # List of machines that are executing the job.
         machine_id_list = []
+
+        # Get the number of no ok parts produces by the job
+        total_nok_parts = updated_job_json['nok_products']
 
         with mariadb_conn.cursor() as db_cur_query:
             db_cur_query.execute(query_get_work_id)
@@ -284,11 +288,20 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
 
             db_cur_query.execute(query_get_machines)
             machines_result_query = db_cur_query.fetchall()
+
+            db_cur_query.execute(query_cost_product, (work_id,))
+            cost_product_result = db_cur_query.fetchone()
+
+            # cost_product_result[0] = total_cost_per_product
+            # cost_product_result[1] = total_cost_per_wo
+
+            # Calculate the cost for no ok parts and actual cost of work_order
+            total_cost_nok_with_overhead = total_nok_parts * float(cost_product_result[0])
+            actual_cost_wo = total_cost_nok_with_overhead + float(cost_product_result[1])
             
             for machine_details in machines_result_query:
                 # The index [0] stores the machine_id of the query result
                 machine_id_list.append(machine_details[0])
-            
 
         update_job_query =  f"""
                                 UPDATE 
@@ -311,6 +324,16 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                                 WHERE
                                     id_work = {work_id}
                             """
+        
+        update_product_cost_query =  f"""
+                                UPDATE 
+                                    product_cost 
+                                SET 
+                                    cost_nok_with_overhead = {total_cost_nok_with_overhead},
+                                    actual_total_cost = {actual_cost_wo}
+                                WHERE
+                                    work_id = {work_id}
+                            """
 
         with mariadb_conn.cursor() as db_cur:
             # Adding this query inside the with block, since we are updating more than one machine.
@@ -322,6 +345,9 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
             
             db_cur.execute(update_work_order_query)
             updated_wo_count = db_cur.rowcount
+
+            db_cur.execute(update_product_cost_query)
+            updated_pc_count = db_cur.rowcount
 
             for machine_id in machine_id_list:
                 update_machines =  f"""
@@ -344,6 +370,7 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                 "Result": "True" if updated_job_count and updated_wo_count and updated_machines_count > 0 else "False", 
                 "Modified Job Count": updated_job_count, 
                 "Modified Work Order Count": updated_wo_count, 
+                "Modified Product Cost Count": updated_pc_count,
                 "Modified Machines Count": updated_machines_count, 
                 "Updated Document job_id": str(job_id)
             }

@@ -59,7 +59,34 @@ async def receive_ts_heartbeat(data: MachineHeartbeat):
         raise HTTPException(status_code=500, detail=f"Failed to save heartbeat: {str(e)}")
 
 
-@router.get("/machines/machine_details")
+@router.get("/machines/machine_details",
+                summary="Gets last 100 work orders",
+                description="This endpoint gets an array with the 100 last work orders items from the leafy_factory database using the creation_date field as filter criteria",
+                responses={
+                    200: {
+                        "description": "Work orders list retrieved successfully",
+                        "content": {
+                            "application/json":{
+                                "example":[
+                                    {
+                                        "_id": {"id_machine":1}, 
+                                        "id_machine": 1,
+                                        "machine_status": "Available",
+                                        "last_maintenance": "2024-10-31 08:25:00",
+                                        "operator": "Ada Lovelace",
+                                        "avg_output": "3000.0",
+                                        "reject_count": "25.0", 
+                                        "production_line_id": 1,
+                                        "avg_temperature": "75.20692473272969",
+                                        "avg_vibration": "26.44509863592196",
+                                        "last_updated": "2025-01-16 22:56:00.061000"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            )
 async def retrieve_machine_details():
     """This endpoint retrieves the machine details from the factory collection"""
     try:
@@ -71,17 +98,8 @@ async def retrieve_machine_details():
             machine_item['avg_output'] = float(machine_item['avg_output'].to_decimal())
             machine_item['reject_count'] = float(machine_item['reject_count'].to_decimal())
             machine_item['last_maintenance'] = str(datetime.fromtimestamp(machine_item["last_maintenance"]/1000))
+            machine_item['last_updated'] = str(machine_item['last_updated'])
         
-        # # List comprehension to filter only the data that we want
-        # filtered_machines_list = [
-        #     {
-        #         "machine_id": item["machine_id"],
-        #         "status": item["status"],
-        #         "last_maintenance": item["last_maintenance"]
-        #     }
-        #     for item in machines_list
-        # ]
-
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={"result": machines_docs_to_list}
