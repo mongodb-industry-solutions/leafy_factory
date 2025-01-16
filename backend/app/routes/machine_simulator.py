@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from app.database import raw_sensor_data_coll
 from app.models.machines import MachineHeartbeat, MachineStatus, MachineDetails
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time, random, threading
 
 
@@ -28,7 +28,7 @@ def send_heartbeat(data: MachineHeartbeat):
         try: 
             # The variable "data" receives the data sent from machine
             heartbeat_record = {
-                "timestamp": datetime.now(),
+                "timestamp": datetime.now(timezone.utc),
                 "metadata": {
                     "factory_id": data["factory_id"],
                     "prod_line_id": data["production_line_id"],
