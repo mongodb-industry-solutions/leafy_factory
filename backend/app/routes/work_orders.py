@@ -232,8 +232,9 @@ def get_work_order():
         total_cost_wo = kfk_product_cost_coll.find_one({"work_id": workorder_item["id_work"]})
         
         workorder_item["product_name"] = product_item["product_name"]
-        workorder_item["planned_cost"] = str(total_cost_wo["total_cost_per_product"])
+        workorder_item["planned_cost"] = str(total_cost_wo["total_cost_per_wo"])
         workorder_item["actual_cost"] = total_cost_wo["actual_total_cost"]
+
 
         # Change datetime format from epoch to timestamp
         workorder_item["planned_start_date"] = datetime.datetime.fromtimestamp(workorder_item["planned_start_date"]/1000)
