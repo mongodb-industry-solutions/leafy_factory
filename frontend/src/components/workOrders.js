@@ -34,7 +34,7 @@ const WorkOrders = () => {
 
       useEffect(() => {  
         fetchWorkOrders();  
-        const intervalId = setInterval(fetchWorkOrders, 1200);  
+        const intervalId = setInterval(fetchWorkOrders, 2000);  
         return () => clearInterval(intervalId);  
       }, [fetchWorkOrders]);  
 

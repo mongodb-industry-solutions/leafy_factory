@@ -108,7 +108,7 @@ function ShopfloorComponent() {
                     <Card className="prod-card">
                     <Card.Img className="prod-line-img" variant="top" src={ProdLineImag} alt={`Machine ${machine.id_machine}`} />
                     <Card.Body className="card-body">
-                    <Card.Title className="text-center">Machine #: {machine.id_machine}</Card.Title>
+                    <Card.Title className="text-center">Machine : {machine.id_machine}</Card.Title>
                         <ListGroup variant="flush">
                         <ListGroup.Item>{machine.machine_status === "Available" ? (
                             <Button variant="success" disabled>

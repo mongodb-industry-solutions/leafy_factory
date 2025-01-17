@@ -70,7 +70,7 @@ const CreateForm = ({onSubmitSuccess}) => {
       <Row className="mb-3">
         <Form.Group as={Col} className="mb-3" controlId="work_id">
           <Form.Label>Work Order ID</Form.Label>
-          <Form.Control type="number" value="#" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="product_select">

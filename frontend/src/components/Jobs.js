@@ -5,14 +5,14 @@ import {
     useSelector 
 } from "react-redux";
 import axiosClient from "../config/axios";
-import { Table, Row, Col } from "react-bootstrap";
+import { Table, Row, Col, Card, ProgressBar } from "react-bootstrap";
 import { setAllJobs } from "../redux/slices/JobSlice";
 import CreateJobForm from "./CreateJobForm";
 
 const Jobs = () => {
   const dispatch = useDispatch();
   const jobs = useSelector((state) => state.Jobs.jobs);
-
+  const progressLevel = 60
   const [isLoading, setIsLoading] = useState(true);
 
     const fetchJobs = useCallback(async () => {
@@ -20,7 +20,7 @@ const Jobs = () => {
         // const response = await axiosClient.get("http://localhost:8000/jobs/");
         const response = await axiosClient.get("/jobs/")
 
-        console.log("-- getAllJobs", response.data);
+        //console.log("-- getAllJobs", response.data);
         dispatch(setAllJobs(response.data));
       } catch (error) {
         console.error("There was a problem with your fetch operation:", error);
@@ -31,7 +31,7 @@ const Jobs = () => {
 
       useEffect(() => {  
         fetchJobs();  
-        const intervalId = setInterval(fetchJobs, 1200);  
+        const intervalId = setInterval(fetchJobs, 12000);  
         return () => clearInterval(intervalId);  
       }, [fetchJobs]);  
 
@@ -69,7 +69,6 @@ const Jobs = () => {
                         <td>{order.id_job}</td>
                         <td>{order.target_output}</td>
                         <td>{order.job_status}</td>
-                        {/*<td>{new Date (order.creation_date).toISOString()}</td>*/}
                         <td> {order.creation_date ? (!isNaN(new Date(order.creation_date)) ? new Date(order.creation_date).toISOString() : "Invalid date") : "Loading"} </td>
                         <td>{order.work_id}</td>
                       </tr>
@@ -79,6 +78,10 @@ const Jobs = () => {
               : <p>No jobs available.</p>}
         </Col>
       </Row>
+
+    <Card className="prod-card">
+        <ProgressBar now={progressLevel} label={`${progressLevel}%`} animated />
+    </Card>
     </div>
   );
 };
