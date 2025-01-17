@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Col, Row } from "react-bootstrap";
-//import axios from "axios";
 import axiosClient from "../config/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addJob } from "../redux/slices/JobSlice";
@@ -10,6 +9,11 @@ const CreateJobForm = ({onCreateSuccess}) => {
 
   const workOrders = useSelector(state => state.WorkOrders.workOrders);
   //const [creationDate] = useState(new Date().toISOString());
+
+  const machinesReturned = {
+    1: [1, 2],
+    2: [3, 4]
+  };
 
   const productionLines = [
     { production_line_id: 1, name: "Line 1" },
@@ -25,8 +29,8 @@ const CreateJobForm = ({onCreateSuccess}) => {
     machines: [],
   });
 
-  const [allMachines, setAllMachines] = useState([]);
-  const [filteredMachines, setFilteredMachines] = useState([]);
+  //const [allMachines, setAllMachines] = useState([]);
+  //const [filteredMachines, setFilteredMachines] = useState([]);
   const [loadingMachines, setLoadingMachines] = useState(false);
 
   //Retrieve machines
@@ -35,14 +39,17 @@ const CreateJobForm = ({onCreateSuccess}) => {
       setLoadingMachines(true);
 
     try {
-        const response = await axiosClient.get("/machines/machine_details");
+/*         const response = await axiosClient.get("/machines/machine_details");
         console.log("Fetched machines from API:", response.data.result);
         setAllMachines(response.data.result);
+        
+        
         //Retrieves the new Job into the table
         if (onCreateSuccess) {
-            onCreateSuccess();
-        }
-      } catch (error) {
+            onCreateSuccess(); */
+        const response = await axiosClient.get("/machines/machine_details");
+        console.log("Fetched machines from API for background processing:", response.data.result);
+    } catch (error) {
         console.error("Error fetching machine details:", error);
       } finally {
         setLoadingMachines(false);
@@ -76,12 +83,26 @@ const CreateJobForm = ({onCreateSuccess}) => {
       productionLineId: selectedLineId,
     }));
 
-    const machinesForLine = allMachines.filter(
+    /*const machinesForLine = allMachines.filter(
         (machine) => machine.production_line_id === parseInt(selectedLineId)
       );
       console.log("Filtered Machines for Line:", machinesForLine);
       setFilteredMachines(machinesForLine);
-    };
+    };*/
+
+    const machinesForLine = machinesReturned[selectedLineId] || [];
+    console.log("Machines assigned to production line:", machinesForLine);
+
+    const machineDetails = machinesForLine.map((id_machine) => ({
+      id_machine,
+      machine_status: ""
+    }));
+
+    setJobData((prevData) => ({
+      ...prevData,
+      machines: machineDetails,
+    }));
+  };
 
 
   const handleSubmit = async event => {
@@ -94,7 +115,7 @@ const CreateJobForm = ({onCreateSuccess}) => {
           production_lines: [
             {
               production_line_id: jobData.productionLineId,
-              machines: filteredMachines.map((machines) => machines.id_machine),
+              machines: jobData.machines.map((machines) => machines.id_machine),
             },
           ],
         },
@@ -118,7 +139,7 @@ const CreateJobForm = ({onCreateSuccess}) => {
     <Row className="mb-3">
         <Form.Group as={Col} className="mb-3" controlId="work_id">
           <Form.Label>Job ID</Form.Label>
-          <Form.Control type="number" value="#" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
         </Form.Group>
         
         <Form.Group as={Col} controlId="work_id">
@@ -137,7 +158,7 @@ const CreateJobForm = ({onCreateSuccess}) => {
       <Row className="mb-3">
         <Form.Group as={Col} controlId="productionLineId">
           <Form.Label>Production Line</Form.Label>
-          <Form.Select value={jobData.productionLineId}onChange={handleProductionLineChange}>
+          <Form.Select value={jobData.productionLineId} onChange={handleProductionLineChange}>
             <option value="">Select Production Line</option>
             {productionLines.map((line) => (
               <option key={line.production_line_id} value={line.production_line_id}>
@@ -149,14 +170,14 @@ const CreateJobForm = ({onCreateSuccess}) => {
       </Row>
 
       <Row className="mb-3">
-        <Form.Group as={Col} controlId="machines">
-          <Form.Label>Machines</Form.Label>
-          {loadingMachines ? (  
-            <p>Loading machines...</p>
-          ) : (  
-            <Form.Control as="textarea" value={filteredMachines.map((machines) => `ID: ${machines.id_machine}, Status: ${machines.machine_status}, Operator: ${machines.operator}`).join("\n")} readOnly style={{ height: "100px", cursor: "not-allowed"}}/>
-            )}
-            </Form.Group>
+      <Form.Group as={Col} controlId="machines">
+      <Form.Label>Machines</Form.Label>
+        {loadingMachines ? (
+      <p>Loading machines...</p>
+        ) : (
+      <Form.Control as="textarea" value={jobData.machines.map((machine) => `Machine ID selected: ${machine.id_machine}`).join("\n")} readOnly style={{ height: "100px", cursor: "not-allowed" }} />
+        )}
+  </Form.Group>
       </Row>
 
     <Row className="mb-3">
@@ -170,10 +191,6 @@ const CreateJobForm = ({onCreateSuccess}) => {
         <Form.Control type="number" name="targetOutput" value={jobData.targetOutput} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed",}}/>
       </Form.Group>
 
-      {/*<Form.Group as={Col} controlId="creation_date">
-        <Form.Label>Creation Date</Form.Label>
-        <Form.Control type="text" value={jobData.creationDate} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed",}}/>
-      </Form.Group>*/}
     </Row>
 
     <Button type="submit" className="button">Create Job</Button>
