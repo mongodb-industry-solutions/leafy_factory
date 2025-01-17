@@ -1,37 +1,43 @@
 import "./styles.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { 
     useDispatch, 
     useSelector 
 } from "react-redux";
 import axiosClient from "../config/axios";
-import { Table, Row, Col } from "react-bootstrap";
+import { Table, Row, Col, Card, ProgressBar } from "react-bootstrap";
 import { setAllJobs } from "../redux/slices/JobSlice";
 import CreateJobForm from "./CreateJobForm";
 
 const Jobs = () => {
   const dispatch = useDispatch();
   const jobs = useSelector((state) => state.Jobs.jobs);
-
+  const progressLevel = 60
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchJobs = async () => {
+    const fetchJobs = useCallback(async () => {
       try {
         // const response = await axiosClient.get("http://localhost:8000/jobs/");
         const response = await axiosClient.get("/jobs/")
 
-        console.log("-- getAllJobs", response.data);
+        //console.log("-- getAllJobs", response.data);
         dispatch(setAllJobs(response.data));
       } catch (error) {
         console.error("There was a problem with your fetch operation:", error);
       } finally {
         setIsLoading(false);
       }
-    };
+    }, [dispatch]);
 
-    fetchJobs();
-  }, [dispatch]);
+      useEffect(() => {  
+        fetchJobs();  
+        const intervalId = setInterval(fetchJobs, 12000);  
+        return () => clearInterval(intervalId);  
+      }, [fetchJobs]);  
+
+      const handleCreateSuccess = () => {
+        fetchJobs();
+      }; 
 
   return (
     <div className="container-fluid">
@@ -40,7 +46,7 @@ const Jobs = () => {
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
           <h4>Create Job</h4>
-          <CreateJobForm />
+          <CreateJobForm onCreateSuccess={handleCreateSuccess}/>
         </Col>
 
         <Col lg={7} md={6} sm={12} className="table-wrapper">
@@ -63,7 +69,6 @@ const Jobs = () => {
                         <td>{order.id_job}</td>
                         <td>{order.target_output}</td>
                         <td>{order.job_status}</td>
-                        {/*<td>{new Date (order.creation_date).toISOString()}</td>*/}
                         <td> {order.creation_date ? (!isNaN(new Date(order.creation_date)) ? new Date(order.creation_date).toISOString() : "Invalid date") : "Loading"} </td>
                         <td>{order.work_id}</td>
                       </tr>
@@ -73,6 +78,10 @@ const Jobs = () => {
               : <p>No jobs available.</p>}
         </Col>
       </Row>
+
+    <Card className="prod-card">
+        <ProgressBar now={progressLevel} label={`${progressLevel}%`} animated />
+    </Card>
     </div>
   );
 };

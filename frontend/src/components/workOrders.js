@@ -1,5 +1,5 @@
 import "./styles.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   useDispatch, // to MODIFY the Factory
   useSelector // to ACCESS the factory
@@ -15,10 +15,9 @@ const WorkOrders = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(
-    () => {
+
       // load all work orders once this component gets rendered
-      const fetchWorkOrders = async () => {
+      const fetchWorkOrders = useCallback(async () => {
         try {
           //const response = await fetch('https://rickandmortyapi.com/api/character')
           const response = await axiosClient.get("/workorders/");
@@ -27,19 +26,21 @@ const WorkOrders = () => {
           const workOrders = response.data;
           dispatch(setAllOrders([...workOrders]));
         } catch (error) {
-          console.error(
-            "There was a problem with your fetch operation:",
-            error
-          );
+          console.error("There was a problem with your fetch operation:", error);
         } finally {
           setIsLoading(false);
         }
-      };
+      }, [dispatch]);
 
-      fetchWorkOrders();
-    },
-    [dispatch]
-  );
+      useEffect(() => {  
+        fetchWorkOrders();  
+        const intervalId = setInterval(fetchWorkOrders, 2000);  
+        return () => clearInterval(intervalId);  
+      }, [fetchWorkOrders]);  
+
+      const handleSubmitSuccess = () => {
+        fetchWorkOrders();
+      }; 
 
   return (
     <div className="container-fluid">
@@ -48,14 +49,12 @@ const WorkOrders = () => {
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
           <h4>Create a New Work Order</h4>
-          <CreateForm />
+          <CreateForm onSubmitSuccess={handleSubmitSuccess}/>
         </Col>
 
         <Col lg={7} md={6} sm={12} className="table-wrapper">
-          {isLoading
-            ? <p>Loading work orders...</p>
-            : workOrders.length > 0
-              ? <Table striped bordered hover responsive className="table">
+          {isLoading ? <p>Loading work orders...</p> : workOrders.length > 0 ? 
+            <Table striped bordered hover responsive className="table">
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -65,9 +64,9 @@ const WorkOrders = () => {
                       <th>Quantity</th>
                       <th>Planned Start Date</th>
                       <th>Planned End Date</th>
-                      {/*<th>Product ID</th>
+                      {/*<th>Product ID</th>*/}
                       <th>Planned Cost</th>
-                      <th>Actual Cost</th>*/}
+                      <th>Actual Cost</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -80,13 +79,13 @@ const WorkOrders = () => {
                       <td>{order.quantity}</td>
                       <td>{order.planned_start_date}</td>
                       <td>{order.planned_end_date}</td>
-                      {/*<td>{order.product_id}</td>
+                      {/*<td>{order.product_id}</td>*/}
                       <td>{order.planned_cost}</td>
-                      <td>{order.actual_cost}</td>*/}
+                      <td>{order.actual_cost}</td>
                     </tr>
                     )}
                   </tbody>
-                </Table>
+            </Table>
               : <p>No work orders available.</p>}
         </Col>
       </Row>
