@@ -1,5 +1,5 @@
 import "./styles.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { 
     useDispatch, 
     useSelector 
@@ -15,8 +15,7 @@ const Jobs = () => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchJobs = async () => {
+    const fetchJobs = useCallback(async () => {
       try {
         // const response = await axiosClient.get("http://localhost:8000/jobs/");
         const response = await axiosClient.get("/jobs/")
@@ -28,10 +27,17 @@ const Jobs = () => {
       } finally {
         setIsLoading(false);
       }
-    };
+    }, [dispatch]);
 
-    fetchJobs();
-  }, [dispatch]);
+      useEffect(() => {  
+        fetchJobs();  
+        const intervalId = setInterval(fetchJobs, 1200);  
+        return () => clearInterval(intervalId);  
+      }, [fetchJobs]);  
+
+      const handleCreateSuccess = () => {
+        fetchJobs();
+      }; 
 
   return (
     <div className="container-fluid">
@@ -40,7 +46,7 @@ const Jobs = () => {
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
           <h4>Create Job</h4>
-          <CreateJobForm />
+          <CreateJobForm onCreateSuccess={handleCreateSuccess}/>
         </Col>
 
         <Col lg={7} md={6} sm={12} className="table-wrapper">
