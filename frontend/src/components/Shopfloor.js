@@ -127,9 +127,8 @@ function ShopfloorComponent() {
                             )}
                         </ListGroup.Item>
                         <ListGroup.Item><strong>Production Line:</strong> {machine.production_line_id}</ListGroup.Item>
-                        <ListGroup.Item><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(4)}</ListGroup.Item>
-                        <ListGroup.Item><strong>Avg Temperature:</strong> {Number(machine.avg_temperature).toFixed(4)} °C</ListGroup.Item>
-                        <ListGroup.Item><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(4)} mm/s</ListGroup.Item>
+                        <ListGroup.Item><strong>Avg Temperature:</strong> {Number(machine.avg_temperature).toFixed(1)} °C</ListGroup.Item>
+                        <ListGroup.Item><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(2)} mm/s</ListGroup.Item>
                         <ListGroup.Item><strong>Last Maintenance:</strong> {machine.last_maintenance}</ListGroup.Item>
                         <ListGroup.Item><strong>Operator:</strong> {machine.operator}</ListGroup.Item>
                         </ListGroup>
