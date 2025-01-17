@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Col, Row } from "react-bootstrap";
-import axios from "axios";
+//import axios from "axios";
 import axiosClient from "../config/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addJob } from "../redux/slices/JobSlice";
 
-const CreateJobForm = () => {
+const CreateJobForm = ({onCreateSuccess}) => {
   const dispatch = useDispatch();
 
   const workOrders = useSelector(state => state.WorkOrders.workOrders);
@@ -33,10 +33,15 @@ const CreateJobForm = () => {
   useEffect(() => {
     const fetchMachines = async () => {
       setLoadingMachines(true);
-      try {
+
+    try {
         const response = await axiosClient.get("/machines/machine_details");
         console.log("Fetched machines from API:", response.data.result);
         setAllMachines(response.data.result);
+        //Retrieves the new Job into the table
+        if (onCreateSuccess) {
+            onCreateSuccess();
+        }
       } catch (error) {
         console.error("Error fetching machine details:", error);
       } finally {

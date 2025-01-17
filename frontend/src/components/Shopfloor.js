@@ -96,22 +96,24 @@ function ShopfloorComponent() {
 
     return (
         <div className="shopfloor-container">
-            <Button className="button-sim" onClick={toggleSimulation}>
-                {isRunning ? "Stop Shopfloor Simulator" : "Start Shopfloor Simulator"}
-            </Button>
+        <Button className="button-sim" onClick={toggleSimulation}>
+            {isRunning ? "Stop Shopfloor Simulator" : "Start Shopfloor Simulator"}
+        </Button>
             {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
-            <Row>
-                {machines.map(machine => (
+        <Row>
+            {machines.map(machine => (
+            <React.Fragment key={machine.id_machine}>
                 <Col md={3} key={machine.id_machine} className="prod-card">
                     <Card className="prod-card">
-                    <Card.Img className="prod-line-img" variant="top" src={ProdLineImag} alt={`Production Line for Machine ${machine.id_machine}`} />
+                    <Card.Img className="prod-line-img" variant="top" src={ProdLineImag} alt={`Machine ${machine.id_machine}`} />
                     <Card.Body className="card-body">
+                    <Card.Title className="text-center">Machine #: {machine.id_machine}</Card.Title>
                         <ListGroup variant="flush">
                         <ListGroup.Item>{machine.machine_status === "Available" ? (
                             <Button variant="success" disabled>
                                 <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
-                                Machine {machine.id_machine}: Available
+                                Status {machine.id_machine}: Available
                             </Button>
                             ) : machine.machine_status === "Running" ? (
                             <Button variant="warning" disabled>
@@ -119,27 +121,34 @@ function ShopfloorComponent() {
                                 Machine {machine.id_machine}: Running
                             </Button>
                             ) : (
-                            <Button variant="secondary" disabled>
+                            <Button variant="danger" disabled>
                                 Machine {machine.id_machine}: {machine.machine_status}
                             </Button>
                             )}
                         </ListGroup.Item>
+                        <ListGroup.Item><strong>Production Line:</strong> {machine.production_line_id}</ListGroup.Item>
+                        <ListGroup.Item><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(4)}</ListGroup.Item>
+                        <ListGroup.Item><strong>Avg Temperature:</strong> {Number(machine.avg_temperature).toFixed(4)} °C</ListGroup.Item>
+                        <ListGroup.Item><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(4)} mm/s</ListGroup.Item>
+                        <ListGroup.Item><strong>Last Maintenance:</strong> {machine.last_maintenance}</ListGroup.Item>
                         <ListGroup.Item><strong>Operator:</strong> {machine.operator}</ListGroup.Item>
                         </ListGroup>
                     </Card.Body>
                     </Card>
                 </Col>
+
+            </React.Fragment>
                 ))}
-            </Row>
+        </Row>
 
             {/*<Card className="prod-card">
                 <ProgressBar now={progressLevel} label={`${progressLevel}%`} animated />
             </Card>*/}
 
-            <Button onClick={refreshChart} className="button-chart">Refresh Chart</Button>
-            <div className="chart">
-                <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
-            </div>
+        <Button onClick={refreshChart} className="button-chart">Refresh Chart</Button>
+        <div className="chart">
+            <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
+        </div>
 
         </div>
     );
