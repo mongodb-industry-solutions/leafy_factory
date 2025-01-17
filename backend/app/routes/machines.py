@@ -59,9 +59,55 @@ async def receive_ts_heartbeat(data: MachineHeartbeat):
         raise HTTPException(status_code=500, detail=f"Failed to save heartbeat: {str(e)}")
 
 
+@router.get("/machines/factory_details",
+                summary="Gets the factory details",
+                description="This endpoint retrieves the factory details:",
+                responses={
+                    200: {
+                        "description": "Work orders list retrieved successfully",
+                        "content": {
+                            "application/json":{
+                                "example":[
+                                    {
+                                        "_id": {"id_machine":1}, 
+                                        "id_machine": 1,
+                                        "machine_status": "Available",
+                                        "last_maintenance": "2024-10-31 08:25:00",
+                                        "operator": "Ada Lovelace",
+                                        "avg_output": "3000.0",
+                                        "reject_count": "25.0", 
+                                        "production_line_id": 1,
+                                        "avg_temperature": "75.20692473272969",
+                                        "avg_vibration": "26.44509863592196",
+                                        "last_updated": "2025-01-16 22:56:00.061000"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            )
+async def retrieve_factory_details():
+    """This endpoint retrieves the factory details from the factory collection"""
+    try:
+        factory_details = factories_data_coll.find()
+        factories_docs_to_list = list(factory_details)
+
+        factories_docs_to_list[0]["_id"] = str(factories_docs_to_list[0]["_id"])
+        print(factories_docs_to_list)
+        
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"result": factories_docs_to_list} 
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve machine details: {str(e)}")
+
+
 @router.get("/machines/machine_details",
-                summary="Gets last 100 work orders",
-                description="This endpoint gets an array with the 100 last work orders items from the leafy_factory database using the creation_date field as filter criteria",
+                summary="Gets the machine details",
+                description="This endpoint retrieves the machine details information, it shows the machine status, avg temperate vibration, etc.",
                 responses={
                     200: {
                         "description": "Work orders list retrieved successfully",
