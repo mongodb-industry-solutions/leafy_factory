@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Col, Row } from "react-bootstrap";
-import axios from "axios";
 import axiosClient from "../config/axios";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../redux/slices/WorkOrderslice";
 
 
-const CreateForm = () => {
+const CreateForm = ({onSubmitSuccess}) => {
 
   const dispatch = useDispatch();
   const [product, setProduct] = useState("Titanium Hammer");
@@ -51,10 +50,14 @@ const CreateForm = () => {
       console.log("Work order created successfully", response.data);
       dispatch(addOrder(response.data));
 
-    } catch (error) {
-      console.error("There was an error creating the work order:", error);
-    }
-  };
+      //Retrieves the new work Order into the table
+      if (onSubmitSuccess) {
+        onSubmitSuccess();
+      }
+    } catch (error) {  
+      console.error("There was an error creating the work order:", error);  
+    }  
+  }; 
 
   const handleProductChange = (e) => {
     const selectedProduct = e.target.value;
@@ -67,7 +70,7 @@ const CreateForm = () => {
       <Row className="mb-3">
         <Form.Group as={Col} className="mb-3" controlId="work_id">
           <Form.Label>Work Order ID</Form.Label>
-          <Form.Control type="number" value="#" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="product_select">
