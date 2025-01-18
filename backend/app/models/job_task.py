@@ -5,7 +5,7 @@ import datetime
 class UpdateJob(BaseModel):
     # This model updates the work model and changes its status from CREATED to IN PROGRESS
     nok_products: int = Field(default=0, description = "Quantity of no ok products from the work order, received by the simulator")
-    quality_rate: int = Field(default=0, description = "Defined by the simulator, once the job is completed")
+    quality_rate: float = Field(default=0, description = "Defined by the simulator, once the job is completed")
 
 
 # Pydantic model for Jobs
