@@ -24,8 +24,9 @@ router = APIRouter()
 def complete_job_task(job_id, quantity, machines_list):
     # Represents the time that it takes the machine to produce a brand new part, by default 2 seconds
     time_to_produce_part = 2
-    nok_products = 0
+    nok_products = 1
     ok_products = 0
+    quality_rate = 0
 
     try:
         for item in range(0, quantity):
@@ -60,11 +61,9 @@ def complete_job_task(job_id, quantity, machines_list):
         
 
         payload = {
-            "nok_products": nok_products,
-            "quality_rate": quality_rate
+            "nok_products": str(nok_products),
+            "quality_rate": str(quality_rate)
         }
-
-        print(payload)
 
         headers = {
             "Content-Type": "application/json"
@@ -258,11 +257,11 @@ def get_jobs():
                 }
             })
 def update_job_task(job_id: int, updated_job_task: UpdateJob):
-    if not updated_job_task.quality_rate:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="The number of no ok products and quality rate are required."
-        )
+    # if not updated_job_task.quality_rate:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+    #         detail="The number of no ok products and quality rate are required."
+    #     )
     try:
         job_status = "Completed"
         machine_status = "Available"
@@ -381,3 +380,15 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to update job task: {str(e)}"
         )
+    
+# # This endpoint streams the parts created data
+# @app.websocket("/jobs/production_data")
+# async def production_data(websocket: WebSocket):
+#     await add_connection(websocket)
+#     try:
+#         while True:
+#             # Keep the WebSocket connection alive
+#             await websocket.receive_text()
+#     except WebSocketDisconnected:
+#         await remove_connection(websocket)
+#         print("Client Disconnected")
