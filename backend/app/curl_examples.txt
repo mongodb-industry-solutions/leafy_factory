@@ -80,7 +80,7 @@ curl -XPOST \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "work_order_id": "11",
+  "work_order_id": "12",
   "factory" : {
     "factory_id" : "qro_fact_1",
     "production_lines" : [
@@ -90,7 +90,7 @@ curl -XPOST \
       }
     ]
   },
-  "target_output": 1
+  "target_output": 20
 }'
 
 
