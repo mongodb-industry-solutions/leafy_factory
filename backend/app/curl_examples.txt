@@ -185,7 +185,7 @@ curl -XGET \
   "production_line_id": "1"
 }'
 
-curl -XPOST 'http://localhost:8000/start-simulation/'
+curl -XPOST 'http://localhost:8000/start-simulation'
 curl -XGET 'http://localhost:8000/machines/machine_details'
 curl -XGET 'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/workorders'
 
