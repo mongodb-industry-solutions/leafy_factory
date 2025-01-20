@@ -87,18 +87,27 @@
   margin-right: 2%;
 }
 
+.form-vibration{
+  margin-bottom: 7%;
+}
+
 .button {
   background-color: #00ED64;
   font-size: large;
   color: black;
 }
 
+.button:hover {
+  background-color: #00684A;
+  color: #ffffff;
+}
+
 .button-sim {
   margin-top: 35px;
   margin-bottom: 45px;
-  background-color: #00ED64;
   font-size: x-large;
-  color: #023430;
+  background-color: #023430;
+  color: #ffffff;
   border-radius: 10px;
   padding: 10px 20px;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
@@ -106,8 +115,8 @@
 }
 
 .button-sim:hover {
-  background-color: #023430;
-  color: #ffffff;
+  background-color: #00ED64;
+  color: #023430;
 }
 
 .prod-line-img {
