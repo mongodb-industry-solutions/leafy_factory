@@ -53,8 +53,6 @@ vibration_excessive_values = (11, 10000)
 
 def send_heartbeat(data: MachineHeartbeat):
     while simulation_running:
-        print(f"Temperature: {data["temperature"]}")
-        print(f"Vibration: {data["vibration"]}")
         # Conditionals to set machine's temperature
         if data["temperature"] in temperature_threshold:
             temp_value = random.uniform(*temperature_normal_values)
@@ -94,7 +92,6 @@ def send_heartbeat(data: MachineHeartbeat):
             }
 
             insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
-            print(f"Inserted ID: {insert_heartbeat_result.inserted_id}")
 
             # Simulate different intervals, in this case we want to send the heartbeat every 2 seconds
             time.sleep(2)
@@ -165,7 +162,6 @@ async def start_simulation_machines(background_tasks: BackgroundTasks):
     # This API starts the simulation of the machines.
 
     global simulation_running
-    print(f"Global simulation: {simulation_running}")
     try:
         if simulation_running:
             return JSONResponse(
@@ -214,7 +210,6 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
     global simulation_running, threads
     
     backend_update_job_url = f"{BACKEND_URL}/stop-simulation"
-    print(backend_update_job_url)
     response = requests.post(backend_update_job_url)
 
     if response.status_code == 200:
@@ -227,10 +222,6 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
 
         for machine_id in machine_ids:
             production_line_id = 1 if machine_id in [1, 2] else 2
-
-            print(f"Data: {data}")
-            print(f"Data.machine_id: {type(data.machine_id)}")
-            print(f"machine_id: {type(machine_id)}")
             
             if machine_id == int(data.machine_id):
                 new_vibration = data.vibration
@@ -246,8 +237,6 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
                 "vibration": new_vibration,
                 "temperature": new_temperature,
             }
-
-            print(machine_data)
 
             simulation_running = True
 
