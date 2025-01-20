@@ -86,7 +86,7 @@ const WorkOrders = () => {
 
       <Row className="align-items-start mx-0">
         <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
-          <h4>Create a New Work Order</h4>
+          <h3>Create a New Work Order</h3>
           <CreateForm onSubmitSuccess={handleSubmitSuccess}/>
         </Col>
 
@@ -127,7 +127,7 @@ const WorkOrders = () => {
             </Table>
 
 
-            <Pagination className="justify-content-center mt-4">
+            <Pagination className="pagination">
               <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1}/>
                 {renderPaginationItems()}
               <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}/>
