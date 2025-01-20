@@ -1,9 +1,17 @@
 from fastapi import APIRouter, status, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
-from app.database import raw_sensor_data_coll
-from app.models.machines import MachineHeartbeat, MachineStatus, MachineDetails
+from app.database import raw_sensor_data_coll, mariadb_conn
+from app.models.machines import MachineHeartbeat, MachineValue
 from datetime import datetime, timedelta, timezone
-import time, random, threading
+import time, random, threading, requests
+from dotenv import load_dotenv
+import os
+
+# Load values from .env file
+load_dotenv()
+
+# Access the MongoDB_URI and MARIADB variables.
+BACKEND_URL = os.getenv("BACKEND_URL")
 
 
 router = APIRouter()
@@ -14,16 +22,54 @@ simulation_running = False
 threads = []
 
 # This can be modified to simulate the temperature threshold for the machines
-temperature_threshold = (70, 80)
+# Normal and expected threshold for temperature
+temp_status = ""
+temperature_threshold = range(0, 81)
+
+# High temperature
+temperature_high_threshold = range(81, 111)
+
+# Excesive
+temperature_excesive_threshold = range(111, 10000)
 
 # This can be modified to simulate the vibration threshold for the machines
-vibration_threshold = (10, 50)
+# Normal and expected threshold for vibration
+vibration_status = ""
+vibration_threshold = range(0, 7)
+
+# High vibration
+vibration_high_threshold = range(7, 11)
+
+# Excesive vibration
+vibration_excesive_threshold = range(11, 10000)
+
 
 
 def send_heartbeat(data: MachineHeartbeat):
     while simulation_running:
-        temp_value = random.uniform(*temperature_threshold)
-        vibr_value = random.uniform(*vibration_threshold)
+        
+        # Conditionals to set machine's temperature
+        if data["temperature"] in temperature_threshold:
+            temp_value = random.uniform(*temperature_threshold)
+            temp_status = "Normal"
+        elif data["temperature"] in temperature_high_threshold:
+            temp_value = random.uniform(*temperature_high_threshold)
+            temp_status = "High"
+        else:
+            temp_value = random.uniform(*temperature_excesive_threshold)
+            temp_status = "Excesive"
+
+        
+        # Conditionals to set machine's vibration
+        if data["vibration"] in vibration_threshold:
+            vibr_value = random.uniform(*vibration_threshold)
+            vibration_status = "Normal"
+        elif data["vibration"] in vibration_high_threshold:
+            vibr_value = random.uniform(*vibration_high_threshold)
+            vibration_status = "High"
+        else:
+            vibr_value = random.uniform(*vibration_excesive_threshold)
+            vibration_status = "Excessive"
         
         try: 
             # The variable "data" receives the data sent from machine
@@ -35,7 +81,9 @@ def send_heartbeat(data: MachineHeartbeat):
                     "machine_id": data["machine_id"]
                 },
                 "vibration": vibr_value,
-                "temperature": temp_value
+                "temperature": temp_value,
+                "temperature_status": temp_status,
+                "vibration_status": vibration_status
             }
 
             insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
@@ -55,33 +103,55 @@ def send_heartbeat(data: MachineHeartbeat):
 
 
 def start_simulation():
-    print("Running")
     global simulation_running, threads
     simulation_running = True
     threads = []
     factory_id = "qro_fact_1"
     production_line_id = ""
 
-    print("Running")
-
-    # Simulates that we run 4 machines
     
-    for machine_id in range(1,5):
-        if machine_id == 1 or machine_id == 2:
-            production_line_id = 1
-        else:
-            production_line_id = 2
+    # This means that we want to iterate the range from 1 inclusive to 4 inclusive
+    machine_ids= range(1,5)
 
-        machine_data = {
-            "factory_id" : factory_id,
-            "production_line_id": production_line_id,
-            "machine_id" : machine_id
-        }
+    # This updates the value of the machines wherever which is the last value.
+    # Whenever we start the simulator we want to have normal values.
+    update_get_temp_vib = f"""
+                            UPDATE machines
+                            SET temp_values = {temperature_threshold[0]}, vib_values = {vibration_threshold[0]}
+                            WHERE id_machine in {tuple(machine_ids)}
+                         """
+    
+    try:
+    
+        with mariadb_conn.cursor() as db_cur:
+            # temperature_threshold[0] = 70 / Normal and expetected threshold for temperature
+            # vibration_threshold[0] = 3 / Normal and expetected threshold for vibration
+            db_cur.execute(update_get_temp_vib)
+            
+            # Commit the update operations.
+            mariadb_conn.commit()
 
-        t = threading.Thread(target=send_heartbeat, args=(machine_data,))
-        threads.append(t)
-        t.start()
+        for machine_id in machine_ids:
 
+            if machine_id == 1 or machine_id == 2:
+                production_line_id = 1
+            else:
+                production_line_id = 2
+
+            machine_data = {
+                "factory_id" : factory_id,
+                "production_line_id": production_line_id,
+                "machine_id" : machine_id,
+                "vibration": vibration_threshold[0],
+                "temperature": temperature_threshold[0],
+            }
+
+            t = threading.Thread(target=send_heartbeat, args=(machine_data,))
+            threads.append(t)
+            t.start()
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to start the simulation: {str(e)}")
 
 @router.post("/start-simulation")
 async def start_simulation_machines(background_tasks: BackgroundTasks):
@@ -130,13 +200,85 @@ async def stop_simulation():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to stop the simulation: {str(e)}")
     
-@router.post("/update-thresholds")
-async def update_thresholds(temperature_range: tuple = None, vibration_range: tuple = None):
-    # Updates the threholds in case we can to introduce abnormal values.
-    temperature_threshold = temperature_range
-    vibration_threshold = vibration_range
+
+
+# Define the function to stop and restart the simulation
+def stop_and_restart_simulation(machine_ids, factory_id, data):
+    global simulation_running, threads
+    
+    backend_update_job_url = f"{BACKEND_URL}/stop-simulation"
+    response = requests.put(backend_update_job_url)
+
+    if response.status_code == 200:
+        print("API called successfully to stop the current simulation")
+        time.sleep(2)
+
+        # Clear existing threads
+        simulation_running = False
+        threads.clear()
+
+        for machine_id in machine_ids:
+            production_line_id = 1 if machine_id in [1, 2] else 2
+
+            if machine_id == data.machine_id:
+                new_vibration = data.vibration
+                new_temperature = data.temperature
+            else:
+                new_vibration = vibration_threshold[0]
+                new_temperature = temperature_threshold[0]
+
+            machine_data = {
+                "factory_id": factory_id,
+                "production_line_id": production_line_id,
+                "machine_id": machine_id,
+                "vibration": new_vibration,
+                "temperature": new_temperature,
+            }
+
+            simulation_running = True
+
+            t = threading.Thread(target=send_heartbeat, args=(machine_data,))
+            threads.append(t)
+            t.start()
+
+        print("Simulation restarted with the new temperature and vibration values successfully.")
+    else:
+        print(f"Failed to call API: {response.status_code}, {response.text}")
+        raise HTTPException(status_code=500, detail=f"Failed to stop current simulation: {response.text}")
+
+
+
+@router.post("/change_values")
+async def update_thresholds(data: MachineValue, background_tasks: BackgroundTasks):
+    global simulation_running, threads
+
+    # Updates the thresholds in case we want to introduce abnormal values.
+    temperature_value = data.temperature
+    vibration_value = data.vibration
+    factory_id = "qro_fact_1"
+
+    # This means that we want to iterate the range from 1 inclusive to 4 inclusive
+    machine_ids = range(1, 5)
+
+    update_threshold_values = """
+                                UPDATE machines
+                                SET temp_values = %s, vib_values = %s
+                                WHERE id_machine = %s
+                            """
+    
+    try:
+        with mariadb_conn.cursor() as db_cur:
+            # Updating temperature and vibration values
+            db_cur.execute(update_threshold_values, (temperature_value, vibration_value, data.machine_id))
+            # Commit the update operation
+            mariadb_conn.commit()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to set the new temperature and vibration values: {str(e)}")
+    
+    # Add the task to stop and restart the simulation as a background task
+    background_tasks.add_task(stop_and_restart_simulation, machine_ids, factory_id, data)
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
-        content={"message": "Thresholds updated successfully"}
+        content={"message": "Thresholds updated successfully. Simulation will restart in the background."}
     )
