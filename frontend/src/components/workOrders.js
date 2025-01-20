@@ -4,6 +4,7 @@ import {
   useDispatch, // to MODIFY the Factory
   useSelector // to ACCESS the factory
 } from "react-redux";
+import { useLocation } from "react-router-dom";
 import axiosClient from "../config/axios";
 import { Table, Row, Col } from "react-bootstrap";
 import { setAllOrders } from "../redux/slices/WorkOrderslice";
@@ -14,7 +15,8 @@ const WorkOrders = () => {
   const workOrders = useSelector(state => state.WorkOrders.workOrders);
 
   const [isLoading, setIsLoading] = useState(true);
-
+  //Retrieve location from Work orders tab
+  const location = useLocation();
 
       // load all work orders once this component gets rendered
       const fetchWorkOrders = useCallback(async () => {
@@ -32,12 +34,20 @@ const WorkOrders = () => {
         }
       }, [dispatch]);
 
-      useEffect(() => {  
-        fetchWorkOrders();  
-        const intervalId = setInterval(fetchWorkOrders, 2000);  
-        return () => clearInterval(intervalId);  
-      }, [fetchWorkOrders]);  
 
+      useEffect(() => {
+        if (location.pathname === "/workorders") { //|| location.pathname === "/"
+          fetchWorkOrders();
+          const intervalId = setInterval(fetchWorkOrders, 2000);
+          return () => {
+            clearInterval(intervalId);
+          };
+        } else {
+          console.log("Not on WorkOrders tab; stopping fetch.");
+        }
+      }, [fetchWorkOrders, location.pathname]); 
+
+      
       const handleSubmitSuccess = () => {
         fetchWorkOrders();
       }; 
