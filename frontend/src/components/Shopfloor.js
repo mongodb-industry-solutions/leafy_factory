@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { startShopfloor, stopShopfloor, shopfloorFailure } from "../redux/slices/ShopFloorslice";
 import axiosClient from "../config/axios";
 import { Button, Row, Col, Card, ListGroup, Spinner } from "react-bootstrap";
-//import ProgressBar from "react-bootstrap";
 import ProdLineImag from '../images/ProdLine.png';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom'
 
@@ -17,7 +16,6 @@ function ShopfloorComponent() {
     //const [prodLine2, setProdLine2] = useState([]);
     const chartDiv = useRef(null);
     const chartRef = useRef(null);
-    //const progressLevel = 60
 
     useEffect(() => {
 
