@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.job_task import JobTask, UpdateJob
-from app.database import mariadb_conn, kfk_work_jobs_coll
+from app.database import mariadb_conn, kfk_work_jobs_coll, raw_sensor_data_coll
 from pymongo.errors import DuplicateKeyError
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime, random, time, requests
@@ -24,14 +24,36 @@ router = APIRouter()
 def complete_job_task(job_id, quantity, machines_list):
     # Represents the time that it takes the machine to produce a brand new part, by default 2 seconds
     time_to_produce_part = 2
-    nok_products = 1
+    nok_products = 0
     ok_products = 0
     quality_rate = 0
+    part_status_list = ["OK","nOK"]
 
     try:
         for item in range(0, quantity):
+            
+            # Determine the id of the machine that will produce the part
             machine_to_insert = random.choice(machines_list)
-            part_status = "OK"
+
+            # We need to retrieve the temperature and vibration to determine if the past will be produced ok or no ok
+            # Temperature and vibration will be read from MongoDB raw_sensor_data collection
+
+            part_sensor_data = raw_sensor_data_coll.find_one({"metadata.machine_id": machine_to_insert},{"temperature_status": 1, "vibration_status": 1, "_id":0}).sort({"timestamp": -1}).limit(1)
+        
+            # Get the single document from the cursor
+            sensor_data_status = next(part_sensor_data, None)
+            if (sensor_data_status["temperature_status"] == "Normal") and (sensor_data_status["vibration_status"] == "Normal"):
+                # If sensor status is Normal the part status will be ok
+                # part_status = OK
+                part_status = part_status_list[0]
+            elif (sensor_data_status["temperature_status"] == "High") or (sensor_data_status["vibration_status"] == "High"):
+                # If sensor status is High, the part_status will be randomly selected
+                part_status = random.choice(part_status_list)
+            elif (sensor_data_status["temperature_status"] == "Excessive") or (sensor_data_status["vibration_status"] == "Excessive"):
+                # If sensor status is Excessive the part status will be nOK
+                # part_status = nOK
+                part_status = part_status_list[1]
+            
             
             if part_status == "nOK":
                 nok_products += 1
