@@ -101,6 +101,8 @@ CREATE TABLE machines(
     avg_output DECIMAL(10, 2),
     reject_count DECIMAL(10, 2),
     production_line_id INT NOT NULL,
+    temp_values DECIMAL(10, 2) NOT NULL,
+    vib_values DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (production_line_id) REFERENCES production_lines(id_production_line)
 );
 
@@ -175,7 +177,7 @@ VALUES
     1
 );
 
-INSERT INTO machines(machine_status, last_maintenance, operator, avg_output, reject_count, production_line_id) 
+INSERT INTO machines(machine_status, last_maintenance, operator, avg_output, reject_count, production_line_id, temp_values, vib_values) 
 VALUES 
 (
     "Available",
@@ -183,7 +185,9 @@ VALUES
     "Ada Lovelace",
     3000,
     25,
-    1
+    1,
+    70,
+    3
 ),
 (
     "Available",
@@ -191,7 +195,9 @@ VALUES
     "Claude Jones",
     3000,
     25,
-    1
+    1,
+    70,
+    3
 ),
 (
     "Available",
@@ -199,7 +205,9 @@ VALUES
     "Grace Conway",
     3000,
     25,
-    2
+    2,
+    70,
+    3
 ),
 (
     "Available",
@@ -207,6 +215,8 @@ VALUES
     "Frida Sidik",
     3000,
     25,
-    2
+    2,
+    70,
+    3
 );
 
