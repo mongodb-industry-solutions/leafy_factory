@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from app.database import machine_data_coll, raw_sensor_data_coll, factories_data_coll, kfk_machines_coll
-from app.models.machines import MachineHeartbeat, MachineStatus, MachineDetails
+from app.models.machines import MachineHeartbeat, MachineValue
 from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
 from bson import Decimal128
@@ -18,17 +18,6 @@ def get_bucket_time(timestamp):
     list_time.append(end_date)
 
     return list_time
-
-
-@router.put("/machines/change_status")
-async def update_status_machine(data: MachineStatus):
-    """This endpoint updates the machine status: it could be <available, running, maintenance>"""
-    try:
-        machine_status_record = {
-
-        }
-    except Exception as e:
-        pass
 
 
 @router.post("/machines/ts_heartbeat")
