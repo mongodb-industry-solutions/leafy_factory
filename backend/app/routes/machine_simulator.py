@@ -53,7 +53,8 @@ vibration_excessive_values = (11, 10000)
 
 def send_heartbeat(data: MachineHeartbeat):
     while simulation_running:
-        
+        print(f"Temperature: {data["temperature"]}")
+        print(f"Vibration: {data["vibration"]}")
         # Conditionals to set machine's temperature
         if data["temperature"] in temperature_threshold:
             temp_value = random.uniform(*temperature_normal_values)
@@ -86,8 +87,8 @@ def send_heartbeat(data: MachineHeartbeat):
                     "prod_line_id": data["production_line_id"],
                     "machine_id": data["machine_id"]
                 },
-                "vibration": vibr_value,
-                "temperature": temp_value,
+                "vibration": round(vibr_value,2),
+                "temperature": round(temp_value,2),
                 "temperature_status": temp_status,
                 "vibration_status": vibration_status
             }
@@ -148,8 +149,8 @@ def start_simulation():
                 "factory_id" : factory_id,
                 "production_line_id": production_line_id,
                 "machine_id" : machine_id,
-                "vibration": vibration_threshold[0],
-                "temperature": temperature_threshold[0],
+                "vibration": vibration_normal_values[0],
+                "temperature": temperature_normal_values[0],
             }
 
             t = threading.Thread(target=send_heartbeat, args=(machine_data,))
@@ -213,7 +214,8 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
     global simulation_running, threads
     
     backend_update_job_url = f"{BACKEND_URL}/stop-simulation"
-    response = requests.put(backend_update_job_url)
+    print(backend_update_job_url)
+    response = requests.post(backend_update_job_url)
 
     if response.status_code == 200:
         print("API called successfully to stop the current simulation")
@@ -226,12 +228,16 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
         for machine_id in machine_ids:
             production_line_id = 1 if machine_id in [1, 2] else 2
 
-            if machine_id == data.machine_id:
+            print(f"Data: {data}")
+            print(f"Data.machine_id: {type(data.machine_id)}")
+            print(f"machine_id: {type(machine_id)}")
+            
+            if machine_id == int(data.machine_id):
                 new_vibration = data.vibration
                 new_temperature = data.temperature
             else:
-                new_vibration = vibration_threshold[0]
-                new_temperature = temperature_threshold[0]
+                new_vibration = vibration_normal_values[0]
+                new_temperature = temperature_normal_values[0]
 
             machine_data = {
                 "factory_id": factory_id,
@@ -240,6 +246,8 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
                 "vibration": new_vibration,
                 "temperature": new_temperature,
             }
+
+            print(machine_data)
 
             simulation_running = True
 
