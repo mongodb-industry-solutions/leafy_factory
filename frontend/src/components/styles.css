@@ -62,7 +62,7 @@
 
 .navbar .nav-item.show .nav-link,
 .navbar .nav-link:hover {
-  background-color: #00ED64;
+  background-color: #00ed64;
   color: #004d00;
 }
 
@@ -87,18 +87,18 @@
   margin-right: 2%;
 }
 
-.form-vibration{
+.form-vibration {
   margin-bottom: 7%;
 }
 
 .button {
-  background-color: #00ED64;
+  background-color: #00ed64;
   font-size: large;
   color: black;
 }
 
 .button:hover {
-  background-color: #00684A;
+  background-color: #00684a;
   color: #ffffff;
 }
 
@@ -115,7 +115,7 @@
 }
 
 .button-sim:hover {
-  background-color: #00ED64;
+  background-color: #00ed64;
   color: #023430;
 }
 
@@ -124,7 +124,7 @@
   align-items: center;
   align-self: center;
   width: calc(100% / 2);
-  height: auto
+  height: auto;
 }
 
 .prod-card {
@@ -167,7 +167,7 @@
 .card-body {
   font-size: 24px;
   text-align: center;
-  background-color: #E3FCF7;
+  background-color: #e3fcf7;
 }
 
 .overview-img {
@@ -182,7 +182,7 @@
   margin: 20px 12% 0 12%;
   align-items: center;
   width: calc(100% / 2.5);
-  height: auto
+  height: auto;
 }
 
 .chart {
@@ -194,7 +194,7 @@
   border-radius: 15px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 1200px !important;  
+  max-width: 1200px !important;
   height: 740px !important;
   margin: 50px auto;
 }
@@ -202,10 +202,10 @@
 .button-chart {
   margin-top: 10px;
   margin-bottom: 3px;
-  background-color: #E3FCF7;
+  background-color: #e3fcf7;
   font-size: medium;
   color: #023430;
-  transition: background-color 0.3s ease; 
+  transition: background-color 0.3s ease;
 }
 
 .card-title {
@@ -216,13 +216,31 @@
 }
 
 .progress-bar {
-  background-color: #00ED64 !important;
-  color: #023430; 
+  background-color: #00ed64 !important;
+  color: #023430;
   transition: width 1s ease-in-out;
-  margin: 10px 5% 10px 5%;}
+  margin: 10px 5% 10px 5%;
+}
 
 .progress {
   background-color: #e0e0e0;
+}
+
+.pagination {
+  justify-content: center;
+}
+
+.pagination .page-item .page-link {
+  color: #00684a;
+}
+.pagination .page-item.active .page-link,
+.pagination .page-item.active .page-link:hover {
+  background-color: #00684a;
+  border-color: #00684a;
+  color: #ffff;
+}
+.pagination .page-item .page-link:hover {
+  color: #004d00;
 }
 
 @media screen and (max-width: 768px) {
@@ -249,28 +267,28 @@
   }
 }
 
-  .form-wrapper {
-    padding: 10px;
-  }
+.form-wrapper {
+  padding: 10px;
+}
 
-  .chart {
-    width: 95%;
-    max-width: 100%;
-    height: 400px;
-    padding: 15px;
-  }
+.chart {
+  width: 95%;
+  max-width: 100%;
+  height: 400px;
+  padding: 15px;
+}
 
-  .table-dark-green th,
-  .table-dark-green td {
-    font-size: 14px;
-  }
+.table-dark-green th,
+.table-dark-green td {
+  font-size: 14px;
+}
 
-  .navtext,
-  .history-header,
-  .table th,
-  .table td,
-  body,
-  .button,
-  .button-sim {
-    font-family: "Lato", sans-serif;
-  }
+.navtext,
+.history-header,
+.table th,
+.table td,
+body,
+.button,
+.button-sim {
+  font-family: "Lato", sans-serif;
+}
