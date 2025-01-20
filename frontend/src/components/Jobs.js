@@ -1,9 +1,7 @@
 import "./styles.css";
 import React, { useEffect, useState, useCallback } from "react";
-import { 
-    useDispatch, 
-    useSelector 
-} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import axiosClient from "../config/axios";
 import { Table, Row, Col, Card, ProgressBar } from "react-bootstrap";
 import { setAllJobs } from "../redux/slices/JobSlice";
@@ -14,6 +12,9 @@ const Jobs = () => {
   const jobs = useSelector((state) => state.Jobs.jobs);
   const progressLevel = 60
   const [isLoading, setIsLoading] = useState(true);
+
+  //Retrieve location from Jobs tab
+  const location = useLocation();
 
     const fetchJobs = useCallback(async () => {
       try {
@@ -29,11 +30,17 @@ const Jobs = () => {
       }
     }, [dispatch]);
 
-      useEffect(() => {  
-        fetchJobs();  
-        const intervalId = setInterval(fetchJobs, 12000);  
-        return () => clearInterval(intervalId);  
-      }, [fetchJobs]);  
+      useEffect(() => {
+        if (location.pathname === "/jobs") {
+          fetchJobs();
+          const intervalId = setInterval(fetchJobs, 5000);
+          return () => {
+            clearInterval(intervalId);
+          };
+        } else {
+          console.log("Not on Jobs tab; stopping fetch.");
+        }
+      }, [fetchJobs, location.pathname]); 
 
       const handleCreateSuccess = () => {
         fetchJobs();
