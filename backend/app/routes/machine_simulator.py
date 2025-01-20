@@ -123,7 +123,7 @@ def start_simulation():
     # Whenever we start the simulator we want to have normal values.
     update_get_temp_vib = f"""
                             UPDATE machines
-                            SET temp_values = {temperature_threshold[0]}, vib_values = {vibration_threshold[0]}
+                            SET temp_values = {temperature_normal_values[0]}, vib_values = {vibration_normal_values[0]}
                             WHERE id_machine in {tuple(machine_ids)}
                          """
     
@@ -254,7 +254,7 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
 
 
 
-@router.post("/change_values")
+@router.put("/change_values")
 async def update_thresholds(data: MachineValue, background_tasks: BackgroundTasks):
     global simulation_running, threads
 

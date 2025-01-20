@@ -38,7 +38,7 @@ def complete_job_task(job_id, quantity, machines_list):
             # We need to retrieve the temperature and vibration to determine if the past will be produced ok or no ok
             # Temperature and vibration will be read from MongoDB raw_sensor_data collection
 
-            part_sensor_data = raw_sensor_data_coll.find_one({"metadata.machine_id": machine_to_insert},{"temperature_status": 1, "vibration_status": 1, "_id":0}).sort({"timestamp": -1}).limit(1)
+            part_sensor_data = raw_sensor_data_coll.find({"metadata.machine_id": machine_to_insert},{"temperature_status": 1, "vibration_status": 1, "_id":0}).sort({"timestamp": -1}).limit(1)
         
             # Get the single document from the cursor
             sensor_data_status = next(part_sensor_data, None)

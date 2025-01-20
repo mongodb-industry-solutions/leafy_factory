@@ -104,3 +104,276 @@ Caused by: java.net.SocketTimeoutException: Read timed out
 [2025-01-20 15:09:41,820] INFO [mongodb-sink-connector|task-0] Discovered replica set primary ist-shared-shard-00-01.n0kts.mongodb.net:27017 (org.mongodb.driver.cluster:71)
 [2025-01-20 15:09:42,177] INFO [mongodb-sink-connector|task-0] Opened connection [connectionId{localValue:19, serverValue:551104}] to ist-shared-shard-00-00.n0kts.mongodb.net:27017 (org.mongodb.driver.connection:71)
 [2025-01-20 15:09:42,266] INFO [mongodb-sink-connector|task-0] Opened connection [connectionId{localValue:20, serverValue:734773}] to ist-shared-shard-00-02.n0kts.mongodb.net:27017 (org.mongodb.driver.connection:71)
+[2025-01-20 15:19:19,048] INFO [mariadb-connector|task-0] 4 records sent during previous 00:54:12.161, last recorded offset of {server=kafka} partition is {ts_sec=1737407958, file=mariadb-bin.000001, pos=0, row=1, server_id=1} (io.debezium.connector.common.BaseSourceTask:351)
+[2025-01-20 15:19:19,111] WARN [mariadb-connector|task-0] [Producer clientId=connector-producer-mariadb-connector-0] The metadata response from the cluster reported a recoverable issue with correlation id 52 : {kafka.leafy_factory.work_orders=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient:1218)
+[2025-01-20 15:19:19,259] WARN [mariadb-connector|task-0] [Producer clientId=connector-producer-mariadb-connector-0] The metadata response from the cluster reported a recoverable issue with correlation id 56 : {kafka.leafy_factory.product_cost=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient:1218)
+[2025-01-20 15:19:20,015] INFO [mongodb-sink-connector|task-0] Opened connection [connectionId{localValue:21, serverValue:964877}] to ist-shared-shard-00-01.n0kts.mongodb.net:27017 (org.mongodb.driver.connection:71)
+[2025-01-20 15:19:23,118] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 4 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-20 15:19:23,658] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Request joining group due to: cached metadata has changed from (version3: {kafka.leafy_factory.products=[NO_RACKS], kafka.leafy_factory.products_raw_materials=[NO_RACKS], kafka.leafy_factory.production_lines=[NO_RACKS], kafka.leafy_factory.raw_materials=[NO_RACKS], kafka.leafy_factory.factories=[NO_RACKS], kafka.leafy_factory.machines=[NO_RACKS]}) at the beginning of the rebalance to (version13: {kafka.leafy_factory.products=[NO_RACKS], kafka.leafy_factory.production_lines=[NO_RACKS], kafka.leafy_factory.products_raw_materials=[NO_RACKS], kafka.leafy_factory.raw_materials=[NO_RACKS], kafka.leafy_factory.factories=[NO_RACKS], kafka.leafy_factory.product_cost=[NO_RACKS], kafka.leafy_factory.machines=[NO_RACKS], kafka.leafy_factory.work_orders=[NO_RACKS]}) (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:1103)
+[2025-01-20 15:19:24,190] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Revoke previously assigned partitions kafka.leafy_factory.factories-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0 (org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker:80)
+[2025-01-20 15:19:24,202] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] (Re-)joining group (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:605)
+[2025-01-20 15:19:24,212] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Successfully joined group with generation Generation{generationId=2, memberId='connector-consumer-mongodb-sink-connector-0-a1bf0f73-7653-4f59-a40a-e6c0400b7a76', protocol='range'} (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:666)
+[2025-01-20 15:19:24,215] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Finished assignment for group at generation 2: {connector-consumer-mongodb-sink-connector-0-a1bf0f73-7653-4f59-a40a-e6c0400b7a76=Assignment(partitions=[kafka.leafy_factory.products-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0, kafka.leafy_factory.factories-0, kafka.leafy_factory.product_cost-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.work_orders-0])} (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:664)
+[2025-01-20 15:19:24,231] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Successfully synced group in generation Generation{generationId=2, memberId='connector-consumer-mongodb-sink-connector-0-a1bf0f73-7653-4f59-a40a-e6c0400b7a76', protocol='range'} (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:843)
+[2025-01-20 15:19:24,237] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Notifying assignor about the new Assignment(partitions=[kafka.leafy_factory.products-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0, kafka.leafy_factory.factories-0, kafka.leafy_factory.product_cost-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.work_orders-0]) (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:324)
+[2025-01-20 15:19:24,239] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Adding newly assigned partitions: kafka.leafy_factory.factories-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.product_cost-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0, kafka.leafy_factory.work_orders-0 (org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker:58)
+[2025-01-20 15:19:24,248] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Found no committed offset for partition kafka.leafy_factory.product_cost-0 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:1508)
+[2025-01-20 15:19:24,249] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Found no committed offset for partition kafka.leafy_factory.work_orders-0 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:1508)
+[2025-01-20 15:19:24,256] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.products-0 to the committed offset FetchPosition{offset=2, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:19:24,257] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.raw_materials-0 to the committed offset FetchPosition{offset=10, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:19:24,258] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.production_lines-0 to the committed offset FetchPosition{offset=2, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:19:24,259] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.products_raw_materials-0 to the committed offset FetchPosition{offset=8, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:19:24,259] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.factories-0 to the committed offset FetchPosition{offset=1, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:19:24,259] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.machines-0 to the committed offset FetchPosition{offset=8, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:19:24,261] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Resetting offset for partition kafka.leafy_factory.product_cost-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}}. (org.apache.kafka.clients.consumer.internals.SubscriptionState:407)
+[2025-01-20 15:19:24,261] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Resetting offset for partition kafka.leafy_factory.work_orders-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}}. (org.apache.kafka.clients.consumer.internals.SubscriptionState:407)
+[2025-01-20 15:19:24,270] INFO [mongodb-sink-connector|task-0] MongoSinkTopicConfig values: 
+	bulk.write.ordered = true
+	change.data.capture.handler = 
+	collection = 
+	database = leafy_factory
+	delete.on.null.values = false
+	delete.writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy
+	document.id.strategy = com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy
+	document.id.strategy.overwrite.existing = false
+	document.id.strategy.partial.key.projection.list = 
+	document.id.strategy.partial.key.projection.type = 
+	document.id.strategy.partial.value.projection.list = id_job,id_cost,id_product,id_work,id_machine,id_production_data,id_production_line,id_jobs_machines
+	document.id.strategy.partial.value.projection.type = AllowList
+	document.id.strategy.uuid.format = string
+	errors.log.enable = true
+	errors.tolerance = all
+	field.renamer.mapping = []
+	field.renamer.regexp = []
+	key.projection.list = 
+	key.projection.type = none
+	max.batch.size = 0
+	mongo.errors.log.enable = false
+	mongo.errors.tolerance = none
+	namespace.mapper = com.mongodb.kafka.connect.sink.namespace.mapping.DefaultNamespaceMapper
+	namespace.mapper.error.if.invalid = false
+	namespace.mapper.key.collection.field = 
+	namespace.mapper.key.database.field = 
+	namespace.mapper.value.collection.field = 
+	namespace.mapper.value.database.field = 
+	post.processor.chain = [com.mongodb.kafka.connect.sink.processor.DocumentIdAdder]
+	rate.limiting.every.n = 0
+	rate.limiting.timeout = 0
+	timeseries.expire.after.seconds = 0
+	timeseries.granularity = 
+	timeseries.metafield = 
+	timeseries.timefield = 
+	timeseries.timefield.auto.convert = false
+	timeseries.timefield.auto.convert.date.format = yyyy-MM-dd[['T'][ ]][HH:mm:ss[[.][SSSSSS][SSS]][ ]VV[ ]'['VV']'][HH:mm:ss[[.][SSSSSS][SSS]][ ]X][HH:mm:ss[[.][SSSSSS][SSS]]]
+	timeseries.timefield.auto.convert.locale.language.tag = 
+	topic = kafka.leafy_factory.product_cost
+	value.projection.list = 
+	value.projection.type = none
+	writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.UpdateOneTimestampsStrategy
+ (com.mongodb.kafka.connect.sink.MongoSinkTopicConfig:371)
+[2025-01-20 15:19:24,282] INFO [mongodb-sink-connector|task-0] MongoSinkTopicConfig values: 
+	bulk.write.ordered = true
+	change.data.capture.handler = 
+	collection = 
+	database = leafy_factory
+	delete.on.null.values = false
+	delete.writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy
+	document.id.strategy = com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy
+	document.id.strategy.overwrite.existing = false
+	document.id.strategy.partial.key.projection.list = 
+	document.id.strategy.partial.key.projection.type = 
+	document.id.strategy.partial.value.projection.list = id_job,id_cost,id_product,id_work,id_machine,id_production_data,id_production_line,id_jobs_machines
+	document.id.strategy.partial.value.projection.type = AllowList
+	document.id.strategy.uuid.format = string
+	errors.log.enable = true
+	errors.tolerance = all
+	field.renamer.mapping = []
+	field.renamer.regexp = []
+	key.projection.list = 
+	key.projection.type = none
+	max.batch.size = 0
+	mongo.errors.log.enable = false
+	mongo.errors.tolerance = none
+	namespace.mapper = com.mongodb.kafka.connect.sink.namespace.mapping.DefaultNamespaceMapper
+	namespace.mapper.error.if.invalid = false
+	namespace.mapper.key.collection.field = 
+	namespace.mapper.key.database.field = 
+	namespace.mapper.value.collection.field = 
+	namespace.mapper.value.database.field = 
+	post.processor.chain = [com.mongodb.kafka.connect.sink.processor.DocumentIdAdder]
+	rate.limiting.every.n = 0
+	rate.limiting.timeout = 0
+	timeseries.expire.after.seconds = 0
+	timeseries.granularity = 
+	timeseries.metafield = 
+	timeseries.timefield = 
+	timeseries.timefield.auto.convert = false
+	timeseries.timefield.auto.convert.date.format = yyyy-MM-dd[['T'][ ]][HH:mm:ss[[.][SSSSSS][SSS]][ ]VV[ ]'['VV']'][HH:mm:ss[[.][SSSSSS][SSS]][ ]X][HH:mm:ss[[.][SSSSSS][SSS]]]
+	timeseries.timefield.auto.convert.locale.language.tag = 
+	topic = kafka.leafy_factory.work_orders
+	value.projection.list = 
+	value.projection.type = none
+	writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.UpdateOneTimestampsStrategy
+ (com.mongodb.kafka.connect.sink.MongoSinkTopicConfig:371)
+[2025-01-20 15:19:59,191] WARN [mariadb-connector|task-0] [Producer clientId=connector-producer-mariadb-connector-0] The metadata response from the cluster reported a recoverable issue with correlation id 60 : {kafka.leafy_factory.jobs=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient:1218)
+[2025-01-20 15:19:59,326] WARN [mariadb-connector|task-0] [Producer clientId=connector-producer-mariadb-connector-0] The metadata response from the cluster reported a recoverable issue with correlation id 63 : {kafka.leafy_factory.jobs_machines=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient:1218)
+[2025-01-20 15:20:03,141] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 6 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-20 15:22:43,222] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 4 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-20 15:22:53,232] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 4 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-20 15:23:13,898] WARN [mariadb-connector|task-0] [Producer clientId=connector-producer-mariadb-connector-0] The metadata response from the cluster reported a recoverable issue with correlation id 73 : {kafka.leafy_factory.production_data=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient:1218)
+[2025-01-20 15:23:23,254] INFO [mariadb-connector|task-0|offsets] WorkerSourceTask{id=mariadb-connector-0} Committing offsets for 15 acknowledged messages (org.apache.kafka.connect.runtime.WorkerSourceTask:236)
+[2025-01-20 15:24:18,611] INFO [Worker clientId=connect-192.168.1.3:8083, groupId=connect-cluster] Session key updated (org.apache.kafka.connect.runtime.distributed.DistributedHerder:2510)
+[2025-01-20 15:24:24,391] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Request joining group due to: cached metadata has changed from (version14: {kafka.leafy_factory.products=[NO_RACKS], kafka.leafy_factory.production_lines=[NO_RACKS], kafka.leafy_factory.products_raw_materials=[NO_RACKS], kafka.leafy_factory.raw_materials=[NO_RACKS], kafka.leafy_factory.factories=[NO_RACKS], kafka.leafy_factory.product_cost=[NO_RACKS], kafka.leafy_factory.machines=[NO_RACKS], kafka.leafy_factory.work_orders=[NO_RACKS]}) at the beginning of the rebalance to (version15: {kafka.leafy_factory.products=[NO_RACKS], kafka.leafy_factory.production_data=[NO_RACKS], kafka.leafy_factory.jobs=[NO_RACKS], kafka.leafy_factory.production_lines=[NO_RACKS], kafka.leafy_factory.products_raw_materials=[NO_RACKS], kafka.leafy_factory.raw_materials=[NO_RACKS], kafka.leafy_factory.factories=[NO_RACKS], kafka.leafy_factory.product_cost=[NO_RACKS], kafka.leafy_factory.jobs_machines=[NO_RACKS], kafka.leafy_factory.machines=[NO_RACKS], kafka.leafy_factory.work_orders=[NO_RACKS]}) (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:1103)
+[2025-01-20 15:24:24,898] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Revoke previously assigned partitions kafka.leafy_factory.factories-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.product_cost-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0, kafka.leafy_factory.work_orders-0 (org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker:80)
+[2025-01-20 15:24:24,899] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] (Re-)joining group (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:605)
+[2025-01-20 15:24:24,904] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Successfully joined group with generation Generation{generationId=3, memberId='connector-consumer-mongodb-sink-connector-0-a1bf0f73-7653-4f59-a40a-e6c0400b7a76', protocol='range'} (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:666)
+[2025-01-20 15:24:24,916] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Finished assignment for group at generation 3: {connector-consumer-mongodb-sink-connector-0-a1bf0f73-7653-4f59-a40a-e6c0400b7a76=Assignment(partitions=[kafka.leafy_factory.products-0, kafka.leafy_factory.production_data-0, kafka.leafy_factory.jobs-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0, kafka.leafy_factory.factories-0, kafka.leafy_factory.product_cost-0, kafka.leafy_factory.jobs_machines-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.work_orders-0])} (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:664)
+[2025-01-20 15:24:24,923] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Successfully synced group in generation Generation{generationId=3, memberId='connector-consumer-mongodb-sink-connector-0-a1bf0f73-7653-4f59-a40a-e6c0400b7a76', protocol='range'} (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:843)
+[2025-01-20 15:24:24,924] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Notifying assignor about the new Assignment(partitions=[kafka.leafy_factory.products-0, kafka.leafy_factory.production_data-0, kafka.leafy_factory.jobs-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0, kafka.leafy_factory.factories-0, kafka.leafy_factory.product_cost-0, kafka.leafy_factory.jobs_machines-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.work_orders-0]) (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:324)
+[2025-01-20 15:24:24,924] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Adding newly assigned partitions: kafka.leafy_factory.factories-0, kafka.leafy_factory.jobs-0, kafka.leafy_factory.jobs_machines-0, kafka.leafy_factory.machines-0, kafka.leafy_factory.product_cost-0, kafka.leafy_factory.production_data-0, kafka.leafy_factory.production_lines-0, kafka.leafy_factory.products-0, kafka.leafy_factory.products_raw_materials-0, kafka.leafy_factory.raw_materials-0, kafka.leafy_factory.work_orders-0 (org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker:58)
+[2025-01-20 15:24:24,927] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Found no committed offset for partition kafka.leafy_factory.production_data-0 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:1508)
+[2025-01-20 15:24:24,927] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Found no committed offset for partition kafka.leafy_factory.jobs-0 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:1508)
+[2025-01-20 15:24:24,928] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Found no committed offset for partition kafka.leafy_factory.jobs_machines-0 (org.apache.kafka.clients.consumer.internals.ConsumerCoordinator:1508)
+[2025-01-20 15:24:24,928] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.products-0 to the committed offset FetchPosition{offset=2, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,929] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.raw_materials-0 to the committed offset FetchPosition{offset=12, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,929] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.production_lines-0 to the committed offset FetchPosition{offset=2, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,929] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.products_raw_materials-0 to the committed offset FetchPosition{offset=8, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,930] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.factories-0 to the committed offset FetchPosition{offset=1, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,930] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.product_cost-0 to the committed offset FetchPosition{offset=3, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,930] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.work_orders-0 to the committed offset FetchPosition{offset=5, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,930] INFO [mongodb-sink-connector|task-0] Setting offset for partition kafka.leafy_factory.machines-0 to the committed offset FetchPosition{offset=12, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}} (org.apache.kafka.clients.consumer.internals.ConsumerUtils:209)
+[2025-01-20 15:24:24,931] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Resetting offset for partition kafka.leafy_factory.production_data-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}}. (org.apache.kafka.clients.consumer.internals.SubscriptionState:407)
+[2025-01-20 15:24:24,932] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Resetting offset for partition kafka.leafy_factory.jobs-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}}. (org.apache.kafka.clients.consumer.internals.SubscriptionState:407)
+[2025-01-20 15:24:24,932] INFO [mongodb-sink-connector|task-0] [Consumer clientId=connector-consumer-mongodb-sink-connector-0, groupId=connect-mongodb-sink-connector] Resetting offset for partition kafka.leafy_factory.jobs_machines-0 to position FetchPosition{offset=0, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[192.168.1.3:9092 (id: 0 rack: null)], epoch=0}}. (org.apache.kafka.clients.consumer.internals.SubscriptionState:407)
+[2025-01-20 15:24:24,948] INFO [mongodb-sink-connector|task-0] MongoSinkTopicConfig values: 
+	bulk.write.ordered = true
+	change.data.capture.handler = 
+	collection = 
+	database = leafy_factory
+	delete.on.null.values = false
+	delete.writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy
+	document.id.strategy = com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy
+	document.id.strategy.overwrite.existing = false
+	document.id.strategy.partial.key.projection.list = 
+	document.id.strategy.partial.key.projection.type = 
+	document.id.strategy.partial.value.projection.list = id_job,id_cost,id_product,id_work,id_machine,id_production_data,id_production_line,id_jobs_machines
+	document.id.strategy.partial.value.projection.type = AllowList
+	document.id.strategy.uuid.format = string
+	errors.log.enable = true
+	errors.tolerance = all
+	field.renamer.mapping = []
+	field.renamer.regexp = []
+	key.projection.list = 
+	key.projection.type = none
+	max.batch.size = 0
+	mongo.errors.log.enable = false
+	mongo.errors.tolerance = none
+	namespace.mapper = com.mongodb.kafka.connect.sink.namespace.mapping.DefaultNamespaceMapper
+	namespace.mapper.error.if.invalid = false
+	namespace.mapper.key.collection.field = 
+	namespace.mapper.key.database.field = 
+	namespace.mapper.value.collection.field = 
+	namespace.mapper.value.database.field = 
+	post.processor.chain = [com.mongodb.kafka.connect.sink.processor.DocumentIdAdder]
+	rate.limiting.every.n = 0
+	rate.limiting.timeout = 0
+	timeseries.expire.after.seconds = 0
+	timeseries.granularity = 
+	timeseries.metafield = 
+	timeseries.timefield = 
+	timeseries.timefield.auto.convert = false
+	timeseries.timefield.auto.convert.date.format = yyyy-MM-dd[['T'][ ]][HH:mm:ss[[.][SSSSSS][SSS]][ ]VV[ ]'['VV']'][HH:mm:ss[[.][SSSSSS][SSS]][ ]X][HH:mm:ss[[.][SSSSSS][SSS]]]
+	timeseries.timefield.auto.convert.locale.language.tag = 
+	topic = kafka.leafy_factory.production_data
+	value.projection.list = 
+	value.projection.type = none
+	writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.UpdateOneTimestampsStrategy
+ (com.mongodb.kafka.connect.sink.MongoSinkTopicConfig:371)
+[2025-01-20 15:24:24,951] INFO [mongodb-sink-connector|task-0] MongoSinkTopicConfig values: 
+	bulk.write.ordered = true
+	change.data.capture.handler = 
+	collection = 
+	database = leafy_factory
+	delete.on.null.values = false
+	delete.writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy
+	document.id.strategy = com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy
+	document.id.strategy.overwrite.existing = false
+	document.id.strategy.partial.key.projection.list = 
+	document.id.strategy.partial.key.projection.type = 
+	document.id.strategy.partial.value.projection.list = id_job,id_cost,id_product,id_work,id_machine,id_production_data,id_production_line,id_jobs_machines
+	document.id.strategy.partial.value.projection.type = AllowList
+	document.id.strategy.uuid.format = string
+	errors.log.enable = true
+	errors.tolerance = all
+	field.renamer.mapping = []
+	field.renamer.regexp = []
+	key.projection.list = 
+	key.projection.type = none
+	max.batch.size = 0
+	mongo.errors.log.enable = false
+	mongo.errors.tolerance = none
+	namespace.mapper = com.mongodb.kafka.connect.sink.namespace.mapping.DefaultNamespaceMapper
+	namespace.mapper.error.if.invalid = false
+	namespace.mapper.key.collection.field = 
+	namespace.mapper.key.database.field = 
+	namespace.mapper.value.collection.field = 
+	namespace.mapper.value.database.field = 
+	post.processor.chain = [com.mongodb.kafka.connect.sink.processor.DocumentIdAdder]
+	rate.limiting.every.n = 0
+	rate.limiting.timeout = 0
+	timeseries.expire.after.seconds = 0
+	timeseries.granularity = 
+	timeseries.metafield = 
+	timeseries.timefield = 
+	timeseries.timefield.auto.convert = false
+	timeseries.timefield.auto.convert.date.format = yyyy-MM-dd[['T'][ ]][HH:mm:ss[[.][SSSSSS][SSS]][ ]VV[ ]'['VV']'][HH:mm:ss[[.][SSSSSS][SSS]][ ]X][HH:mm:ss[[.][SSSSSS][SSS]]]
+	timeseries.timefield.auto.convert.locale.language.tag = 
+	topic = kafka.leafy_factory.jobs
+	value.projection.list = 
+	value.projection.type = none
+	writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.UpdateOneTimestampsStrategy
+ (com.mongodb.kafka.connect.sink.MongoSinkTopicConfig:371)
+[2025-01-20 15:24:24,952] INFO [mongodb-sink-connector|task-0] MongoSinkTopicConfig values: 
+	bulk.write.ordered = true
+	change.data.capture.handler = 
+	collection = 
+	database = leafy_factory
+	delete.on.null.values = false
+	delete.writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.DeleteOneDefaultStrategy
+	document.id.strategy = com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy
+	document.id.strategy.overwrite.existing = false
+	document.id.strategy.partial.key.projection.list = 
+	document.id.strategy.partial.key.projection.type = 
+	document.id.strategy.partial.value.projection.list = id_job,id_cost,id_product,id_work,id_machine,id_production_data,id_production_line,id_jobs_machines
+	document.id.strategy.partial.value.projection.type = AllowList
+	document.id.strategy.uuid.format = string
+	errors.log.enable = true
+	errors.tolerance = all
+	field.renamer.mapping = []
+	field.renamer.regexp = []
+	key.projection.list = 
+	key.projection.type = none
+	max.batch.size = 0
+	mongo.errors.log.enable = false
+	mongo.errors.tolerance = none
+	namespace.mapper = com.mongodb.kafka.connect.sink.namespace.mapping.DefaultNamespaceMapper
+	namespace.mapper.error.if.invalid = false
+	namespace.mapper.key.collection.field = 
+	namespace.mapper.key.database.field = 
+	namespace.mapper.value.collection.field = 
+	namespace.mapper.value.database.field = 
+	post.processor.chain = [com.mongodb.kafka.connect.sink.processor.DocumentIdAdder]
+	rate.limiting.every.n = 0
+	rate.limiting.timeout = 0
+	timeseries.expire.after.seconds = 0
+	timeseries.granularity = 
+	timeseries.metafield = 
+	timeseries.timefield = 
+	timeseries.timefield.auto.convert = false
+	timeseries.timefield.auto.convert.date.format = yyyy-MM-dd[['T'][ ]][HH:mm:ss[[.][SSSSSS][SSS]][ ]VV[ ]'['VV']'][HH:mm:ss[[.][SSSSSS][SSS]][ ]X][HH:mm:ss[[.][SSSSSS][SSS]]]
+	timeseries.timefield.auto.convert.locale.language.tag = 
+	topic = kafka.leafy_factory.jobs_machines
+	value.projection.list = 
+	value.projection.type = none
+	writemodel.strategy = com.mongodb.kafka.connect.sink.writemodel.strategy.UpdateOneTimestampsStrategy
+ (com.mongodb.kafka.connect.sink.MongoSinkTopicConfig:371)
