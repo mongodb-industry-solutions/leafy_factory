@@ -97,7 +97,7 @@ const Jobs = () => {
 
       <Row className="align-items-start">
         <Col lg={4} md={6} sm={12} className="form-wrapper">
-          <h4>Create Job</h4>
+          <h3>Create Job</h3>
           <CreateJobForm onCreateSuccess={handleCreateSuccess} />
         </Col>
 
@@ -129,7 +129,7 @@ const Jobs = () => {
                 </tbody>
             </Table>
             
-            <Pagination className="justify-content-center mt-4">  
+            <Pagination className="pagination">  
                 <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
                 {renderPaginationItems()}
                 <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}/>  
