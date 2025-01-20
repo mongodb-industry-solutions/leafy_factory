@@ -8,9 +8,8 @@ import { addOrder } from "../redux/slices/WorkOrderslice";
 const CreateForm = ({onSubmitSuccess}) => {
 
   const dispatch = useDispatch();
-  const [product, setProduct] = useState("Titanium Hammer");
+  const [product, setProduct] = useState("");
   const [quantity, setQuantity] = useState(1);
-  //const [plannedCost, setPlannedCost] = useState(getPlannedCost("Titanium Hammer"));
   const [creationDate] = useState(new Date().toISOString());
   const [plannedStartDate] = useState(() => {
     const today = new Date();
@@ -75,7 +74,8 @@ const CreateForm = ({onSubmitSuccess}) => {
 
         <Form.Group as={Col} controlId="product_select">
           <Form.Label>Product</Form.Label>
-          <Form.Select value={product} onChange={handleProductChange}>
+          <Form.Select value={product} onChange={handleProductChange} required>
+            <option value="">Please select a product</option>
             <option value="Titanium Hammer">Titanium Hammer</option>
             <option value="2 Step ladder">2 Step ladder</option>
           </Form.Select>
@@ -95,7 +95,7 @@ const CreateForm = ({onSubmitSuccess}) => {
 
         <Form.Group as={Col} controlId="form_quantity">
           <Form.Label>Quantity</Form.Label>
-          <Form.Select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))}>
+          <Form.Select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} required>
             {[...Array(30).keys()].map(number =>
               <option key={number + 1} value={number + 1}>
                 {number + 1}

@@ -36,7 +36,7 @@ const WorkOrders = () => {
 
 
       useEffect(() => {
-        if (location.pathname === "/workorders") { //|| location.pathname === "/"
+        if (location.pathname === "/workorders" || location.pathname === "/") { // "/" to enable if rendering fails
           fetchWorkOrders();
           const intervalId = setInterval(fetchWorkOrders, 2000);
           return () => {
@@ -47,7 +47,7 @@ const WorkOrders = () => {
         }
       }, [fetchWorkOrders, location.pathname]); 
 
-      
+
       const handleSubmitSuccess = () => {
         fetchWorkOrders();
       }; 
