@@ -25,23 +25,29 @@ threads = []
 # Normal and expected threshold for temperature
 temp_status = ""
 temperature_threshold = range(0, 81)
+temperature_normal_values = (0, 81)
 
 # High temperature
 temperature_high_threshold = range(81, 111)
+temperature_high_values = (81, 111)
 
-# Excesive
-temperature_excesive_threshold = range(111, 10000)
+# Excessive
+temperature_excessive_threshold = range(111, 10000)
+temperature_excessive_values = (111, 10000)
 
 # This can be modified to simulate the vibration threshold for the machines
 # Normal and expected threshold for vibration
 vibration_status = ""
 vibration_threshold = range(0, 7)
+vibration_normal_values = (0, 7)
 
 # High vibration
 vibration_high_threshold = range(7, 11)
+vibration_high_values = (0, 7)
 
-# Excesive vibration
-vibration_excesive_threshold = range(11, 10000)
+# Excessive vibration
+vibration_excessive_threshold = range(11, 10000)
+vibration_excessive_values = (11, 10000)
 
 
 
@@ -50,25 +56,25 @@ def send_heartbeat(data: MachineHeartbeat):
         
         # Conditionals to set machine's temperature
         if data["temperature"] in temperature_threshold:
-            temp_value = random.uniform(*temperature_threshold)
+            temp_value = random.uniform(*temperature_normal_values)
             temp_status = "Normal"
         elif data["temperature"] in temperature_high_threshold:
-            temp_value = random.uniform(*temperature_high_threshold)
+            temp_value = random.uniform(*temperature_high_values)
             temp_status = "High"
         else:
-            temp_value = random.uniform(*temperature_excesive_threshold)
-            temp_status = "Excesive"
+            temp_value = random.uniform(*temperature_excessive_values)
+            temp_status = "Excessive"
 
         
         # Conditionals to set machine's vibration
         if data["vibration"] in vibration_threshold:
-            vibr_value = random.uniform(*vibration_threshold)
+            vibr_value = random.uniform(*vibration_normal_values)
             vibration_status = "Normal"
         elif data["vibration"] in vibration_high_threshold:
-            vibr_value = random.uniform(*vibration_high_threshold)
+            vibr_value = random.uniform(*vibration_high_values)
             vibration_status = "High"
         else:
-            vibr_value = random.uniform(*vibration_excesive_threshold)
+            vibr_value = random.uniform(*vibration_excessive_values)
             vibration_status = "Excessive"
         
         try: 
