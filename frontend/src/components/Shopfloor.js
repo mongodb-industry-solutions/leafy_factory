@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startShopfloor, stopShopfloor, shopfloorFailure } from "../redux/slices/ShopFloorslice";
 import axiosClient from "../config/axios";
-import { Button, Row, Col, Card, ListGroup, Spinner } from "react-bootstrap";
+import { Form, Button, Row, Col, Card, ListGroup, Spinner, Alert } from "react-bootstrap";
 import ProdLineImag from '../images/ProdLine.png';
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom'
 
@@ -12,10 +12,11 @@ function ShopfloorComponent() {
     const shopfloorState = useSelector((state) => state.ShopFloor);
     const { isRunning, error } = shopfloorState;
     const [machines, setMachines] = useState([]);
-    //const [prodLine1, setProdLine1] = useState([]);
-    //const [prodLine2, setProdLine2] = useState([]);
     const chartDiv = useRef(null);
     const chartRef = useRef(null);
+    const [idMachine, setIdMachine] = useState(1);
+    const [temperature, setTemperature] = useState(70);
+    const [vibration, setVibration] = useState(3.8);
 
     useEffect(() => {
 
@@ -91,6 +92,27 @@ function ShopfloorComponent() {
             }
         };
 
+        const handleFormSubmit = async (event) => {
+            event.preventDefault();
+            try {
+                const response = await axiosClient.post("/machines/change_values", { id_machine: idMachine, temperature, vibration });
+                console.log("Updated machine values: ", response.data);
+            } catch (error) {
+                console.error("Error updating machine values:", error);
+            }
+        };
+    
+        const getTemperature = (temperature) => {
+            if (temperature <= 80) return "success"; 
+            if (temperature <= 110) return "warning"; 
+            return "danger"; 
+        };
+    
+        const getVibration = (vibration) => {
+            if (vibration <= 6.3) return "success"; 
+            if (vibration <= 10) return "warning"; 
+            return "danger"; 
+        };
 
     return (
         <div className="shopfloor-container">
@@ -98,6 +120,39 @@ function ShopfloorComponent() {
             {isRunning ? "Stop Shopfloor Simulator" : "Start Shopfloor Simulator"}
         </Button>
             {error && <p style={{ color: "red" }}>Error: {error}</p>}
+
+        <Form onSubmit={handleFormSubmit} className="form-wrapper" style={{ maxWidth: "500px", margin: "20px auto", textAlign: "center"}}>
+        <h2>Change machine values</h2>
+            <Alert variant={getTemperature(temperature)}>New Temperature: {temperature}°C</Alert>
+            <Alert variant={getVibration(vibration)}>New Vibration: {vibration} mm/s</Alert>
+
+            <Form.Group controlId="form-machine">
+            <Form.Label>Machine ID</Form.Label>
+            <Form.Control as="select" value={idMachine} onChange={(e) => setIdMachine(Number(e.target.value))} style={{ textAlign: "center" }} required>
+                {[1, 2, 3, 4].map(id => (
+                <option key={id} value={id}>{id}</option>
+                ))}
+            </Form.Control>
+            </Form.Group>
+
+            <Form.Group className="form-temperature" controlId="temperature">
+            <Form.Label>Temperature (°C)</Form.Label>
+            <Form.Control as="select" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} style={{ textAlign: "center" }} required>
+                {Array.from({ length: 61 }, (_, i) => i + 70).map(temp => (
+                <option key={temp} value={temp}>{temp}</option>
+                ))}
+            </Form.Control>
+            </Form.Group>
+
+            <Form.Group className="form-vibration" controlId="vibration">
+            <Form.Label>Vibration (mm/s)</Form.Label>
+            <Form.Control type="number" step="0.1" min={3.8} value={vibration} onChange={(e) => setVibration(Number(e.target.value))} style={{ textAlign: "center" }} required/>
+            </Form.Group>
+
+            <Button className="button" type="submit" style={{ width: "100%" }}>
+            Update Machine Values
+            </Button>
+        </Form>
 
         <Row>
             {machines.map(machine => (
@@ -138,10 +193,6 @@ function ShopfloorComponent() {
                 ))}
         </Row>
 
-            {/*<Card className="prod-card">
-                <ProgressBar now={progressLevel} label={`${progressLevel}%`} animated />
-            </Card>*/}
-
         <Button onClick={refreshChart} className="button-chart">Refresh Chart</Button>
         <div className="chart">
             <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
@@ -150,6 +201,5 @@ function ShopfloorComponent() {
         </div>
     );
 } 
-
 
 export default ShopfloorComponent;
