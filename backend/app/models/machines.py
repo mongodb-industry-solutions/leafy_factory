@@ -7,6 +7,12 @@ class MachineDetails(BaseModel):
     production_line_id: str = Field(..., description = "Production Line ID")
 
 
+class MachineValue(BaseModel):
+    machine_id: str = Field(..., description = "Machine ID")
+    vibration: float = Field(..., description = "Machine's new vibration value")
+    temperature: float = Field(..., description = "Machine's new temperature value")
+    
+
 class MachineStatus(BaseModel):
     factory_id: str = Field(..., description = "Factory ID")
     production_line_id: str = Field(..., description = "Production Line ID")
