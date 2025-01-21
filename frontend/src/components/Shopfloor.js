@@ -14,7 +14,7 @@ function ShopfloorComponent() {
     const [machines, setMachines] = useState([]);
     const chartDiv = useRef(null);
     const chartRef = useRef(null);
-    const [idMachine, setIdMachine] = useState(1);
+    const [idMachine, setIdMachine] = useState("");
     const [temperature, setTemperature] = useState(70);
     const [vibration, setVibration] = useState(3.8);
 
@@ -95,7 +95,7 @@ function ShopfloorComponent() {
         const handleFormSubmit = async (event) => {
             event.preventDefault();
             try {
-                const response = await axiosClient.post("/machines/change_values", { id_machine: idMachine, temperature, vibration });
+                const response = await axiosClient.put("/change_values", { machine_id: idMachine, temperature, vibration });
                 console.log("Updated machine values: ", response.data);
             } catch (error) {
                 console.error("Error updating machine values:", error);
@@ -126,10 +126,10 @@ function ShopfloorComponent() {
             <Alert variant={getTemperature(temperature)}>New Temperature: {temperature}°C</Alert>
             <Alert variant={getVibration(vibration)}>New Vibration: {vibration} mm/s</Alert>
 
-            <Form.Group controlId="form-machine">
-            <Form.Label>Machine ID</Form.Label>
-            <Form.Control as="select" value={idMachine} onChange={(e) => setIdMachine(Number(e.target.value))} style={{ textAlign: "center" }} required>
-                {[1, 2, 3, 4].map(id => (
+            <Form.Group controlId="machine_id">
+            <Form.Label>Select Machine ID</Form.Label>
+            <Form.Control type="string" as="select" value={idMachine} onChange={(e) => setIdMachine(Number(e.target.value))} style={{ textAlign: "center" }} required>
+                {["1", "2", "3", "4"].map(id => (
                 <option key={id} value={id}>{id}</option>
                 ))}
             </Form.Control>

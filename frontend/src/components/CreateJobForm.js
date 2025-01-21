@@ -37,7 +37,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
 
     try {
         const response = await axiosClient.get("/machines/machine_details");
-        console.log("Fetched machines from API for background processing:", response.data.result);
+        console.log("Fetched machines details:", response.data.result);
     } catch (error) {
         console.error("Error fetching machine details:", error);
       } finally {
