@@ -34,7 +34,7 @@ function ShopfloorComponent() {
         try {
             const response = await axiosClient.get("/machines/factory_details");
             console.log("Fetched Factory Details: ", response.data);
-            setFactoryDetails(response.data);  // Update state with fetched factory data
+            setFactoryDetails(response.data);
         } catch (error) {
             console.error("Error fetching factory details:", error);
         }
@@ -227,9 +227,9 @@ function ShopfloorComponent() {
                             <Card className="prod-card">
                                 <Card.Body className="card-body">
                                     <Card.Title className="text-center">Machine JSON Data</Card.Title>
-                                    <Card.Text>
+                                    <div className="card-body">
                                         <pre>{JSON.stringify(machine, null, 2)}</pre>
-                                    </Card.Text>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
