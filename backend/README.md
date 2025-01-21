@@ -84,7 +84,7 @@ Once you make sure that MariaDB is installed and running, execute the following 
     1. `cd /opt/homebrew/etc/`
 
 > [!Note]
-> The previous command is executed based on a MariaDB installation executed with homebrew on MacOS. This could vary depending on your operating system, for Linux, the folder usually is `/etc/mariadb`.
+> The previous command is executed based on a MariaDB installation executed with homebrew on MacOS. This could vary depending on your operating system, for Linux, the folder usually is `/etc/my.cnf`.
 
 4. Add the following lines to the MariaDB config file ´my.cnf´
     ```
