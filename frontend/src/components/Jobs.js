@@ -9,7 +9,7 @@ import CreateJobForm from "./CreateJobForm";
 
 const Jobs = () => {
   const dispatch = useDispatch();
-  const jobs = useSelector(state => state.Jobs.jobs);
+  const jobs = useSelector((state) => state.Jobs.jobs);
   const [progressLevel, setProgressLevel] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,8 +18,7 @@ const Jobs = () => {
   //Retrieve location from Jobs tab
   const location = useLocation();
 
-  const fetchJobs = useCallback(
-    async () => {
+  const fetchJobs = useCallback(async () => {
       try {
         // const response = await axiosClient.get("http://localhost:8000/jobs/");
         const response = await axiosClient.get("/jobs/"); // Fetch all 100 jobs
@@ -33,30 +32,31 @@ const Jobs = () => {
     [dispatch]
   );
 
-  useEffect(
-    () => {
-      if (location.pathname === "/jobs") {
-        fetchJobs();
-        const intervalId = setInterval(() => {
-          setProgressLevel(prevProgressLevel => {
-            const newProgressLevel = { ...prevProgressLevel };
-            jobs.forEach(job => {
-              if (job.job_status === "Created") {
-                const currentProgress = newProgressLevel[job.id_job] || 0;
-                if (currentProgress < job.target_output) {
-                  newProgressLevel[job.id_job] = currentProgress + 1;
-                }
+  useEffect(() => {
+    if (location.pathname === "/jobs") {
+      fetchJobs();
+      const intervalId = setInterval(() => {
+        setProgressLevel((prev) => {
+          const newProgress = {};
+          jobs.forEach((job) => {
+            if (job.job_status === "Created") {
+              const currentProgress = prev[job.id_job] || 0;
+              const targetOutput = job.target_output || 1;
+              if (currentProgress < targetOutput) {
+                newProgress[job.id_job] = currentProgress + 1;
+              } else {
+                newProgress[job.id_job] = targetOutput;
               }
-            });
-            return newProgressLevel;
+            }
           });
-        }, 2000);
+          //console.log("Progress Level Updated:", { ...prev, ...newProgress });
+          return { ...prev, ...newProgress };
+        });
+      }, 2000);
 
-        return () => clearInterval(intervalId);
-      }
-    },
-    [fetchJobs, jobs, location.pathname]
-  );
+      return () => clearInterval(intervalId);
+    }
+  }, [fetchJobs, jobs, location.pathname]);
 
   const handleCreateSuccess = () => {
     fetchJobs();
@@ -158,7 +158,7 @@ const Jobs = () => {
                   <tbody>{jobs.map((job) => job.job_status === "Created" && (
                     <tr key={job.id_job}>
                     <td>{job.id_job}</td>
-                    <td><ProgressBar className="progress-bar" now={((progressLevel[job.id_job] || 0) / job.target_output) * 100 } label={`${Math.round(((progressLevel[job.id_job] || 0) /job.target_output) * 100)}%`} animated />
+                    <td><ProgressBar className="progress-bar" now={((progressLevel[job.id_job] || 0) / job.target_output) * 100} label={`${Math.round(((progressLevel[job.id_job] || 0) / job.target_output) * 100)}%`} striped animated />
                     </td>
                     </tr>
                     ))}
