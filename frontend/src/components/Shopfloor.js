@@ -32,7 +32,7 @@ function ShopfloorComponent() {
 
     const fetchFactoryDetails = async () => {
         try {
-            const response = await axiosClient.get("/factory/details");  // Assuming this is the endpoint
+            const response = await axiosClient.get("/machines/factory_details");
             console.log("Fetched Factory Details: ", response.data);
             setFactoryDetails(response.data);  // Update state with fetched factory data
         } catch (error) {
