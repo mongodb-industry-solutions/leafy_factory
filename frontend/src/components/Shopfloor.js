@@ -18,7 +18,6 @@ function ShopfloorComponent() {
     const [temperature, setTemperature] = useState();
     const [vibration, setVibration] = useState(3.8);
 
-    useEffect(() => {
 
         const fetchMachineDetails = async () => {
             try {
@@ -29,9 +28,9 @@ function ShopfloorComponent() {
                 console.error("Error fetching machine details:", error);
             }
         };
+
+    useEffect(() => {  
         fetchMachineDetails();
-
-
         // MongoDB Chart declaration and refresh of data per minute
         const sdk = new ChartsEmbedSDK({
             baseUrl: "https://charts.mongodb.com/charts-jeffn-zsdtj"
@@ -39,7 +38,8 @@ function ShopfloorComponent() {
         const chart = sdk.createChart({
             chartId: "4f846f1e-0268-473c-b00b-90b4ccf4cb2e"
             });
-        chartRef.current = chart; (async () => {
+        chartRef.current = chart; 
+        (async () => {
             try {
             await chart.render(chartDiv.current);
             console.log("Chart info returned");
@@ -48,15 +48,27 @@ function ShopfloorComponent() {
             }
         })();
 
+        //Refresh for automatically chart return
         const interval = setInterval(() => {
             if (chartRef.current) {
               chartRef.current.refresh();
               console.log("Chart refreshed automatically");
             }
           }, 60000);
+          
           return () => clearInterval(interval);
         }, []);
         
+        //Refresh for machine details return
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchMachineDetails();
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+        //Refresh for manually chart return
         const refreshChart = () => {
         if (chartRef.current) {
             chartRef.current.refresh();
