@@ -1,6 +1,6 @@
 import "./styles.css";
 import React from "react";
-import stepperImage from "../images/stepper.png";
+import stepperImage from "../images/stepper2.png";
 
 function Header() {
   return (
