@@ -37,7 +37,7 @@ const WorkOrders = () => {
 
 
       useEffect(() => {
-        if (location.pathname === "/workorders" || location.pathname === "/") { // "/" to enable if rendering fails
+        if (location.pathname === "/workorders") { // || location.pathname === "/"        "/" to enable if rendering fails
           fetchWorkOrders();
           const intervalId = setInterval(fetchWorkOrders, 2000);
           return () => {
@@ -56,7 +56,7 @@ const WorkOrders = () => {
       const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
         setIsLoading(true);
-        setTimeout(() => setIsLoading(false), 500);
+        setTimeout(() => setIsLoading(false), 1000);
       };
     
       const indexOfLastOrder = currentPage * ordersPerPage;

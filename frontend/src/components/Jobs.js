@@ -36,28 +36,34 @@ const Jobs = () => {
   useEffect(() => {
     if (location.pathname === "/jobs") {
       fetchJobs();
-
       jobsRef.current = jobs;
-      const intervalId = setInterval(() => {
+      let intervalId;
+  
+      const updateProgress = () => {
         setProgressLevel((prevProgress) => {
           const newProgress = { ...prevProgress };
-
           jobsRef.current.forEach((job) => {
             if (job.job_status === "Created") {
               const currentProgress = prevProgress[job.id_job] || 0;
               const targetOutput = job.target_output || 1;
-              
               if (currentProgress < targetOutput) {
                 newProgress[job.id_job] = Math.min(currentProgress + 1, targetOutput);
               }
             }
           });
-
           return newProgress;
         });
-      }, 2000);
-
-      return () => clearInterval(intervalId);
+      };
+  
+      const pollProgress = () => {
+        updateProgress();
+        intervalId = setTimeout(() => {
+          pollProgress();
+        }, 5000);
+      };
+      pollProgress();
+  
+      return () => clearTimeout(intervalId);
     }
   }, [fetchJobs, location.pathname, jobs]);
   
@@ -163,21 +169,32 @@ const Jobs = () => {
             <Card.Body>
               <Card.Title>Jobs Progress</Card.Title>
               {jobs.some((job) => job.job_status === "Created") ? (
-                <Table striped bordered hover responsive size="sm">
-                  <thead>
-                    <tr>
-                      <th>Job ID</th>
-                      <th>Progress</th>
-                    </tr>
-                  </thead>
-                  <tbody>{jobs.map((job) => job.job_status === "Created" && (
-                    <tr key={job.id_job}>
-                    <td>{job.id_job}</td>
-                    <td><ProgressBar className="progress-bar" now={(progressLevel[job.id_job] || 0) / (job.target_output || 1) * 100} label={"In Progress"} striped animated /></td>
-                    </tr>
-                    ))}
+              <Table striped bordered hover responsive size="sm">
+                <thead>
+                  <tr>
+                  <th>Job ID</th>
+                  <th>Progress</th>
+                  </tr>
+                </thead>
+                <tbody>{jobs.map((job) => {
+                        if (job.job_status === "Created") {
+                          const progress = progressLevel[job.id_job] || 0;
+                          const progressPercentage = (progress / (job.target_output || 1)) * 100;
+
+                          return (
+                            <tr key={job.id_job}>
+                              <td>{job.id_job}</td>
+                              <td><ProgressBar className="progress-bar" now={progressPercentage} label={"In Progress"} striped /></td>
+                            </tr>
+                          );
+                        }
+                        return null;
+                      })}
                   </tbody>
-                </Table>
+              </Table>
+
+
+
               ) : (
                 <p>No jobs in progress.</p>
               )}

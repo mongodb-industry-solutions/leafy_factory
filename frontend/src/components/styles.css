@@ -222,6 +222,7 @@
   text-align: center;
   transition: width 1s ease-in-out;
   padding: 5px;
+  margin: 10px 10% 10px 10%;
 }
 
 .progress {
