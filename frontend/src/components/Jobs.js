@@ -77,7 +77,7 @@ const Jobs = () => {
   const handlePageChange = (pageNumber) => {  
     setCurrentPage(pageNumber);  
     setIsLoading(true);  
-    setTimeout(() => setIsLoading(false), 2000);  
+    setTimeout(() => setIsLoading(false), 9000);  
   };  
   
   const indexOfLastJob = currentPage * jobsPerPage;  
@@ -173,7 +173,7 @@ const Jobs = () => {
                   <tbody>{jobs.map((job) => job.job_status === "Created" && (
                     <tr key={job.id_job}>
                     <td>{job.id_job}</td>
-                    <td><ProgressBar className="progress-bar" now={(progressLevel[job.id_job] || 0) / (job.target_output || 1) * 100} label={`${Math.round((progressLevel[job.id_job] || 0) / (job.target_output || 1) * 100)}%`} striped animated /></td>
+                    <td><ProgressBar className="progress-bar" now={(progressLevel[job.id_job] || 0) / (job.target_output || 1) * 100} label={"In Progress"} striped animated /></td>
                     </tr>
                     ))}
                   </tbody>
