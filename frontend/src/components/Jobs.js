@@ -63,7 +63,7 @@ const Jobs = () => {
   };
 
   // pagination loading and deter.
-  const handlePageChange = pageNumber => {  
+  const handlePageChange = (pageNumber) => {  
     setCurrentPage(pageNumber);  
     setIsLoading(true);  
     setTimeout(() => setIsLoading(false), 500);  
@@ -114,6 +114,8 @@ const Jobs = () => {
                     <th>Job Status</th>
                     <th>Creation Date</th>
                     <th>Work Order ID</th>
+                    <th>nOK Products (units)</th>
+                    <th>Quality Rate</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,6 +126,8 @@ const Jobs = () => {
                       <td>{job.job_status}</td>
                       <td>{job.creation_date ? !isNaN(new Date(job.creation_date)) ? new Date(job.creation_date).toISOString() : "Invalid date" : "Loading"} </td>
                       <td>{job.work_id}</td>
+                      <td>{job.nOk_products}</td>
+                      <td>{job.quality_rate}%</td>
                     </tr>
                   ))}
                 </tbody>
@@ -158,8 +162,7 @@ const Jobs = () => {
                   <tbody>{jobs.map((job) => job.job_status === "Created" && (
                     <tr key={job.id_job}>
                     <td>{job.id_job}</td>
-                    <td><ProgressBar className="progress-bar" now={((progressLevel[job.id_job] || 0) / job.target_output) * 100} label={`${Math.round(((progressLevel[job.id_job] || 0) / job.target_output) * 100)}%`} striped animated />
-                    </td>
+                    <td><ProgressBar className="progress-bar" now={(progressLevel[job.id_job] || 0) / (job.target_output || 1) * 100} label={`${Math.round((progressLevel[job.id_job] || 0) / (job.target_output || 1) * 100)}%`} striped animated /></td>
                     </tr>
                     ))}
                   </tbody>
