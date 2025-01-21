@@ -250,7 +250,7 @@ curl -XPUT \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "machine_id": "1",
+  "machine_id": "4",
   "vibration": 6,
-  "temperature": 82
+  "temperature": 70
 }'

@@ -88,7 +88,6 @@ def create_work_order(work_order: WorkOrder):
             )
 
             total_cost_work_order += item[4]
-            print(total_cost_work_order)
         
         total_cost_per_product = float(total_cost_work_order) + overhead_per_product
         total_cost_per_wo = workorder_json["quantity"] * total_cost_per_product

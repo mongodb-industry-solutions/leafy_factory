@@ -83,7 +83,6 @@ async def retrieve_factory_details():
         factories_docs_to_list = list(factory_details)
 
         factories_docs_to_list[0]["_id"] = str(factories_docs_to_list[0]["_id"])
-        print(factories_docs_to_list)
         
         return JSONResponse(
             status_code=status.HTTP_200_OK,
