@@ -57,7 +57,7 @@ Python virtual environments help decouple and isolate Python installs and associ
 2. Once there, create a virtual environment named `.venv`
     1. `python -m venv .venv`
 3. Activate the created virtual environment.
-    1. `source .venv/bin/Activate`
+    1. `source .venv/bin/activate`
     2. You should see the (.venv) at the beginning of your command prompt
 4. Go to the backend directory which is located inside the leafy_factory directory.
     1. `cd backend/`
