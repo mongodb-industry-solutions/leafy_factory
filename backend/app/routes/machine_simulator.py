@@ -255,6 +255,8 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
 async def update_thresholds(data: MachineValue, background_tasks: BackgroundTasks):
     global simulation_running, threads
 
+    print(f"Data: {data}")
+
     # Updates the thresholds in case we want to introduce abnormal values.
     temperature_value = data.temperature
     vibration_value = data.vibration
