@@ -15,7 +15,7 @@ function ShopfloorComponent() {
     const chartDiv = useRef(null);
     const chartRef = useRef(null);
     const [idMachine, setIdMachine] = useState("");
-    const [temperature, setTemperature] = useState(70);
+    const [temperature, setTemperature] = useState();
     const [vibration, setVibration] = useState(3.8);
 
     useEffect(() => {
@@ -128,9 +128,10 @@ function ShopfloorComponent() {
 
             <Form.Group controlId="machine_id">
             <Form.Label>Select Machine ID</Form.Label>
-            <Form.Control type="string" as="select" value={idMachine} onChange={(e) => setIdMachine(Number(e.target.value))} style={{ textAlign: "center" }} required>
+            <Form.Control type="string" as="select" value={idMachine} onChange={(e) => setIdMachine(String(e.target.value))} style={{ textAlign: "center" }} required>
+            <option value="">Please enter desired value</option>
                 {["1", "2", "3", "4"].map(id => (
-                <option key={id} value={id}>{id}</option>
+            <option key={id} value={id}>{id}</option>
                 ))}
             </Form.Control>
             </Form.Group>
@@ -138,6 +139,7 @@ function ShopfloorComponent() {
             <Form.Group className="form-temperature" controlId="temperature">
             <Form.Label>Temperature (°C)</Form.Label>
             <Form.Control as="select" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} style={{ textAlign: "center" }} required>
+                <option value="">Please enter desired value</option> 
                 {Array.from({ length: 61 }, (_, i) => i + 70).map(temp => (
                 <option key={temp} value={temp}>{temp}</option>
                 ))}
@@ -149,7 +151,7 @@ function ShopfloorComponent() {
             <Form.Control type="number" step="0.1" min={3.8} value={vibration} onChange={(e) => setVibration(Number(e.target.value))} style={{ textAlign: "center" }} required/>
             </Form.Group>
 
-            <Button className="button" type="submit" style={{ width: "100%" }}>
+            <Button className="button" type="submit"   disabled={!idMachine || idMachine === "Please enter desired value" || !temperature || temperature === "Please enter desired value" || !vibration} style={{ width: "100%" }}>
             Update Machine Values
             </Button>
         </Form>
