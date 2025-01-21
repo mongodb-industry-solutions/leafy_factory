@@ -23,9 +23,9 @@ function Navbar() {
 
       <div className="w-100 d-flex justify-content-center mt-3">
         <Tabs id="navbar-tabs" onSelect={handleTabSelector} className="mb-3" justify>
+        <Tab eventKey="start-simulation" title="Shopfloor Simulator" />
           <Tab eventKey="workorders" title="Work Orders" />
           <Tab eventKey="jobs" title="Jobs" />
-          <Tab eventKey="start-simulation" title="Shopfloor Simulator" />
           <Tab eventKey="overview" title="Demo Overview" />
         </Tabs>
       </div>
