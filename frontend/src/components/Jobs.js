@@ -162,7 +162,6 @@ const Jobs = () => {
         </Col>  
       </Row>
 
-
       <Row className="align-items-start mt-4">
         <Col lg={12} md={12} sm={12}>
           <Card>
@@ -177,24 +176,21 @@ const Jobs = () => {
                   </tr>
                 </thead>
                 <tbody>{jobs.map((job) => {
-                        if (job.job_status === "Created") {
-                          const progress = progressLevel[job.id_job] || 0;
-                          const progressPercentage = (progress / (job.target_output || 1)) * 100;
+                  if (job.job_status === "Created") {
+                    const progress = progressLevel[job.id_job] || 0;
+                    const progressPercentage = (progress / (job.target_output || 1)) * 100;
 
-                          return (
-                            <tr key={job.id_job}>
-                              <td>{job.id_job}</td>
-                              <td><ProgressBar className="progress-bar" now={progressPercentage} label={"In Progress"} striped /></td>
-                            </tr>
-                          );
-                        }
-                        return null;
-                      })}
-                  </tbody>
+                    return (
+                    <tr key={job.id_job}>
+                    <td>{job.id_job}</td>
+                    <td><ProgressBar className="progress-bar" now={progressPercentage} label={"In Progress"} striped /></td>
+                    </tr>
+                    );
+                    }
+                    return null;
+                  })}
+                </tbody>
               </Table>
-
-
-
               ) : (
                 <p>No jobs in progress.</p>
               )}
