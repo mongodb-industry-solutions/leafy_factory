@@ -217,8 +217,11 @@
 
 .progress-bar {
   background-color: #00ed64 !important;
-  color: #023430;
+  color: black; 
+  font-size: 14px;
+  text-align: center;
   transition: width 1s ease-in-out;
+  padding: 5px;
 }
 
 .progress {

@@ -12,6 +12,7 @@ function ShopfloorComponent() {
     const shopfloorState = useSelector((state) => state.ShopFloor);
     const { isRunning, error } = shopfloorState;
     const [machines, setMachines] = useState([]);
+    const [factoryDetails, setFactoryDetails] = useState([]);
     const chartDiv = useRef(null);
     const chartRef = useRef(null);
     const [idMachine, setIdMachine] = useState("");
@@ -19,18 +20,29 @@ function ShopfloorComponent() {
     const [vibration, setVibration] = useState(3.8);
 
 
-        const fetchMachineDetails = async () => {
-            try {
-                const response = await axiosClient.get("/machines/machine_details");
-                console.log("Fetched Machine Details: ", response.data.result);
-                setMachines(response.data.result);
-            } catch (error) {
-                console.error("Error fetching machine details:", error);
-            }
+    const fetchMachineDetails = async () => {
+        try {
+            const response = await axiosClient.get("/machines/machine_details");
+            console.log("Fetched Machine Details: ", response.data.result);
+            setMachines(response.data.result);
+        } catch (error) {
+            console.error("Error fetching machine details:", error);
+        }
         };
 
-    useEffect(() => {  
+    const fetchFactoryDetails = async () => {
+        try {
+            const response = await axiosClient.get("/factory/details");  // Assuming this is the endpoint
+            console.log("Fetched Factory Details: ", response.data);
+            setFactoryDetails(response.data);  // Update state with fetched factory data
+        } catch (error) {
+            console.error("Error fetching factory details:", error);
+        }
+        };
+
+    useEffect(() => {
         fetchMachineDetails();
+        fetchFactoryDetails();
         // MongoDB Chart declaration and refresh of data per minute
         const sdk = new ChartsEmbedSDK({
             baseUrl: "https://charts.mongodb.com/charts-jeffn-zsdtj"
@@ -60,6 +72,14 @@ function ShopfloorComponent() {
         }, []);
         
         //Refresh for machine details return
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchMachineDetails();
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     useEffect(() => {
         const interval = setInterval(() => {
             fetchMachineDetails();
@@ -202,6 +222,17 @@ function ShopfloorComponent() {
                     </Card.Body>
                     </Card>
                 </Col>
+
+                        <Col md={3} className="prod-card">
+                            <Card className="prod-card">
+                                <Card.Body className="card-body">
+                                    <Card.Title className="text-center">Machine JSON Data</Card.Title>
+                                    <Card.Text>
+                                        <pre>{JSON.stringify(machine, null, 2)}</pre>
+                                    </Card.Text>
+                                </Card.Body>
+                            </Card>
+                        </Col>
 
             </React.Fragment>
                 ))}

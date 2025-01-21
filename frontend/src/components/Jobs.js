@@ -1,5 +1,5 @@
 import "./styles.css";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import axiosClient from "../config/axios";
@@ -17,6 +17,7 @@ const Jobs = () => {
 
   //Retrieve location from Jobs tab
   const location = useLocation();
+  const jobsRef = useRef([]);
 
   const fetchJobs = useCallback(async () => {
       try {
@@ -35,38 +36,48 @@ const Jobs = () => {
   useEffect(() => {
     if (location.pathname === "/jobs") {
       fetchJobs();
+
+      jobsRef.current = jobs;
       const intervalId = setInterval(() => {
-        setProgressLevel((prev) => {
-          const newProgress = {};
-          jobs.forEach((job) => {
+        setProgressLevel((prevProgress) => {
+          const newProgress = { ...prevProgress };
+
+          jobsRef.current.forEach((job) => {
             if (job.job_status === "Created") {
-              const currentProgress = prev[job.id_job] || 0;
+              const currentProgress = prevProgress[job.id_job] || 0;
               const targetOutput = job.target_output || 1;
+              
               if (currentProgress < targetOutput) {
-                newProgress[job.id_job] = currentProgress + 1;
-              } else {
-                newProgress[job.id_job] = targetOutput;
+                newProgress[job.id_job] = Math.min(currentProgress + 1, targetOutput);
               }
             }
           });
-          //console.log("Progress Level Updated:", { ...prev, ...newProgress });
-          return { ...prev, ...newProgress };
+
+          return newProgress;
         });
       }, 2000);
 
       return () => clearInterval(intervalId);
     }
-  }, [fetchJobs, jobs, location.pathname]);
+  }, [fetchJobs, location.pathname, jobs]);
+  
 
-  const handleCreateSuccess = () => {
-    fetchJobs();
+  const handleCreateSuccess = async () => {
+    try {
+      setIsLoading(true);
+      await fetchJobs();
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Failed to refresh job data after submission:", error);
+      setIsLoading(false);
+    }
   };
 
   // pagination loading and deter.
   const handlePageChange = (pageNumber) => {  
     setCurrentPage(pageNumber);  
     setIsLoading(true);  
-    setTimeout(() => setIsLoading(false), 500);  
+    setTimeout(() => setIsLoading(false), 2000);  
   };  
   
   const indexOfLastJob = currentPage * jobsPerPage;  
