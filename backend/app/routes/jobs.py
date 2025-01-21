@@ -187,7 +187,7 @@ def create_job(job_task: JobTask):
                                    new_job_id,
                                    machine_id,
                                 ))
-                
+                time.sleep(20)
                 db_cur.execute(updates_machine_status,
                                (
                                     machine_id,
