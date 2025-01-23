@@ -194,6 +194,8 @@ def create_job(job_task: JobTask):
                                    new_job_id,
                                    machine_id,
                                 ))
+                
+                # Gives time to Kafka to send the data to MongoDB
                 time.sleep(2)
                 db_cur.execute(updates_machine_status,
                                (
