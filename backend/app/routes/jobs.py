@@ -107,7 +107,7 @@ def complete_job_task(job_id, quantity, machines_list):
 
 
 # Create a Job Task into an SQL table.
-@router.post("/jobs/",
+@router.post("/jobs",
              summary="Creates a job task",
              description="This endpoint creates a Job Task in the leafy_factory SQL database",
              responses={
@@ -233,7 +233,7 @@ def create_job(job_task: JobTask):
 
 
 # Get the last 100 job tasks
-@router.get("/jobs/",
+@router.get("/jobs",
             summary="Gets last 100 job tasks",
             description="This endpoint gets an array with the 100 last 100 job items from the leafy_factory database using the creation_date field as filter criteria",
             responses={
