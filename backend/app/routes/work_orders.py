@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.work_orders import WorkOrder, UpdateWorkOrder
-from app.database import work_orders_coll, raw_materials_coll, sql_conn, kfk_work_orders_coll, kfk_products_coll, kfk_product_cost_coll
+from app.database import sql_conn, kfk_work_orders_coll, kfk_products_coll, kfk_product_cost_coll
 from pymongo.errors import DuplicateKeyError
 import datetime
 from bson.decimal128 import Decimal128
@@ -10,7 +10,7 @@ from bson.decimal128 import Decimal128
 router = APIRouter()
 
 # Create a Work Order into SQL table.
-@router.post("/workorders/",
+@router.post("/workorders",
              summary="Creates a new work order",
              description="This endpoint creates a new work order and inserts it into the leafy_factory MySQL database",
              responses={
@@ -190,7 +190,7 @@ def create_work_order(work_order: WorkOrder):
 
 # This API should get the data from MongoDB, the SQL data needs to be inserted into MongoDB to do so.
 # Get the last 100 work orders
-@router.get("/workorders/",
+@router.get("/workorders",
             summary="Gets last 100 work orders",
             description="This endpoint gets an array with the 100 last work orders items from the leafy_factory database using the creation_date field as filter criteria",
             responses={
