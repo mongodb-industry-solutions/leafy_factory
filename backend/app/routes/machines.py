@@ -1,10 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 from app.database import raw_sensor_data_coll, factories_data_coll, kfk_machines_coll
-from app.models.machines import MachineHeartbeat, MachineValue
+from app.models.machines import MachineHeartbeat
 from fastapi.responses import JSONResponse
 from datetime import datetime, timedelta
-from bson import Decimal128
-from decimal import Decimal
 
 router = APIRouter()
 
