@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.job_task import JobTask, UpdateJob
-from app.database import mariadb_conn, kfk_work_jobs_coll, raw_sensor_data_coll
+from app.database import sql_conn, kfk_work_jobs_coll, raw_sensor_data_coll
 from pymongo.errors import DuplicateKeyError
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime, random, time, requests
@@ -62,21 +62,24 @@ def complete_job_task(job_id, quantity, machines_list):
 
             insert_part_query =  """
                                 INSERT INTO production_data(machine_id, part_status, job_id, creation_date)
-                                VALUES (?,?,?,?)
+                                VALUES (%s,%s,%s,%s)
+                                RETURNING id_production_data;
                             """
             
-            db_cur = mariadb_conn.cursor()
+            db_cur = sql_conn.cursor()
             
             db_cur.execute(insert_part_query, 
-                                (
-                                    machine_to_insert,
-                                    part_status,
-                                    job_id,
-                                    datetime.datetime.now(),
-                                ))
-            print(f"Part ID: {db_cur.lastrowid}, Status: Created")
+            (
+                machine_to_insert,
+                part_status,
+                job_id,
+                datetime.datetime.now(),
+            ))
+            
+            print(f"Part ID: {db_cur.fetchone()[0]}, Status: Created")
             time.sleep(time_to_produce_part)
-        mariadb_conn.commit()
+            sql_conn.commit()
+        
 
         backend_update_job_url = f"{BACKEND_URL}/jobs/{job_id}"
         quality_rate = ((quantity - nok_products) * 100) / quantity
@@ -97,13 +100,12 @@ def complete_job_task(job_id, quantity, machines_list):
             print(f"API called successfully for work_order_id: {job_id}")
         else:
             print(f"Failed to call API: {response.status_code}, {response.text}")
-    except mariadb_conn.Error as e:
+    except sql_conn.Error as e:
         print(f"Error completing Jobs: {e}")
     except requests.RequestException as e:
         print(f"Error calling API: {e}")
 
 
-# Create a Job Task 
 # Create a Job Task into an SQL table.
 @router.post("/jobs/",
              summary="Creates a job task",
@@ -139,47 +141,52 @@ def create_job(job_task: JobTask):
         # Inserts the job task into SQL
         insert_job_query = """
                             INSERT INTO jobs(target_output, job_status, creation_date, work_id)
-                            VALUES (?,?,?,?)
+                            VALUES (%s,%s,%s,%s)
+                            RETURNING id_job;
                            """
         
         
         # Inserts a new row into the jobs_machines table
         insert_job_machine_query =  """
                                         INSERT INTO jobs_machines(job_id, machine_id)
-                                        VALUES (?,?)
+                                        VALUES (%s,%s)
                                     """
         
         # Updates the status from "Created" to "In Progress" and the actual start_date of the work order
-        updates_work_order =    f"""
+        updates_work_order =    """
                                     UPDATE work_orders 
                                     SET 
-                                        wo_status = '{work_order_status}',
-                                        actual_start_date = '{job_task_json['creation_date']}'
-                                    WHERE id_work = {job_task_json['work_order_id']}
+                                        wo_status = %s,
+                                        actual_start_date = %s
+                                    WHERE id_work = %s
                                 """
         
         # Updates the machine's status.
-        updates_machine_status =    f"""
+        updates_machine_status =    """
                                         UPDATE machines
                                         SET
-                                            machine_status = "{machine_status}"
+                                            machine_status = %s
                                         WHERE id_machine = %s
                                     """
             
         
-        with mariadb_conn.cursor() as db_cur:
+        with sql_conn.cursor() as db_cur:
             db_cur.execute(insert_job_query, 
-                                (
-                                    job_task_json["target_output"],
-                                    job_task_json["status"],
-                                    job_task_json["creation_date"],
-                                    job_task_json["work_order_id"],
-                                ))
+            (
+                job_task_json["target_output"],
+                job_task_json["status"],
+                job_task_json["creation_date"],
+                job_task_json["work_order_id"],
+            ))
             
-            new_job_id = db_cur.lastrowid
+            new_job_id = db_cur.fetchone()[0]
 
             # Updates the work order's status
-            db_cur.execute(updates_work_order)
+            db_cur.execute(updates_work_order,(
+                work_order_status,
+                job_task_json['creation_date'],
+                job_task_json['work_order_id']
+            ))
 
             for machine_id in job_task_json["factory"]["production_lines"][0]["machines"]:
                 db_cur.execute(insert_job_machine_query, 
@@ -187,20 +194,21 @@ def create_job(job_task: JobTask):
                                    new_job_id,
                                    machine_id,
                                 ))
-                time.sleep(20)
+                time.sleep(2)
                 db_cur.execute(updates_machine_status,
                                (
-                                    machine_id,
+                                    machine_status,
+                                    machine_id
                                ))
 
         # Commit the changes
-        mariadb_conn.commit()
+        sql_conn.commit()
 
         # Schedule the completion of the work order
         scheduler.add_job(
             func=complete_job_task,
             trigger="date",
-            run_date=datetime.datetime.now() + datetime.timedelta(seconds=2),  # Change 20 seconds to the desired time
+            run_date=datetime.datetime.now() + datetime.timedelta(seconds=2),  # Change 2 seconds to the desired time
             
             # This function receives as argument the Job ID, the quantity of items to bre produces, and the machines to perform the job.
             args=[new_job_id, job_task_json["target_output"], job_task_json["factory"]["production_lines"][0]["machines"]],
@@ -249,19 +257,24 @@ def create_job(job_task: JobTask):
             })
 def get_jobs():
     job_list= []
-    jobs_cursor = kfk_work_jobs_coll.find().limit(100).sort({"creation_date": -1})
+    try:
+        jobs_cursor = kfk_work_jobs_coll.find({},{"_insertedTS": 0, "_modifiedTS": 0}).limit(100).sort({"creation_date": -1})
 
-    for job_item in jobs_cursor:
-        job_list.append(job_item)
-
-    if not job_list:
-        raise HTTPException (
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Job task not found"
+        for job_item in jobs_cursor:
+            job_item["creation_date"] = str(datetime.datetime.fromtimestamp(job_item["creation_date"]/1000))
+            job_list.append(job_item)
+        
+        #Returns a list of JSON documents (job_list)
+        print(job_list)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"data" : job_list}
         )
-    
-    #Returns a list of JSON documents (job_list)
-    return job_list
+    except Exception as e:
+        raise HTTPException (
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving jobs: {e}"
+        )
 
 
 #Update jobs from Created to Completed using an SQL database.
@@ -279,40 +292,39 @@ def get_jobs():
                 }
             })
 def update_job_task(job_id: int, updated_job_task: UpdateJob):
-    # if not updated_job_task.quality_rate:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-    #         detail="The number of no ok products and quality rate are required."
-    #     )
     try:
         job_status = "Completed"
         machine_status = "Available"
         
         updated_job_json = updated_job_task.model_dump()
+        print(f"Updated JSON {updated_job_json}")
 
-        query_get_work_id = f"SELECT work_id FROM jobs WHERE id_job = {job_id}"
-        query_get_machines = f"SELECT machine_id FROM jobs_machines WHERE job_id = {job_id}"
-        query_cost_product = f"SELECT total_cost_per_product, total_cost_per_wo FROM product_cost WHERE work_id = %s"
+        query_get_work_id = "SELECT work_id FROM jobs WHERE id_job = %s"
+        query_get_machines = "SELECT machine_id FROM jobs_machines WHERE job_id = %s"
+        query_cost_product = "SELECT total_cost_per_product, total_cost_per_wo FROM product_cost WHERE work_id = %s"
         
         # List of machines that are executing the job.
         machine_id_list = []
 
         # Get the number of no ok parts produces by the job
         total_nok_parts = updated_job_json['nok_products']
+        print(f"Parts: {total_nok_parts}")
 
-        with mariadb_conn.cursor() as db_cur_query:
-            db_cur_query.execute(query_get_work_id)
+        with sql_conn.cursor() as db_cur_query:
+
+            db_cur_query.execute(query_get_work_id, (job_id,))
             
             # The result of this operation is a tuple, i.e: (9,)
             work_tuple = db_cur_query.fetchone()
             work_id = work_tuple[0]
 
-            db_cur_query.execute(query_get_machines)
+            db_cur_query.execute(query_get_machines,(job_id,))
             machines_result_query = db_cur_query.fetchall()
 
             db_cur_query.execute(query_cost_product, (work_id,))
             cost_product_result = db_cur_query.fetchone()
 
+            # Example 
             # cost_product_result[0] = total_cost_per_product
             # cost_product_result[1] = total_cost_per_wo
 
@@ -324,66 +336,87 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                 # The index [0] stores the machine_id of the query result
                 machine_id_list.append(machine_details[0])
 
-        update_job_query =  f"""
+        print(f"Machine list: {machine_id_list}")
+        update_job_query =  """
                                 UPDATE 
                                     jobs 
                                 SET 
-                                    nOk_products = {updated_job_json['nok_products']}, 
-                                    quality_rate = {updated_job_json['quality_rate']},
-                                    job_status = '{job_status}'
+                                    nOk_products = %s,
+                                    quality_rate = %s,
+                                    job_status = %s
                                 WHERE
-                                    id_job = {job_id}
+                                    id_job = %s
                             """
         
-        update_work_order_query =  f"""
+        update_work_order_query =  """
                                 UPDATE 
                                     work_orders 
                                 SET 
-                                    nOk_products = {updated_job_json['nok_products']},
-                                    actual_end_date = '{datetime.datetime.now()}',
-                                    wo_status = '{job_status}'
+                                    nOk_products = %s,
+                                    actual_end_date = %s,
+                                    wo_status = %s
                                 WHERE
-                                    id_work = {work_id}
+                                    id_work = %s
                             """
         
-        update_product_cost_query =  f"""
+        update_product_cost_query =  """
                                 UPDATE 
                                     product_cost 
                                 SET 
-                                    cost_nok_with_overhead = {total_cost_nok_with_overhead},
-                                    actual_total_cost = {actual_cost_wo}
+                                    cost_nok_with_overhead = %s,
+                                    actual_total_cost = %s
                                 WHERE
-                                    work_id = {work_id}
+                                    work_id = %s
                             """
+        print(update_product_cost_query)
 
-        with mariadb_conn.cursor() as db_cur:
+        with sql_conn.cursor() as db_cur:
             # Adding this query inside the with block, since we are updating more than one machine.
-            db_cur.execute(update_job_query)
+            db_cur.execute(update_job_query,(
+                updated_job_json['nok_products'],
+                updated_job_json['quality_rate'],
+                job_status,
+                job_id
+            ))
             updated_job_count = db_cur.rowcount
+
+            print(updated_job_count)
             
             # Initially this variable is set to 0, it will be increased according to the number of machines that are updated
             updated_machines_count = 0
             
-            db_cur.execute(update_work_order_query)
+            db_cur.execute(update_work_order_query,(
+                updated_job_json['nok_products'],
+                datetime.datetime.now(),
+                job_status,
+                work_id
+            ))
             updated_wo_count = db_cur.rowcount
 
-            db_cur.execute(update_product_cost_query)
+            db_cur.execute(update_product_cost_query,(
+                total_cost_nok_with_overhead,
+                actual_cost_wo,
+                work_id
+            ))
             updated_pc_count = db_cur.rowcount
 
             for machine_id in machine_id_list:
-                update_machines =  f"""
+                update_machines =  """
                                     UPDATE 
                                         machines 
                                     SET 
-                                        machine_status = '{machine_status}'
+                                        machine_status = %s
                                     WHERE
-                                        id_machine = {machine_id}
+                                        id_machine = %s
                                 """
-                db_cur.execute(update_machines)
+                db_cur.execute(update_machines,(
+                    machine_status,
+                    machine_id
+                ))
                 updated_machines_count += db_cur.rowcount
 
         # Commit the changes
-        mariadb_conn.commit()
+        sql_conn.commit()
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
