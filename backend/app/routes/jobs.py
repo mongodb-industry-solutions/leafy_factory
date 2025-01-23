@@ -61,10 +61,10 @@ def complete_job_task(job_id, quantity, machines_list):
                 ok_products += 1
 
             insert_part_query =  """
-                                INSERT INTO production_data(machine_id, part_status, job_id, creation_date)
-                                VALUES (%s,%s,%s,%s)
-                                RETURNING id_production_data;
-                            """
+                                    INSERT INTO production_data(machine_id, part_status, job_id, creation_date)
+                                    VALUES (%s,%s,%s,%s)
+                                    RETURNING id_production_data;
+                                """
             
             db_cur = sql_conn.cursor()
             
@@ -243,14 +243,14 @@ def create_job(job_task: JobTask):
                         "application/json":{
                             "example":[
                                 {
-                                    "_id": {"id_job":5},
-                                    "id_job":5,
-                                    "target_output":10,
+                                    "_id": {"id_job": 5},
+                                    "id_job": 5,
+                                    "target_output": 10,
                                     "nOk_products": "null",
                                     "quality_rate": "null",
                                     "job_status": "Created",
-                                    "creation_date": 1736239372000, 
-                                    "work_id":8
+                                    "creation_date": "2025-01-23 09:19:47",
+                                    "work_id": 8
                                 }
                             ]
                         }
@@ -351,25 +351,25 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                             """
         
         update_work_order_query =  """
-                                UPDATE 
-                                    work_orders 
-                                SET 
-                                    nOk_products = %s,
-                                    actual_end_date = %s,
-                                    wo_status = %s
-                                WHERE
-                                    id_work = %s
-                            """
+                                        UPDATE 
+                                            work_orders 
+                                        SET 
+                                            nOk_products = %s,
+                                            actual_end_date = %s,
+                                            wo_status = %s
+                                        WHERE
+                                            id_work = %s
+                                    """
         
         update_product_cost_query =  """
-                                UPDATE 
-                                    product_cost 
-                                SET 
-                                    cost_nok_with_overhead = %s,
-                                    actual_total_cost = %s
-                                WHERE
-                                    work_id = %s
-                            """
+                                        UPDATE 
+                                            product_cost 
+                                        SET 
+                                            cost_nok_with_overhead = %s,
+                                            actual_total_cost = %s
+                                        WHERE
+                                            work_id = %s
+                                    """
         print(update_product_cost_query)
 
         with sql_conn.cursor() as db_cur:
