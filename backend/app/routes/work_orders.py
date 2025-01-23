@@ -223,7 +223,7 @@ def create_work_order(work_order: WorkOrder):
 def get_work_order():
     work_order_list= []
     try:
-        work_order_cursor = kfk_work_orders_coll.find({},).limit(100).sort({"creation_date": -1})
+        work_order_cursor = kfk_work_orders_coll.find({},{"_insertedTS": 0, "_modifiedTS": 0}).limit(100).sort({"creation_date": -1})
 
         for workorder_item in work_order_cursor:
             
@@ -237,31 +237,30 @@ def get_work_order():
             # workorder_item["actual_cost"] = 0
 
             # Change datetime format from epoch to timestamp
-            workorder_item["planned_start_date"] = datetime.datetime.fromtimestamp(workorder_item["planned_start_date"]/1000)
-            workorder_item["planned_end_date"] = datetime.datetime.fromtimestamp(workorder_item["planned_end_date"]/1000)
-            workorder_item["creation_date"] = datetime.datetime.fromtimestamp(workorder_item["creation_date"]/1000)
+            workorder_item["planned_start_date"] = str(datetime.datetime.fromtimestamp(workorder_item["planned_start_date"]/1000))
+            workorder_item["planned_end_date"] = str(datetime.datetime.fromtimestamp(workorder_item["planned_end_date"]/1000))
+            workorder_item["creation_date"] = str(datetime.datetime.fromtimestamp(workorder_item["creation_date"]/1000))
 
             
             # In case the actual_start_date and actual_end_date is not set
             if workorder_item["actual_start_date"] != None:
-                workorder_item["actual_start_date"] = datetime.datetime.fromtimestamp(workorder_item["actual_start_date"]/1000)
+                workorder_item["actual_start_date"] = str(datetime.datetime.fromtimestamp(workorder_item["actual_start_date"]/1000))
 
             if workorder_item["actual_end_date"] != None:
-                workorder_item["actual_end_date"] = datetime.datetime.fromtimestamp(workorder_item["actual_end_date"]/1000)
+                workorder_item["actual_end_date"] = str(datetime.datetime.fromtimestamp(workorder_item["actual_end_date"]/1000))
                 
 
             work_order_list.append(workorder_item)
-
-
-        if not work_order_list:
-            work_order_list = []
         
-        #Returns a list of JSON documents (work_order_list)
-        return work_order_list
+        # Returns a list of JSON documents (work_order_list)
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={"data" : work_order_list}
+        )
     except Exception as e:
         raise HTTPException (
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error retrieving work orders"
+            detail=f"Error retrieving work orders: {e}"
         )
 
 
