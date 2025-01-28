@@ -1,7 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.database import products_coll
-from pymongo.errors import DuplicateKeyError
 
 
 router = APIRouter()

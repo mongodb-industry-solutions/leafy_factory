@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
-from app.database import raw_sensor_data_coll, mariadb_conn
+from app.database import raw_sensor_data_coll, sql_conn
 from app.models.machines import MachineHeartbeat, MachineValue
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import time, random, threading, requests
 from dotenv import load_dotenv
 import os
@@ -13,19 +13,20 @@ load_dotenv()
 # Access the MongoDB_URI and MARIADB variables.
 BACKEND_URL = os.getenv("BACKEND_URL")
 
-
 router = APIRouter()
-
 
 # Flag to control simulation
 simulation_running = False
 threads = []
 
+# Time interval to insert each heartbeat
+HEARTBEAT_INTERVAL = 2
+
 # This can be modified to simulate the temperature threshold for the machines
 # Normal and expected threshold for temperature
 temp_status = ""
-temperature_threshold = range(0, 81)
-temperature_normal_values = (0, 81)
+temperature_threshold = range(70, 81)
+temperature_normal_values = (70, 81)
 
 # High temperature
 temperature_high_threshold = range(81, 111)
@@ -39,41 +40,44 @@ temperature_excessive_values = (111, 10000)
 # Normal and expected threshold for vibration
 vibration_status = ""
 vibration_threshold = range(0, 7)
-vibration_normal_values = (0, 7)
+vibration_normal_values = (0.01, 7)
 
 # High vibration
 vibration_high_threshold = range(7, 11)
-vibration_high_values = (0, 7)
+vibration_high_values = (7, 11)
 
 # Excessive vibration
 vibration_excessive_threshold = range(11, 10000)
 vibration_excessive_values = (11, 10000)
 
 
-
 def send_heartbeat(data: MachineHeartbeat):
     while simulation_running:
+
+        print(f"Temperature: {data['temperature']}")
+        print(f"Vibration: {data['vibration']}")
+        
         # Conditionals to set machine's temperature
         if data["temperature"] in temperature_threshold:
-            temp_value = random.uniform(*temperature_normal_values)
+            temp_value = data["temperature"]
             temp_status = "Normal"
         elif data["temperature"] in temperature_high_threshold:
-            temp_value = random.uniform(*temperature_high_values)
+            temp_value = data["temperature"]
             temp_status = "High"
         else:
-            temp_value = random.uniform(*temperature_excessive_values)
+            temp_value = data["temperature"]
             temp_status = "Excessive"
 
         
         # Conditionals to set machine's vibration
-        if data["vibration"] in vibration_threshold:
-            vibr_value = random.uniform(*vibration_normal_values)
+        if (data["vibration"] >= vibration_normal_values[0]) and (data["vibration"] < vibration_normal_values[1]):
+            vibr_value = data["vibration"]
             vibration_status = "Normal"
-        elif data["vibration"] in vibration_high_threshold:
-            vibr_value = random.uniform(*vibration_high_values)
+        elif (data["vibration"] >= vibration_high_values[0]) and data["vibration"] < vibration_high_values[1]:
+            vibr_value = data["vibration"]
             vibration_status = "High"
         else:
-            vibr_value = random.uniform(*vibration_excessive_values)
+            vibr_value = data["vibration"]
             vibration_status = "Excessive"
         
         try: 
@@ -91,19 +95,15 @@ def send_heartbeat(data: MachineHeartbeat):
                 "vibration_status": vibration_status
             }
 
+            print(heartbeat_record)
+
             insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
 
             # Simulate different intervals, in this case we want to send the heartbeat every 2 seconds
-            time.sleep(2)
-
-            # return JSONResponse(
-            #     status_code=status.HTTP_201_CREATED,
-            #     content={"inserted id ": str(insert_heartbeat_result.inserted_id)}
-            # )
+            time.sleep(HEARTBEAT_INTERVAL)
 
         except Exception as e:
-            # raise HTTPException(status_code=500, detail=f"Failed to save heartbeat: {str(e)}")
-            print(e)
+            raise HTTPException(status_code=500, detail=f"Failed to save heartbeat: {e}")
 
 
 def start_simulation():
@@ -119,21 +119,25 @@ def start_simulation():
 
     # This updates the value of the machines wherever which is the last value.
     # Whenever we start the simulator we want to have normal values.
-    update_get_temp_vib = f"""
+    update_get_temp_vib = """
                             UPDATE machines
-                            SET temp_values = {temperature_normal_values[0]}, vib_values = {vibration_normal_values[0]}
-                            WHERE id_machine in {tuple(machine_ids)}
+                            SET temp_values = %s, vib_values = %s
+                            WHERE id_machine = ANY(%s)
                          """
     
     try:
     
-        with mariadb_conn.cursor() as db_cur:
+        with sql_conn.cursor() as db_cur:
             # temperature_threshold[0] = 70 / Normal and expetected threshold for temperature
             # vibration_threshold[0] = 3 / Normal and expetected threshold for vibration
-            db_cur.execute(update_get_temp_vib)
+            db_cur.execute(update_get_temp_vib,(
+                temperature_normal_values[0],
+                vibration_normal_values[0],
+                list(machine_ids)
+            ))
             
             # Commit the update operations.
-            mariadb_conn.commit()
+            sql_conn.commit()
 
         for machine_id in machine_ids:
 
@@ -146,8 +150,8 @@ def start_simulation():
                 "factory_id" : factory_id,
                 "production_line_id": production_line_id,
                 "machine_id" : machine_id,
-                "vibration": vibration_normal_values[0],
-                "temperature": temperature_normal_values[0],
+                "vibration": float(vibration_normal_values[0]),
+                "temperature": float(temperature_normal_values[0]),
             }
 
             t = threading.Thread(target=send_heartbeat, args=(machine_data,))
@@ -220,6 +224,17 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
         simulation_running = False
         threads.clear()
 
+        # Retrieve the current temperature and vibration value for each machine
+        query_get_temp_vib = "SELECT id_machine, temp_values, vib_values FROM machines"
+        with sql_conn.cursor() as db_cur:
+            result_temp_vib = db_cur.execute(query_get_temp_vib)
+            # Example result: [(1, 70.0, 0.01), (2, 80.0, 0.01), (3, 85.0, 0.01), (4, 90.0, 0.01)]
+            lis_temp_vib = db_cur.fetchall()
+
+        # Map the data to a dictionary using dictionary comprehension
+        # Example: {1: { "temperature": 70, "vibration": 0.01 }}
+        result_dict = {machine_id: {"temperature": temperature, "vibration": vibration} for machine_id, temperature, vibration in lis_temp_vib}
+        
         for machine_id in machine_ids:
             production_line_id = 1 if machine_id in [1, 2] else 2
             
@@ -227,8 +242,15 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
                 new_vibration = data.vibration
                 new_temperature = data.temperature
             else:
-                new_vibration = vibration_normal_values[0]
-                new_temperature = temperature_normal_values[0]
+                print(f"Dict: {result_dict[machine_id]}")
+                
+                temp_vib = result_dict[machine_id]
+
+                print(f"Temperature: {temp_vib['temperature']}")
+                print(f"Vibration: {temp_vib['vibration']}")
+
+                new_temperature = float(temp_vib["temperature"])
+                new_vibration = float(temp_vib["vibration"])
 
             machine_data = {
                 "factory_id": factory_id,
@@ -248,7 +270,6 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
     else:
         print(f"Failed to call API: {response.status_code}, {response.text}")
         raise HTTPException(status_code=500, detail=f"Failed to stop current simulation: {response.text}")
-
 
 
 @router.put("/change_values")
@@ -272,11 +293,11 @@ async def update_thresholds(data: MachineValue, background_tasks: BackgroundTask
                             """
     
     try:
-        with mariadb_conn.cursor() as db_cur:
+        with sql_conn.cursor() as db_cur:
             # Updating temperature and vibration values
             db_cur.execute(update_threshold_values, (temperature_value, vibration_value, data.machine_id))
             # Commit the update operation
-            mariadb_conn.commit()
+            sql_conn.commit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to set the new temperature and vibration values: {str(e)}")
     

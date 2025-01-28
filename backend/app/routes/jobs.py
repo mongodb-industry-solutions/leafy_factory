@@ -270,7 +270,7 @@ def get_jobs():
         print(job_list)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"data" : job_list}
+            content={"list" : job_list}
         )
     except Exception as e:
         raise HTTPException (

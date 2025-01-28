@@ -156,7 +156,6 @@ def create_work_order(work_order: WorkOrder):
                                      ))
             
             new_work_order_id = db_insert_cursor.fetchone()[0]
-            print(new_work_order_id)
 
             db_insert_cursor.execute(insert_cost_work_order, 
                                      (
@@ -254,8 +253,8 @@ def get_work_order():
         
         # Returns a list of JSON documents (work_order_list)
         return JSONResponse(
-            status_code=status.HTTP_201_CREATED,
-            content={"data" : work_order_list}
+            status_code=status.HTTP_200_OK,
+            content={"list" : work_order_list}
         )
     except Exception as e:
         raise HTTPException (
