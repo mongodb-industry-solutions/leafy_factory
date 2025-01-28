@@ -21,14 +21,14 @@ mongo_conn = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
 db = mongo_conn["leafy_factory"]
 
 # MongoDB Work Orders Collection
-kfk_work_orders_coll = db["kafka.leafy_factory.work_orders"]
+kfk_work_orders_coll = db["kafka.public.work_orders"]
 
 # MongoDB Products Collection
-kfk_products_coll = db["kafka.leafy_factory.products"]
+kfk_products_coll = db["kafka.public.products"]
 products_coll = db["products"]
 
 # MongoDB Jobs Collection
-kfk_work_jobs_coll = db["kafka.leafy_factory.jobs"]
+kfk_work_jobs_coll = db["kafka.public.jobs"]
 
 # MongoDB Raw Sensor Data Collection
 raw_sensor_data_coll = db["raw_sensor_data"]
@@ -37,13 +37,13 @@ raw_sensor_data_coll = db["raw_sensor_data"]
 factories_data_coll = db["factories"]
 
 # MongoDB Product Cost Collection
-kfk_product_cost_coll = db["kafka.leafy_factory.product_cost"]
+kfk_product_cost_coll = db["kafka.public.product_cost"]
 
 # MongoDB Machines
-kfk_machines_coll = db["kafka.leafy_factory.machines"]
+kfk_machines_coll = db["kafka.public.machines"]
 
 # MongoDB Production Data
-kfk_production_data_coll = db["kafka.leafy_factory.production_data"]
+kfk_production_data_coll = db["kafka.public.production_data"]
 
 # Access the SQL values.
 try:

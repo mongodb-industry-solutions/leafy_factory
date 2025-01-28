@@ -17,7 +17,7 @@ curl -XPUT \
 
 
 curl -XPOST \
-  'http://localhost:8000/workorders/' \
+  'http://localhost:8000/workorders' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -266,7 +266,7 @@ curl -XPUT \
   "quality_rate": "10"
 }'
 
-curl -XGET 'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000:8000/machines/machine_details'
+curl -XGET 'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/machines/machine_details'
 
 curl -XPUT \
   'http://localhost:8000/jobs/5' \
