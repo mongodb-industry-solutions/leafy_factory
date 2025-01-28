@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS leafy_factory;
+DROP DATABASE IF EXISTS leafyfactorydb;
 
-CREATE DATABASE leafy_factory;
-\c leafy_factory 
+CREATE DATABASE leafyfactorydb;
+\c leafyfactorydb 
 
 DROP TABLE IF EXISTS product_cost;
 DROP TABLE IF EXISTS products_raw_materials;

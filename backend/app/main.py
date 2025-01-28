@@ -31,6 +31,5 @@ app.add_middleware(
 app.include_router(work_orders_router)
 app.include_router(products_router)
 app.include_router(jobs_router)
-# app.include_router(lambda_routes, prefix="/lambda", tags=["Lambda Operations"])
 app.include_router(machines_router)
 app.include_router(machines_status)
