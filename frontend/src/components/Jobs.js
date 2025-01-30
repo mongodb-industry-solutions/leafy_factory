@@ -21,8 +21,9 @@ const Jobs = () => {
 
   const fetchJobs = useCallback(async () => {
       try {
-        // const response = await axiosClient.get("http://localhost:8000/jobs/");
-        const response = await axiosClient.get("/jobs"); // Fetch all 100 jobs
+        // const response = await axiosClient.get("http://localhost:8000/jobs");
+        const response = await axiosClient.get("/jobs");
+        console.log("-- getAllJobs", response.data.list);
         dispatch(setAllJobs(response.data.list));
       } catch (error) {
         console.error("There was a problem with your fetch operation:", error);
@@ -141,9 +142,9 @@ const Jobs = () => {
                       <td>{job.id_job}</td>
                       <td>{job.target_output}</td>
                       <td>{job.job_status}</td>
-                      <td>{job.creation_date ? !isNaN(new Date(job.creation_date)) ? new Date(job.creation_date).toISOString() : "Invalid date" : "Loading"} </td>
+                      <td>{job.creation_date ? !isNaN(new Date(job.creation_date)) ? job.creation_date : "Invalid date" : "Loading"} </td>
                       <td>{job.work_id}</td>
-                      <td>{job.nOk_products}</td>
+                      <td>{job.nok_products}</td>
                       <td>{job.quality_rate}%</td>
                     </tr>
                   ))}
