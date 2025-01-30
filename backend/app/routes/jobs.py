@@ -263,11 +263,12 @@ def get_jobs():
         jobs_cursor = kfk_work_jobs_coll.find({},{"_insertedTS": 0, "_modifiedTS": 0}).limit(100).sort({"creation_date": -1})
 
         for job_item in jobs_cursor:
-            job_item["creation_date"] = str(datetime.datetime.fromtimestamp(job_item["creation_date"]/1000))
+            job_item["creation_date"] = str(datetime.datetime.fromisoformat(job_item["creation_date"]).strftime("%Y-%m-%d %H:%M:%S"))
             job_list.append(job_item)
         
-        #Returns a list of JSON documents (job_list)
         print(job_list)
+
+        #Returns a list of JSON documents (job_list)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={"list" : job_list}

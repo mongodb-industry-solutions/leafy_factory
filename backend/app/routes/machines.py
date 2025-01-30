@@ -131,7 +131,10 @@ async def retrieve_machine_details():
             machine_item['reject_count'] = float(machine_item['reject_count'].to_decimal())
             machine_item['temp_values'] = float(machine_item['temp_values'].to_decimal())
             machine_item['vib_values'] = float(machine_item['vib_values'].to_decimal())
-            machine_item['last_maintenance'] = str(datetime.fromtimestamp(machine_item["last_maintenance"]/1000))
+            machine_item['last_maintenance'] = str(
+                
+                
+                datetime.fromisoformat(machine_item["last_maintenance"]).strftime("%Y-%m-%d %H:%M:%S"))
             machine_item['last_updated'] = str(machine_item['last_updated'])
             machine_item['_insertedTS'] = str(machine_item['_insertedTS'])
             machine_item['_modifiedTS'] = str(machine_item['_modifiedTS'])

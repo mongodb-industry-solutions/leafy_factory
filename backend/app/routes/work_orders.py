@@ -228,8 +228,6 @@ def get_work_order():
             
             product_item = kfk_products_coll.find_one({"id_product" : workorder_item["product_id"]})
             total_cost_wo = kfk_product_cost_coll.find_one({"work_id": workorder_item["id_work"]})
-            
-            print("Test 1")
 
             workorder_item["product_name"] = product_item["product_name"]
             workorder_item["planned_cost"] = str(total_cost_wo["total_cost_per_wo"])
@@ -237,28 +235,19 @@ def get_work_order():
             workorder_item["actual_cost"] = float(total_cost_wo["actual_total_cost"].to_decimal())if total_cost_wo["actual_total_cost"] != None else None
             # workorder_item["actual_cost"] = 0
 
-            print("Test 2")
-            print(workorder_item)
 
-            # Change datetime format from epoch to timestamp
-            print(workorder_item["planned_start_date"])
-            print(workorder_item["planned_end_date"])
-            print(workorder_item["creation_date"])
-            workorder_item["planned_start_date"] = str(datetime.datetime.fromtimestamp(workorder_item["planned_start_date"]/1000))
-            workorder_item["planned_end_date"] = str(datetime.datetime.fromtimestamp(workorder_item["planned_end_date"]/1000))
-            workorder_item["creation_date"] = str(datetime.datetime.fromtimestamp(workorder_item["creation_date"]/1000))
-
-            print("Test 3")
+            # Change datetime format from "2025-01-23T17:34:17.727506Z" to "2025-01-23 17:34:17"
+            workorder_item["planned_start_date"] = str(datetime.datetime.fromisoformat(workorder_item["planned_start_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+            workorder_item["planned_end_date"] = str(datetime.datetime.fromisoformat(workorder_item["planned_end_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+            workorder_item["creation_date"] = str(datetime.datetime.fromisoformat(workorder_item["creation_date"]).strftime("%Y-%m-%d %H:%M:%S"))
 
             # In case the actual_start_date and actual_end_date is not set
             if workorder_item["actual_start_date"] != None:
-                workorder_item["actual_start_date"] = str(datetime.datetime.fromtimestamp(workorder_item["actual_start_date"]/1000))
+                workorder_item["actual_start_date"] = str(datetime.datetime.fromisoformat(workorder_item["actual_start_date"]).strftime("%Y-%m-%d %H:%M:%S"))
 
             if workorder_item["actual_end_date"] != None:
-                workorder_item["actual_end_date"] = str(datetime.datetime.fromtimestamp(workorder_item["actual_end_date"]/1000))
-                
-            print("Test 4")
-            print(workorder_item)
+                workorder_item["actual_end_date"] = str(datetime.datetime.fromisoformat(workorder_item["actual_end_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+
             work_order_list.append(workorder_item)
         
         # Returns a list of JSON documents (work_order_list)
