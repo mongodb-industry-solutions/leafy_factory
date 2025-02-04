@@ -23,7 +23,6 @@ const Jobs = () => {
       try {
         // const response = await axiosClient.get("http://localhost:8000/jobs");
         const response = await axiosClient.get("/jobs");
-        console.log("-- getAllJobs", response.data.list);
         dispatch(setAllJobs(response.data.list));
       } catch (error) {
         console.error("There was a problem with your fetch operation:", error);

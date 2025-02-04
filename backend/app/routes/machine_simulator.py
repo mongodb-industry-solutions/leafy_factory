@@ -53,9 +53,6 @@ vibration_excessive_values = (11, 10000)
 
 def send_heartbeat(data: MachineHeartbeat):
     while simulation_running:
-
-        print(f"Temperature: {data['temperature']}")
-        print(f"Vibration: {data['vibration']}")
         
         # Conditionals to set machine's temperature
         if data["temperature"] in temperature_threshold:
@@ -94,8 +91,6 @@ def send_heartbeat(data: MachineHeartbeat):
                 "temperature_status": temp_status,
                 "vibration_status": vibration_status
             }
-
-            print(heartbeat_record)
 
             insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
 
@@ -242,12 +237,7 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
                 new_vibration = data.vibration
                 new_temperature = data.temperature
             else:
-                print(f"Dict: {result_dict[machine_id]}")
-                
                 temp_vib = result_dict[machine_id]
-
-                print(f"Temperature: {temp_vib['temperature']}")
-                print(f"Vibration: {temp_vib['vibration']}")
 
                 new_temperature = float(temp_vib["temperature"])
                 new_vibration = float(temp_vib["vibration"])
@@ -275,8 +265,6 @@ def stop_and_restart_simulation(machine_ids, factory_id, data):
 @router.put("/change_values")
 async def update_thresholds(data: MachineValue, background_tasks: BackgroundTasks):
     global simulation_running, threads
-
-    print(f"Data: {data}")
 
     # Updates the thresholds in case we want to introduce abnormal values.
     temperature_value = data.temperature

@@ -265,8 +265,6 @@ def get_jobs():
         for job_item in jobs_cursor:
             job_item["creation_date"] = str(datetime.datetime.fromisoformat(job_item["creation_date"]).strftime("%Y-%m-%d %H:%M:%S"))
             job_list.append(job_item)
-        
-        print(job_list)
 
         #Returns a list of JSON documents (job_list)
         return JSONResponse(
@@ -300,7 +298,6 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
         machine_status = "Available"
         
         updated_job_json = updated_job_task.model_dump()
-        print(f"Updated JSON {updated_job_json}")
 
         query_get_work_id = "SELECT work_id FROM jobs WHERE id_job = %s"
         query_get_machines = "SELECT machine_id FROM jobs_machines WHERE job_id = %s"
@@ -311,7 +308,6 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
 
         # Get the number of no ok parts produces by the job
         total_nok_parts = updated_job_json['nok_products']
-        print(f"Parts: {total_nok_parts}")
 
         with sql_conn.cursor() as db_cur_query:
 
@@ -339,7 +335,6 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                 # The index [0] stores the machine_id of the query result
                 machine_id_list.append(machine_details[0])
 
-        print(f"Machine list: {machine_id_list}")
         update_job_query =  """
                                 UPDATE 
                                     jobs 
@@ -371,7 +366,6 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                                         WHERE
                                             work_id = %s
                                     """
-        print(update_product_cost_query)
 
         with sql_conn.cursor() as db_cur:
             # Adding this query inside the with block, since we are updating more than one machine.
@@ -382,8 +376,6 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
                 job_id
             ))
             updated_job_count = db_cur.rowcount
-
-            print(updated_job_count)
             
             # Initially this variable is set to 0, it will be increased according to the number of machines that are updated
             updated_machines_count = 0

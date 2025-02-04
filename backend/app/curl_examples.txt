@@ -286,3 +286,7 @@ curl -XPUT \
   "vibration": 7,
   "temperature": 100
 }'
+
+curl -XPOST 'http://LeafyFactory-1977785329.us-east-1.elb.amazonaws.com:8000/start-simulation'
+curl -XGET 'http://LeafyFactory-1977785329.us-east-1.elb.amazonaws.com/workorders/'
+LeafyFactory-1977785329.us-east-1.elb.amazonaws.com

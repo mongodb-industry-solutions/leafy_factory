@@ -181,6 +181,7 @@ def create_work_order(work_order: WorkOrder):
         )
     except Exception as e:
         sql_conn.rollback()
+        print(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create work order: {str(e)}"
