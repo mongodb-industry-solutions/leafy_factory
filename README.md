@@ -12,17 +12,27 @@
 
 ## Inside your `Frontend` folder, run:
 
-* To install the dependencies and packages, execute `npm install` in your Terminal.
 
-* Once this is done, execute `npm run build` to create your React App ( and build folder).
+1. Navigate to the `src` folder.
 
-* You're all set, now you can run `npm start`, 
+2. Install dependencies by running:
+```bash
+npm install
+```
+
+3. Start the frontend development server with:
+````bash
+npm run dev
+
+````
+4. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface.
+
 
 * BONUS NOTE: If you encounter an issue when running your app, execute this extra command: `npm uninstall @testing-library/react @testing-library/jest-dom @testing-library/user-event`
 
 
-## For the project execution: 
+## Summarized project execution: 
 
 * Run `uvicorn app.main:app --reload` in your backend folder
 
-* Run `npm start` in your frontend folder
+* Run `npm run dev` in your frontend folder
