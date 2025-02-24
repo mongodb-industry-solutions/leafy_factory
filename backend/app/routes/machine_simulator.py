@@ -1,5 +1,9 @@
 from fastapi import APIRouter, status, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
+
+from app.mqtt.mqtt import create_mqtt_client
+
+import json
 from app.database import raw_sensor_data_coll, sql_conn
 from app.models.machines import MachineHeartbeat, MachineValue
 from datetime import datetime, timezone
@@ -12,6 +16,7 @@ load_dotenv()
 
 # Access the MongoDB_URI and MARIADB variables.
 BACKEND_URL = os.getenv("BACKEND_URL")
+MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
 router = APIRouter()
 
@@ -49,6 +54,16 @@ vibration_high_values = (7, 11)
 # Excessive vibration
 vibration_excessive_threshold = range(11, 10000)
 vibration_excessive_values = (11, 10000)
+
+# MQTT client creation
+mqtt_client = create_mqtt_client()
+
+# Serialize datetime to string
+def json_serial(obj):
+    if isinstance(obj, (datetime)):
+        # Convert datetime to ISO 8601 string
+        return obj.isoformat()
+    raise TypeError("Type not serializable")
 
 
 def send_heartbeat(data: MachineHeartbeat):
@@ -92,7 +107,17 @@ def send_heartbeat(data: MachineHeartbeat):
                 "vibration_status": vibration_status
             }
 
+            print(f"First heartbeat: {heartbeat_record}")
+
+            # Creating a copy of the heartbeat
+            heartbeat_record_mqtt = heartbeat_record.copy()
+            # heartbeat_record_mqtt["timestamp"] = str(heartbeat_record_mqtt["timestamp"])
+
             insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
+
+            print(f"Second heartbeat: {heartbeat_record_mqtt}")
+
+            mqtt_client.publish(MQTT_TOPIC, payload=json.dumps(heartbeat_record_mqtt, default=json_serial))
 
             # Simulate different intervals, in this case we want to send the heartbeat every 2 seconds
             time.sleep(HEARTBEAT_INTERVAL)
