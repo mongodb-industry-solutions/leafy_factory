@@ -4,7 +4,7 @@ import "../styles.css";
 import React, { useState, useEffect, useRef} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { startShopfloor, stopShopfloor, shopfloorFailure } from "../../redux/slices/ShopFloorslice";
-//import axiosClient from "../../lib/axios.js";  
+import axiosClient from "../../lib/axios.js";  
 import { Form, Button, Row, Col, Card, ListGroup, Spinner, Alert } from "react-bootstrap";
 import Image from "next/image";
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom'

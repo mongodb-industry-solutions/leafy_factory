@@ -22,13 +22,14 @@ const Jobs = () => {
     try {
       // const response = await axiosClient.get("http://localhost:8000/jobs/");
       const response = await axiosClient.get("/jobs/");  // Fetch all 100 jobs
-      dispatch(setAllJobs(response.data));
+      dispatch(setAllJobs(response.data.list));
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
       setIsLoading(false);
     }
   }, [dispatch]);
+
 
   useEffect(() => {
     fetchJobs();

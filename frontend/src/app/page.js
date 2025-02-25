@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import axiosClient from "./../lib/axios";  
+import axiosClient from "./../lib/axios";  
 import { Table, Row, Col, Pagination } from "react-bootstrap";
 import { setAllOrders } from "../redux/slices/WorkOrderslice";
 import CreateForm from "../components/CreateForm/CreateForm";
@@ -14,14 +14,11 @@ const WorkOrdersPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 15;
 
-  // load all work orders once this component gets rendered
   const fetchWorkOrders = useCallback(async () => {
     try {
-      const response = await fetch('https://rickandmortyapi.com/api/character')
-      //const response = await axiosClient.get("/workorders/");
-      //const response = await axiosClient.get("http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/workorders/")
-      const workOrders = response.data;
-      dispatch(setAllOrders([...workOrders]));
+      const response = await axiosClient.get("/workorders");
+      const workOrders = response.data.list;
+      dispatch(setAllOrders([...workOrders])); 
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
     } finally {
@@ -79,7 +76,7 @@ const WorkOrdersPage = () => {
         <Col lg={7} md={6} sm={12} className="table-wrapper">
           {isLoading ? (
             <p>Loading work orders...</p>
-          ) : currentOrders.length > 0 ? (
+          ) : workOrders && workOrders.length > 0 ? (
             <>
               <Table striped bordered hover responsive className="table">
                 <thead>
@@ -113,9 +110,15 @@ const WorkOrdersPage = () => {
               </Table>
 
               <Pagination className="pagination">
-                <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1} />
+                <Pagination.First
+                  onClick={() => handlePageChange(1)}
+                  disabled={currentPage === 1}
+                />
                 {renderPaginationItems()}
-                <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages} />
+                <Pagination.Last
+                  onClick={() => handlePageChange(totalPages)}
+                  disabled={currentPage === totalPages}
+                />
               </Pagination>
             </>
           ) : (

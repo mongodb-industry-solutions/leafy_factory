@@ -1,4 +1,4 @@
-// File: /Users/romina/Desktop/leafy_factory_next/frontend/src/app/start-simulation/page.js
+// File: /Users/romina/Desktop/leafyFactory/leafy_factory/frontend/src/app/start-simulation/page.js
 import * as entry from '../../../../app/start-simulation/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

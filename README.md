@@ -35,4 +35,4 @@ npm run dev
 
 * Run `uvicorn app.main:app --reload` in your backend folder
 
-* Run `npm run dev` in your frontend folder
+* Run `npm run dev` in your /src (frontend) folder

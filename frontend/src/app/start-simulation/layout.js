@@ -13,13 +13,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={GeistSans.className}>
-      <body><ClientProvider>
-      <Header/>
-      <NavigationBar/>
-      {children}
+    <div className={GeistSans.className}>
+      <ClientProvider>
+        <Header />
+        {children}
       </ClientProvider>
-    </body>
-    </html>
+    </div>
   );
 }

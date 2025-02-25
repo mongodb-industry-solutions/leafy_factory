@@ -5,7 +5,7 @@ import { Button, Form, Col, Row } from "react-bootstrap";
 import axiosClient from "../../lib/axios";  
 import { useDispatch, useSelector } from "react-redux";
 import { addJob } from "../../redux/slices/JobSlice";
-import { setWorkOrders } from "../../redux/slices/WorkOrderslice";
+import { setAllOrders } from "../../redux/slices/WorkOrderslice";
 
 const CreateJobForm = ({ onCreateSuccess }) => {
   const dispatch = useDispatch();
@@ -52,8 +52,9 @@ const CreateJobForm = ({ onCreateSuccess }) => {
   useEffect(() => {
     const fetchWorkOrders = async () => {
       try {
-        const response = await axiosClient.get("/work_orders");
-        dispatch(setWorkOrders(response.data)); 
+        const response = await axiosClient.get("/workorders");
+        console.log(response.data.list);
+        dispatch(setAllOrders(response.data.list)); 
       } catch (error) {
         console.error("Error fetching work orders:", error);
       }
