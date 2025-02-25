@@ -16,3 +16,4 @@ kafka_2*
 /mosquitto/license/*.lic
 /mosquitto/data/dyn*
 /mosquitto/data/mosquitto*
+/backend/app/__pycache__/*.pyc
