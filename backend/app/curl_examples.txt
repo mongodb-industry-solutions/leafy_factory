@@ -293,3 +293,27 @@ LeafyFactory-1977785329.us-east-1.elb.amazonaws.com
 
 
 curl -XPOST 'http://localhost:8000/start-simulation'
+
+db.createCollection(
+   "raw_sensor_data_mqtt",
+   {
+      timeseries: {
+         timeField: "timestamp",
+         metaField: "metadata",
+         granularity: "seconds"
+      }
+   }
+)
+
+
+// Replace 'yourDatabase' with the name of your database
+use leafy_factory;
+
+// Replace 'yourCollection' with the name of your time series collection
+const collectionInfo = db.getCollectionInfos({ name: 'raw_sensor_data' });
+if (collectionInfo.length > 0) {
+    const timeSeriesOptions = collectionInfo[0].options.timeSeries;
+    printjson(timeSeriesOptions);
+} else {
+    print("Collection not found");
+}
