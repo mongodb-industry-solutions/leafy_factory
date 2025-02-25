@@ -1,0 +1,18 @@
+{
+    "name": "postgres-connector",
+    "config": {
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "database.hostname": "leafyfactorydb.c4ecdwgyv8ky.us-east-1.rds.amazonaws.com",
+        "database.port": "5432",
+        "database.user": "leafyfactory",
+        "database.password": "LeafyFactoryDemo",
+        "database.dbname": "leafyfactorydb",
+        "database.server.name": "leafy_factory",
+        "database.history.kafka.bootstrap.servers": "b-2.leafyfactorytest.f429qs.c11.kafka.us-east-1.amazonaws.com:9092,b-3.leafyfactorytest.f429qs.c11.kafka.us-east-1.amazonaws.com:9092,b-1.leafyfactorytest.f429qs.c11.kafka.us-east-1.amazonaws.com:9092",
+        "database.history.kafka.topic": "db.history.leafy_factory",
+        "topic.prefix": "kafka",
+        "include.schema.changes": "false",
+        "schema.history.internal.kafka.bootstrap.servers": "b-2.leafyfactorytest.f429qs.c11.kafka.us-east-1.amazonaws.com:9092,b-3.leafyfactorytest.f429qs.c11.kafka.us-east-1.amazonaws.com:9092,b-1.leafyfactorytest.f429qs.c11.kafka.us-east-1.amazonaws.com:9092",
+        "schema.history.internal.kafka.topic": "db.history.internal"
+  }
+}

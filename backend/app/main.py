@@ -18,10 +18,7 @@ app = FastAPI(title="Leafy Factory APIs")
 # Configure CORS (Allow React app origin)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://ec2-3-91-158-15.compute-1.amazonaws.com:3000"
-    ],  # React frontend's origin
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
@@ -31,6 +28,5 @@ app.add_middleware(
 app.include_router(work_orders_router)
 app.include_router(products_router)
 app.include_router(jobs_router)
-# app.include_router(lambda_routes, prefix="/lambda", tags=["Lambda Operations"])
 app.include_router(machines_router)
 app.include_router(machines_status)

@@ -1,0 +1,24 @@
+[
+  {
+      "name": "mqtt-kafka-bridge",
+      "connection": {
+          "brokers": [
+              "host.docker.internal:9092"
+          ],
+          "clientId": "mqtt-kafka-bridge-client",
+          "allowAutoTopicCreation": true,
+          "queueSize": 10,
+          "retryPublishMinDelay": 250,
+          "retryPublishMaxDelay": 2500
+      },
+      "topicMappings": [
+          {
+              "name": "sensorData",
+              "kafkaTopic": "kafka.public.mqtt_data",
+              "mqttTopics": [
+                  "sensor/data"
+              ]
+          }
+      ]
+  }
+]
