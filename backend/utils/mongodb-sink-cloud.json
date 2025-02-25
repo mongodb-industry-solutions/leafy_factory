@@ -1,0 +1,24 @@
+{
+  "name": "mongodb-sink-connector", 
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "tasks.max": "1",
+    "topics.regex": "kafka\\.public\\..*",
+    "connection.uri": "mongodb+srv://leafy_factory:6CZpgCe3qWuWBGqd@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority&appName=IST-Shared",
+    "database": "leafy_factory",
+    "transforms": "ExtractAfterField",
+    "transforms.ExtractAfterField.type": "org.apache.kafka.connect.transforms.ExtractField$Value",
+    "transforms.ExtractAfterField.field": "after",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": true,
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": true,
+    "document.id.strategy": "com.mongodb.kafka.connect.sink.processor.id.strategy.PartialValueStrategy",
+    "document.id.strategy.partial.value.projection.list": "id_job,id_cost,id_product,id_work,id_machine,id_production_data,id_production_line,id_jobs_machines",
+    "document.id.strategy.partial.value.projection.type": "AllowList",
+    "writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.UpdateOneTimestampsStrategy",
+    "errors.tolerance": "all",
+    "errors.log.enable": true,
+    "errors.log.include.messages": true
+  }
+}
