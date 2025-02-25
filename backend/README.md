@@ -49,6 +49,8 @@ Git is going to be used to clone the [demo app source code from GitHub](https://
     1. `git clone https://github.com/mongodb-industry-solutions/leafy_factory.git`
 4. After running the git clone command, a new directory with the repository's name will be created in your chosen directory. To navigate into the cloned repository, use the cd command:
     1. `cd leafy_factory/`
+5. Move to the branch aws_dev
+    1. `git checkout aws_dev`
 
 ### Configuration of Python Virtual Environment and installation of Pip packages.
 Python virtual environments help decouple and isolate Python installs and associated [pip packages](https://pypi.org/). This allows end-users to install and manage their own set of packages that are independent of those provided by the system or used by other projects.
@@ -56,7 +58,7 @@ Python virtual environments help decouple and isolate Python installs and associ
 1. First let’s create a python virtual environment within the leafy_factory directory. Navigate to the `leafy_factory` directory:
     1. `cd leafy_factory/`
 2. Once there, create a virtual environment named `.venv`
-    1. `python -m venv .venv`
+    1. `python3.12 -m venv .venv`
 3. Activate the created virtual environment.
     1. `source .venv/bin/activate`
     2. You should see the (.venv) at the beginning of your command prompt
@@ -81,6 +83,13 @@ Once you make sure that PostgreSQL is installed and running, execute the followi
     SQL_DATABASE="leafyfactorydb"
     MQTT_TOPIC = "sensor/data"
     ```
+
+
+<!-- ### Initialize Mosquitto
+
+1. Navigate to the mosquitto directory within leafy_factory/mosquitto
+    1. `cd leaf/` -->
+
 
 ### Starts the backend server.
 Now that all the dependencies are installed and configured, the last step is to run the python backend server. 
