@@ -73,7 +73,7 @@ Once you make sure that PostgreSQL is installed and running, execute the followi
 2. Create a file named `.env` and add the following lines, replacing placeholders with your actual credentials:
 
     ```
-    MONGO_URI="mongodb+srv://<USER>:<PASSWORD>@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority&appName=IST-Shared"
+    MONGO_URI="mongodb+srv://<USER>:<PASSWORD>@<MONGODB_HOSTNAME>/?retryWrites=true&w=majority"
     BACKEND_URL="http://localhost:8000/"
     SQL_USERNAME="leafyfactory"
     SQL_PASSWORD="LeafyFactoryDemo"
