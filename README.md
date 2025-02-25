@@ -28,7 +28,7 @@ npm run dev
 4. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface.
 
 
-* BONUS NOTE: If you encounter an issue when running your app, execute this extra command: `npm uninstall @testing-library/react @testing-library/jest-dom @testing-library/user-event`
+* BONUS NOTE: If you encounter an issue when installing dependencies in your project, execute this command instead: `npm install --legacy-peer-deps`
 
 
 ## Summarized project execution: 
