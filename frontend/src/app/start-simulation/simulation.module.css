@@ -11,11 +11,19 @@
     margin-bottom: 20px;
 }
 
+.alerts{
+    display: flex;
+    justify-content: center; /* Centers the alerts horizontally */
+    align-items: center; /* Aligns them vertically */
+    gap: 16px; /* Adds spacing between the alerts */
+    margin-top: 20px; /* Adjust as needed */
+}
+
 .formWrapper {
     background-color: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
-    max-width: 500px;
+    max-width: max-content;
     margin: 0 auto;
     /* Centers the form horizontally */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -26,14 +34,22 @@
 
 .formGroup {
     margin-bottom: 10px;
+    text-align: left;
 }
 
-.prodCards{
+.formFields{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
     margin-top: 20px;
 }
 
+.prodCards{
+    margin-top: 40px;
+}
+
 .card {
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 5px 4px rgba(0, 0, 0, 0.05);
     /* Subtle shadow */
     border: none;
     background-color: white;
@@ -62,6 +78,32 @@
     font-size: 12pt;
 }
 
+
+.statusLabel {
+    display: flex;
+    align-items: center; /* Aligns them vertically */
+    margin-left: 50px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    width: fit-content;
+  }
+  
+  .available {
+    background-color: #E9FF99;
+    color:#00684A;
+  }
+  
+  .running {
+    background-color: #FFEEA9;
+    color: #944F01;
+   
+  }
+  
+  .danger {
+    background-color: #FFEAE5;
+    color: #970606;
+  }
+  
 /* Tooltip or modal style for "Machine JSON Data" */
 .tooltipIcon {
     cursor: pointer;

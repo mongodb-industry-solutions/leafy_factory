@@ -168,33 +168,39 @@ function ShopfloorComponent() {
 
       <Form onSubmit={handleFormSubmit} className={styles.formWrapper}>
         <H3 className={styles.H3}>Change Thresholds</H3>
-        <Alert variant={getTemperature(temperature)}>New Temperature: {temperature}°C</Alert>
-        <Alert variant={getVibration(vibration)}>New Vibration: {vibration} mm/s</Alert>
+        <div className={styles.alerts}>
+          <Alert variant={getTemperature(temperature)}>New Temperature: {temperature}°C</Alert>
+          <Alert variant={getVibration(vibration)}>New Vibration: {vibration} mm/s</Alert>
+        </div>
 
-        <Form.Group className={styles.formGroup} controlId="machine_id">
-          <Form.Label>Select Machine ID</Form.Label>
-          <Form.Control type="string" as="select" value={idMachine} onChange={(e) => setIdMachine(String(e.target.value))} required>
-            <option value="">Please enter desired value</option>
-            {["1", "2", "3", "4"].map(id => (
-              <option key={id} value={id}>{id}</option>
-            ))}
-          </Form.Control>
-        </Form.Group>
+        <div className={styles.formFields}>
 
-        <Form.Group className={styles.formGroup} controlId="temperature">
-          <Form.Label>Temperature (°C)</Form.Label>
-          <Form.Control as="select" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} required>
-            <option value="">Please enter desired value</option>
-            {Array.from({ length: 61 }, (_, i) => i + 70).map(temp => (
-              <option key={temp} value={temp}>{temp}</option>
-            ))}
-          </Form.Control>
-        </Form.Group>
+          <Form.Group className={styles.formGroup} controlId="machine_id">
+            <Form.Label>Select Machine ID</Form.Label>
+            <Form.Control type="string" as="select" value={idMachine} onChange={(e) => setIdMachine(String(e.target.value))} required>
+              <option value="">Please enter desired value</option>
+              {["1", "2", "3", "4"].map(id => (
+                <option key={id} value={id}>{id}</option>
+              ))}
+            </Form.Control>
+          </Form.Group>
 
-        <Form.Group className={styles.formGroup} controlId="vibration">
-          <Form.Label>Vibration (mm/s)</Form.Label>
-          <Form.Control type="number" step="0.1" min={3.8} value={vibration} onChange={(e) => setVibration(Number(e.target.value))} required />
-        </Form.Group>
+          <Form.Group className={styles.formGroup} controlId="temperature">
+            <Form.Label>Temperature (°C)</Form.Label>
+            <Form.Control as="select" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} required>
+              <option value="">Please enter desired value</option>
+              {Array.from({ length: 61 }, (_, i) => i + 70).map(temp => (
+                <option key={temp} value={temp}>{temp}</option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+
+          <Form.Group className={styles.formGroup} controlId="vibration">
+            <Form.Label>Vibration (mm/s)</Form.Label>
+            <Form.Control type="number" step="0.1" min={3.8} value={vibration} onChange={(e) => setVibration(Number(e.target.value))} required />
+          </Form.Group>
+
+        </div>
 
         <Button type="submit" disabled={!idMachine || idMachine === "Please enter desired value" || !temperature || temperature === "Please enter desired value" || !vibration} variant="primary">
           Update Machine Values
@@ -211,6 +217,26 @@ function ShopfloorComponent() {
                 <Card.Body className={styles.cardBody}>
                   <Card.Title className={styles.cardTitle}>Machine : {machine.id_machine}</Card.Title>
                   <ListGroup variant="flush">
+                    <ListGroup.Item className={styles.statusContainer}>
+                      <div
+                        className={`${styles.statusLabel} ${machine.machine_status === "Available"
+                            ? styles.available
+                            : machine.machine_status === "Running"
+                              ? styles.running
+                              : styles.danger
+                          }`}
+                      >
+                        <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
+                        {machine.machine_status === "Available"
+                          ? `Status ${machine.id_machine}: Available`
+                          : machine.machine_status === "Running"
+                            ? `Machine ${machine.id_machine}: Running`
+                            : `Machine ${machine.id_machine}: ${machine.machine_status}`}
+                      </div>
+                    </ListGroup.Item>
+
+
+                    {/*
                     <ListGroup.Item>
                       {machine.machine_status === "Available" ? (
                         <Button variant="success" disabled>
@@ -228,6 +254,8 @@ function ShopfloorComponent() {
                         </Button>
                       )}
                     </ListGroup.Item>
+                    */}
+
                     <ListGroup.Item className={styles.cardItem}><strong>Production Line:</strong> {machine.production_line_id}</ListGroup.Item>
                     <ListGroup.Item className={styles.cardItem}><strong>Avg Temperature:</strong> {Number(machine.avg_temperature).toFixed(1)} °C</ListGroup.Item>
                     <ListGroup.Item className={styles.cardItem}><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(2)} mm/s</ListGroup.Item>
@@ -237,10 +265,10 @@ function ShopfloorComponent() {
 
                   {/* Tooltip icon to show Machine JSON Data */}
                   <div className={styles.tooltipWrapper}>
-                    <IconButton  className={styles.tooltipIcon}>
-                      <Icon glyph="CurlyBraces" />
+                    <IconButton className={styles.tooltipIcon}>
+                      <Icon glyph="CurlyBraces" aria-label="Curly Braces" />
                     </IconButton>
-                  
+
                     <div className={styles.tooltipContent}>
                       <pre>{JSON.stringify(machine, null, 2)}</pre>
                     </div>
