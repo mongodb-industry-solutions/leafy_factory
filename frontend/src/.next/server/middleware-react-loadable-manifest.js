@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{\"node_modules/bson/lib/bson.mjs -> crypto\":{\"id\":\"node_modules/bson/lib/bson.mjs -> crypto\",\"files\":[\"static/chunks/_app-pages-browser_node_modules_next_dist_compiled_crypto-browserify_index_js.js\"]}}"
+self.__REACT_LOADABLE_MANIFEST="{\"node_modules/bson/lib/bson.mjs -> crypto\":{\"id\":\"node_modules/bson/lib/bson.mjs -> crypto\",\"files\":[]}}"
