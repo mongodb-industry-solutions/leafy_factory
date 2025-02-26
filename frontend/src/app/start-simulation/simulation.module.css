@@ -1,0 +1,139 @@
+.buttonWrapper {
+    display: flex;
+    justify-content: center;
+    /* Centers button horizontally */
+    margin-top: 80px;
+    /* Adds spacing above the button */
+}
+
+.H3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.alerts{
+    display: flex;
+    justify-content: center; /* Centers the alerts horizontally */
+    align-items: center; /* Aligns them vertically */
+    gap: 16px; /* Adds spacing between the alerts */
+    margin-top: 20px; /* Adjust as needed */
+}
+
+.formWrapper {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: max-content;
+    margin: 0 auto;
+    /* Centers the form horizontally */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    text-align: center;
+    margin-top: 30px;
+}
+
+.formGroup {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.formFields{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.prodCards{
+    margin-top: 40px;
+}
+
+.card {
+    box-shadow: 0 5px 5px 4px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow */
+    border: none;
+    background-color: white;
+    margin-bottom: 30px;
+    width: fit-content;
+}
+
+.cardImg {
+    width: 100px;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.cardBody {
+    text-align: center;
+}
+
+.cardTitle {
+    font-size: 16pt;
+}
+
+.cardItem {
+    font-size: 12pt;
+}
+
+
+.statusLabel {
+    display: flex;
+    align-items: center; /* Aligns them vertically */
+    margin-left: 50px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    width: fit-content;
+  }
+  
+  .available {
+    background-color: #E9FF99;
+    color:#00684A;
+  }
+  
+  .running {
+    background-color: #FFEEA9;
+    color: #944F01;
+   
+  }
+  
+  .danger {
+    background-color: #FFEAE5;
+    color: #970606;
+  }
+  
+/* Tooltip or modal style for "Machine JSON Data" */
+.tooltipIcon {
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.tooltipContent {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fafafa;
+
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+}
+
+.tooltipWrapper {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Positions it to the top-right corner */
+    z-index: 1000;
+    width: fit-content;
+  }
+  
+
+.tooltipWrapper:hover .tooltipContent {
+    display: block;
+}

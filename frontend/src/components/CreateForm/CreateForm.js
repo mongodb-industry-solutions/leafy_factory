@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import {Form, Col, Row } from "react-bootstrap";
 import axiosClient from "../../lib/axios";  
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../redux/slices/WorkOrderslice";
+import Button from "@leafygreen-ui/button";
+import styles from "./createform.module.css";
 
 
 const CreateForm = ({onSubmitSuccess}) => {
@@ -69,7 +71,7 @@ const CreateForm = ({onSubmitSuccess}) => {
       <Row className="mb-3">
         <Form.Group as={Col} className="mb-3" controlId="work_id">
           <Form.Label>Work Order ID</Form.Label>
-          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="product_select">
@@ -86,7 +88,7 @@ const CreateForm = ({onSubmitSuccess}) => {
 
         <Form.Group as={Col} controlId="wo_status">
           <Form.Label>Work Order Status</Form.Label>
-          <Form.Control type="text" value="Created" readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="text" value="Created" readOnly className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="form_quantity">
@@ -104,17 +106,17 @@ const CreateForm = ({onSubmitSuccess}) => {
       <Row className="mb-3">
         <Form.Group as={Col} className="mb-3" controlId="creation_date">
           <Form.Label>Creation Date</Form.Label>
-          <Form.Control type="text" value={creationDate} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="text" value={creationDate} readOnly className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} className="mb-3" controlId="planned_start_date">
           <Form.Label>Planned Start Date</Form.Label>
-          <Form.Control type="text" value={plannedStartDate} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="text" value={plannedStartDate} readOnly className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="planned_end_date">
           <Form.Label>Planned End Date</Form.Label>
-          <Form.Control type="text" value={plannedEndDate} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="text" value={plannedEndDate} readOnly className={styles.formControl} />
         </Form.Group>
       </Row>
 
@@ -130,7 +132,9 @@ const CreateForm = ({onSubmitSuccess}) => {
         </Form.Group>
       </Row>
 
-      <Button type="submit" className="button">Submit Work Order</Button>
+      <div className={styles.buttonWrapper}>
+        <Button type="submit" variant="baseGreen">Submit Work Order</Button>
+      </div>
     </Form>
   );
 };

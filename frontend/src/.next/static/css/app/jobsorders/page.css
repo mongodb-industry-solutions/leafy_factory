@@ -1,0 +1,59 @@
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./components/CreateJobForm/createjobform.module.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************/
+.createjobform_formControl__adzQV {
+    background-color: #f8f9fa;
+    cursor: "not-allowed";
+}
+
+.createjobform_buttonWrapper__9uKQd {
+    display: flex;
+    justify-content: center; /* Centers button horizontally */
+    margin-top: 15px; /* Adds spacing above the button */
+  }
+  
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./app/jobsorders/jobs.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+.jobs_containerFluid__eZ3ky {
+    padding: 20px;
+  }
+  
+  .jobs_historyHeader__kDNSE {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    margin-top: 70px;
+  }
+  
+  .jobs_H3__HMzjY{
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .jobs_formWrapper__0OlRc {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: 0 auto; /* Centers the form horizontally */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  .jobs_tableWrapper__CMPCz {
+    width: 100%;
+    margin-top: 50px;
+  }
+  
+  .jobs_table__kDBQd {
+    width: 95%;
+    border-collapse: collapse;
+  }
+  
+  .jobs_pagination__vwIuY {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  

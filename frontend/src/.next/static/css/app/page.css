@@ -1,0 +1,59 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./components/CreateForm/createform.module.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************/
+.createform_formControl__WWvoi {
+    background-color: #f8f9fa;
+    cursor: "not-allowed";
+}
+
+.createform_buttonWrapper__yX8r7 {
+    display: flex;
+    justify-content: center; /* Centers button horizontally */
+    margin-top: 15px; /* Adds spacing above the button */
+  }
+  
+/*!*********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./app/workorders.module.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************/
+.workorders_containerFluid__HwDxj {
+    padding: 20px;
+  }
+  
+  .workorders_historyHeader__6YbTk {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    margin-top: 70px;
+  }
+  
+  .workorders_H3__Iemr3{
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .workorders_formWrapper____lZE {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: 0 auto; /* Centers the form horizontally */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  .workorders_tableWrapper__r5rJC {
+    width: 100%;
+    margin-top: 50px;
+  }
+  
+  .workorders_table__f6isB {
+    width: 95%;
+    border-collapse: collapse;
+  }
+  
+  .workorders_pagination__5cNrD {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
