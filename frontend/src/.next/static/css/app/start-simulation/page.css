@@ -1,185 +1,15 @@
 /*!************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./app/styles.css ***!
   \************************************************************************************************************************************************************************************************************************************************************/
-.navbar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 110px;
-  padding: 10px 0;
-  background-color: #ffffff;
-  box-shadow: 0px 4px 10px #001e2b;
-  padding-right: 40px;
-  margin-left: 10px;
-}
-
-.navbar-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#nav-img {
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.navtext {
-  color: #00684a;
-  font-size: 40px;
-  margin: 0;
-  cursor: pointer;
-  line-height: 80px;
-}
-
-.navbar {
-  width: 100%;
-  max-width: 100%;
-}
-
-.nav-tabs {
-  width: 97%;
-  display: flex;
-  justify-content: space-around;
-  padding-right: 8%;
-}
-
-.navbar .nav-link {
-  font-size: 25px;
-  padding: 8px 15px;
-  color: #ffffff;
-  background-color: #004d00;
-  border: 1px solid #023430;
-  border-radius: 10px;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-.navbar .nav-link.active {
-  color: #004d00;
-  border-color: #004d00;
-}
-
-.navbar .nav-item.show .nav-link,
-.navbar .nav-link:hover {
-  background-color: #00ed64;
-  color: #004d00;
-}
 
 .history-header {
-  font-size: 2.5em;
-  color: #023430;
-  text-shadow: #00684a;
-  margin-top: 10px;
-  margin-bottom: 30px;
-}
-
-.form-wrapper {
-  margin-top: 20px;
-  padding: 20px;
-  border: 2px solid #ffffff;
-  background-color: #f8f9fa;
-  border-radius: 25px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-  margin-left: 2%;
-  margin-right: 2%;
-}
-
-.form-vibration {
-  margin-bottom: 7%;
-}
-
-.button {
-  background-color: #00ed64;
-  font-size: large;
-  color: black;
-}
-
-.button:hover {
-  background-color: #00684a;
-  color: #ffffff;
-}
-
-.button-sim {
-  margin-top: 35px;
-  margin-bottom: 45px;
-  font-size: x-large;
-  background-color: #023430;
-  color: #ffffff;
-  border-radius: 10px;
-  padding: 10px 20px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease;
-}
-
-.button-sim:hover {
-  background-color: #00ed64;
-  color: #023430;
-}
-
-.prod-line-img {
-  display: flex;
-  align-items: center;
-  align-self: center;
-  width: calc(100% / 2);
-  height: auto;
-}
-
-.prod-card {
-  margin-left: 15%;
-}
-
-.table {
-  background-color: #001e2b;
-  width: 90%;
-  margin-left: 2%;
-  font-size: 18px;
-}
-
-.table th {
-  background-color: #023430;
-  color: white;
-}
-
-.table td {
-  background-color: #e3fcf7;
-}
-
-.table-wrapper {
-  max-width: 100%;
-  overflow-x: auto;
-  margin-bottom: 20px;
-}
-
-.table-dark-green th,
-.table-dark-green td {
-  text-align: center;
-}
-
-.card {
-  margin-bottom: 30px;
-  margin-left: 12%;
-  margin-right: 12%;
-}
-
-.card-body {
   font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
   text-align: center;
-  background-color: #e3fcf7;
+  margin-top: 70px;
 }
 
-.overview-img {
-  display: flex;
-  align-items: center;
-  margin-left: 12%;
-  margin-right: 12%;
-  margin-bottom: 4%;
-}
 
 .stepper-img {
   margin: 5px 10% 0 10%;
@@ -200,22 +30,6 @@
   max-width: 1200px !important;
   height: 740px !important;
   margin: 50px auto;
-}
-
-.button-chart {
-  margin-top: 10px;
-  margin-bottom: 3px;
-  background-color: #e3fcf7;
-  font-size: medium;
-  color: #023430;
-  transition: background-color 0.3s ease;
-}
-
-.card-title {
-  font-size: 30px;
-  font-weight: bold;
-  color: #023430;
-  margin-bottom: 4%;
 }
 
 .progress-bar {
@@ -299,3 +113,148 @@ body,
   font-family: "Lato", sans-serif;
 }
 
+/*!**************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./app/start-simulation/simulation.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************/
+.simulation_buttonWrapper__QZrj9 {
+    display: flex;
+    justify-content: center;
+    /* Centers button horizontally */
+    margin-top: 80px;
+    /* Adds spacing above the button */
+}
+
+.simulation_H3__zqksb {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.simulation_alerts__bJ9gE{
+    display: flex;
+    justify-content: center; /* Centers the alerts horizontally */
+    align-items: center; /* Aligns them vertically */
+    gap: 16px; /* Adds spacing between the alerts */
+    margin-top: 20px; /* Adjust as needed */
+}
+
+.simulation_formWrapper__nZh4T {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: max-content;
+    margin: 0 auto;
+    /* Centers the form horizontally */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    text-align: center;
+    margin-top: 30px;
+}
+
+.simulation_formGroup__eMGQe {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.simulation_formFields__cjfrR{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.simulation_prodCards__1ZsaI{
+    margin-top: 40px;
+}
+
+.simulation_card__Jz4_M {
+    box-shadow: 0 5px 5px 4px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow */
+    border: none;
+    background-color: white;
+    margin-bottom: 30px;
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.simulation_cardImg__Lbe8S {
+    width: 100px;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.simulation_cardBody__ZffmY {
+    text-align: center;
+}
+
+.simulation_cardTitle__tpLhg {
+    font-size: 16pt;
+}
+
+.simulation_cardItem__MeMGk {
+    font-size: 12pt;
+}
+
+
+.simulation_statusLabel___Q84I {
+    display: flex;
+    align-items: center; /* Aligns them vertically */
+    margin-left: 50px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+  
+  .simulation_available__IYb32 {
+    background-color: #E9FF99;
+    color:#00684A;
+  }
+  
+  .simulation_running__PFCXi {
+    background-color: #FFEEA9;
+    color: #944F01;
+   
+  }
+  
+  .simulation_danger__KFamv {
+    background-color: #FFEAE5;
+    color: #970606;
+  }
+  
+/* Tooltip or modal style for "Machine JSON Data" */
+.simulation_tooltipIcon__Nw8GX {
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.simulation_tooltipContent__BIrYe {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fafafa;
+
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+}
+
+.simulation_tooltipWrapper__WllBP {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Positions it to the top-right corner */
+    z-index: 1000;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+  
+
+.simulation_tooltipWrapper__WllBP:hover .simulation_tooltipContent__BIrYe {
+    display: block;
+}

@@ -7,7 +7,7 @@ import Header from "@/components/Header/Header";
 import NavigationBar from "@/components/NavigationBar/NavigationBar";
 
 export const metadata = {
-  title: "WORK ORDERS: ERP System Simulator",
+  title: "Leafy Factory",
   description: "",
 };
 
