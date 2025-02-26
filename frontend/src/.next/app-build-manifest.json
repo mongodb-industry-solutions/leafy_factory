@@ -9,21 +9,25 @@
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+      "static/css/app/page.css",
       "static/chunks/app/page.js"
     ],
     "/jobsorders/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+      "static/css/app/jobsorders/layout.css",
       "static/chunks/app/jobsorders/layout.js"
     ],
     "/jobsorders/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+      "static/css/app/jobsorders/page.css",
       "static/chunks/app/jobsorders/page.js"
     ],
     "/start-simulation/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+      "static/css/app/start-simulation/layout.css",
       "static/chunks/app/start-simulation/layout.js"
     ],
     "/start-simulation/page": [
@@ -31,11 +35,6 @@
       "static/chunks/main-app.js",
       "static/css/app/start-simulation/page.css",
       "static/chunks/app/start-simulation/page.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

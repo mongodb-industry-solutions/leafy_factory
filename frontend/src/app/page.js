@@ -6,6 +6,9 @@ import axiosClient from "./../lib/axios";
 import { Table, Row, Col, Pagination } from "react-bootstrap";
 import { setAllOrders } from "../redux/slices/WorkOrderslice";
 import CreateForm from "../components/CreateForm/CreateForm";
+import { H2, H3, Body } from "@leafygreen-ui/typography";
+import Badge from "@leafygreen-ui/badge";
+import styles from "./workorders.module.css";
 
 const WorkOrdersPage = () => {
   const dispatch = useDispatch();
@@ -64,21 +67,21 @@ const WorkOrdersPage = () => {
   };
 
   return (
-    <div className="container-fluid">
-      <h2 className="history-header">WORK ORDERS: ERP System Simulator</h2>
+    <div fluid className={styles.containerFluid}>
+      <H2 className={styles.historyHeader}>Work Orders: ERP System Simulator</H2>
 
-      <Row className="align-items-start mx-0">
-        <Col lg={5} md={6} sm={12} className="form-wrapper px-2">
-          <h3>Create a New Work Order</h3>
+      <Row className="align-items-start">
+        <Col lg={5} md={6} sm={12} className={styles.formWrapper}>
+          <H3 className={styles.H3}>Create a New Work Order</H3>
           <CreateForm onSubmitSuccess={handleSubmitSuccess} />
         </Col>
 
-        <Col lg={7} md={6} sm={12} className="table-wrapper">
+        <Col lg={7} md={6} sm={12} className={styles.tableWrapper}>
           {isLoading ? (
             <p>Loading work orders...</p>
           ) : workOrders && workOrders.length > 0 ? (
             <>
-              <Table striped bordered hover responsive className="table">
+              <Table striped bordered hover responsive className={styles.table}>
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -96,7 +99,18 @@ const WorkOrdersPage = () => {
                   {currentOrders.map((order) => (
                     <tr key={order.id_work}>
                       <td>{order.id_work}</td>
-                      <td>{order.wo_status}</td>
+                     
+
+                      <td>
+                        <Badge variant={
+                          order.wo_status === "Completed" ? "green" :
+                          order.wo_status === "Created" ? "blue" :
+                              "lightGray"
+                        }>
+                          {order.wo_status}
+                        </Badge>
+                      </td>
+
                       <td>{order.creation_date}</td>
                       <td>{order.product_name}</td>
                       <td>{order.quantity}</td>
@@ -109,7 +123,7 @@ const WorkOrdersPage = () => {
                 </tbody>
               </Table>
 
-              <Pagination className="pagination">
+              <Pagination  className={styles.pagination}>
                 <Pagination.First
                   onClick={() => handlePageChange(1)}
                   disabled={currentPage === 1}

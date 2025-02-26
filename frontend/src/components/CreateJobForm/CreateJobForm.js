@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Form, Col, Row } from "react-bootstrap";
-import axiosClient from "../../lib/axios";  
+import { Form, Col, Row } from "react-bootstrap";
+import axiosClient from "../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addJob } from "../../redux/slices/JobSlice";
 import { setAllOrders } from "../../redux/slices/WorkOrderslice";
+import { Combobox, ComboboxOption } from "@leafygreen-ui/combobox";
+import styles from "./createjobform.module.css";
+import Button from "@leafygreen-ui/button";
 
 const CreateJobForm = ({ onCreateSuccess }) => {
   const dispatch = useDispatch();
@@ -54,7 +57,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       try {
         const response = await axiosClient.get("/workorders");
         console.log(response.data.list);
-        dispatch(setAllOrders(response.data.list)); 
+        dispatch(setAllOrders(response.data.list));
       } catch (error) {
         console.error("Error fetching work orders:", error);
       }
@@ -117,7 +120,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       setErrorMessage("Production Line is required.");
       return;
     }
-    
+
     setErrorMessage("");
 
     const addJobData = {
@@ -147,11 +150,11 @@ const CreateJobForm = ({ onCreateSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} autoComplete="off">
+    <Form onSubmit={handleSubmit} className={styles.form} autoComplete="off">
       <Row className="mb-3">
         <Form.Group as={Col} className="mb-3" controlId="id_job">
           <Form.Label>Job ID</Form.Label>
-          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="work_id">
@@ -195,18 +198,20 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       <Row className="mb-3">
         <Form.Group as={Col} controlId="jobStatus">
           <Form.Label>Status</Form.Label>
-          <Form.Control type="text" value={jobData.jobStatus} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="text" value={jobData.jobStatus} readOnly className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="target_output">
           <Form.Label>Target Output</Form.Label>
-          <Form.Control type="number" name="targetOutput" value={jobData.targetOutput} readOnly style={{ backgroundColor: "#f8f9fa", userSelect: "none", borderColor: "#ddd", cursor: "not-allowed" }} />
+          <Form.Control type="number" name="targetOutput" value={jobData.targetOutput} readOnly className={styles.formControl} />
         </Form.Group>
       </Row>
 
       {errorMessage && <p className="text-danger">{errorMessage}</p>}
 
-      <Button type="submit" className="button">Create Job</Button>
+      <div className={styles.buttonWrapper}>
+        <Button type="submit" variant="baseGreen">Create Job</Button>
+      </div>
     </Form>
   );
 };
