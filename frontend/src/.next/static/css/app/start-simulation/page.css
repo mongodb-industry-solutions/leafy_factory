@@ -129,11 +129,19 @@ body,
     margin-bottom: 20px;
 }
 
+.simulation_alerts__bJ9gE{
+    display: flex;
+    justify-content: center; /* Centers the alerts horizontally */
+    align-items: center; /* Aligns them vertically */
+    gap: 16px; /* Adds spacing between the alerts */
+    margin-top: 20px; /* Adjust as needed */
+}
+
 .simulation_formWrapper__nZh4T {
     background-color: #f9f9f9;
     padding: 20px;
     border-radius: 8px;
-    max-width: 500px;
+    max-width: max-content;
     margin: 0 auto;
     /* Centers the form horizontally */
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -144,14 +152,22 @@ body,
 
 .simulation_formGroup__eMGQe {
     margin-bottom: 10px;
+    text-align: left;
 }
 
-.simulation_prodCards__1ZsaI{
+.simulation_formFields__cjfrR{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
     margin-top: 20px;
 }
 
+.simulation_prodCards__1ZsaI{
+    margin-top: 40px;
+}
+
 .simulation_card__Jz4_M {
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 5px 4px rgba(0, 0, 0, 0.05);
     /* Subtle shadow */
     border: none;
     background-color: white;
@@ -181,6 +197,33 @@ body,
     font-size: 12pt;
 }
 
+
+.simulation_statusLabel___Q84I {
+    display: flex;
+    align-items: center; /* Aligns them vertically */
+    margin-left: 50px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+  
+  .simulation_available__IYb32 {
+    background-color: #E9FF99;
+    color:#00684A;
+  }
+  
+  .simulation_running__PFCXi {
+    background-color: #FFEEA9;
+    color: #944F01;
+   
+  }
+  
+  .simulation_danger__KFamv {
+    background-color: #FFEAE5;
+    color: #970606;
+  }
+  
 /* Tooltip or modal style for "Machine JSON Data" */
 .simulation_tooltipIcon__Nw8GX {
     cursor: pointer;

@@ -152,10 +152,11 @@ body,
   .NavigationBar_link__Ty7Yk:hover {
     color: #00684A; /* Subtle hover effect */
   }
-  
-  .NavigationBar_activeLink__Vl52K {
+
+  .NavigationBar_active__PZQzb {
+    color: #00684A; /* Active link text */
     font-weight: bold;
-    color: #0070f3; /* Optional: Change color for active link */
+    text-decoration: underline;
   }
   
 /*!***************************************************************************************************************************************************************************************************************************************************************************************!*\

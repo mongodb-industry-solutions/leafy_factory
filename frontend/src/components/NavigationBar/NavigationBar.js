@@ -1,12 +1,17 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./NavigationBar.module.css";
 import InfoWizard from "../InfoWizard/InfoWizard";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
+
 
 const NavigationBar = () => {
   const [openHelpModal, setOpenHelpModal] = useState(false);
+  const pathname = usePathname(); // Correct hook for Next.js App Router
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.logoContainer}>
@@ -21,9 +26,24 @@ const NavigationBar = () => {
         </Link>
       </div>
       <div className={styles.linkContainer}>
-        <Link href="/" className={styles.link}>Work Orders</Link>
-        <Link href="/jobsorders" className={styles.link}>Jobs</Link>
-        <Link href="/start-simulation" className={styles.link}>Shopfloor Simulator</Link>
+        <Link
+          href="/"
+          className={`${styles.link} ${pathname === "/" ? styles.active : ""}`}
+        >
+          Work Orders
+        </Link>
+        <Link
+          href="/jobsorders"
+          className={`${styles.link} ${pathname === "/jobsorders" ? styles.active : ""}`}
+        >
+          Jobs
+        </Link>
+        <Link
+          href="/start-simulation"
+          className={`${styles.link} ${pathname === "/start-simulation" ? styles.active : ""}`}
+        >
+          Shopfloor Simulator
+        </Link>
       </div>
 
       <InfoWizard
@@ -117,8 +137,28 @@ const NavigationBar = () => {
             heading: "Why MongoDB?",
             content: [
               {
-                heading: "Flexibility",
-                body: "MongoDB shines in its flexibility—serving as a central data storage solution for retrieving data from external financial institutions while seamlessly supporting diverse formats and structures.",
+                heading: "Flexible Schema Design",
+                body: "Manufacturing environments often deal with highly variable data structures—from machine sensor data to ERP records. MongoDB’s document-oriented design allows data to be stored in JSON-like structures, which can be adapted to capture a wide range of data formats. Unlike traditional relational databases, MongoDB’s schema flexibility means that changes in data requirements, such as adding new sensors or modifying machine attributes, can be easily managed without the need for a rigid data schema.",
+              },
+              {
+                heading: "Real-Time Data Processing",
+                body: " MongoDB supports real-time data ingestion through technologies like Kafka change streams and MQTT, making it easy to capture live data from shop floor machines and synchronize with ERP and MES systems. This ability to process streaming data from multiple sources ensures that the UNS provides up-to-date information, supporting timely interventions and data-driven decisions.",
+              },
+              {
+                heading: "Rich Querying and Analytics",
+                body: "MongoDB’s aggregation framework and powerful querying capabilities enable in-depth analysis across different data streams. For instance, production teams can cross-reference MES quality metrics with machine sensor data to identify trends and improve quality control processes. Similarly, finance teams can analyze ERP cost data alongside MES output, offering a holistic view of operational efficiency and costs.",
+              },
+              {
+                heading: "Scalability for Growing Operations",
+                body: " MongoDB’s distributed architecture allows it to scale horizontally, which is especially valuable in large manufacturing environments where data volumes can grow rapidly. MongoDB clusters can be easily expanded, ensuring the UNS remains responsive even as more machines and production lines are added.",
+              },
+              {
+                heading: "Predictive Maintenance Enablement",
+                body: "With MongoDB as a central repository, manufacturers can leverage predictive maintenance strategies by analyzing historical data patterns from machine sensors, detecting anomalies, and predicting maintenance needs. This proactive approach helps reduce machine downtime, optimize maintenance schedules, and ultimately lower operational costs.",
+              },
+              {
+                heading: "High Availability",
+                body: " One of the downsites of a UNS is that the central data repository becomes a single point of failure. MongoDB’s replica set guarantees ultra high availability and updates without any downtime.",
               },
             ],
           },
