@@ -3,6 +3,7 @@
 
 #Ignores the .env file
 *.env
+frontend/.next
 
 #Ignores the .pyv files
 *.pyc
