@@ -9,6 +9,9 @@ import CreateForm from "../components/CreateForm/CreateForm";
 import { H2, H3, Body } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
 import styles from "./workorders.module.css";
+import Icon from "@leafygreen-ui/icon";
+import IconButton from "@leafygreen-ui/icon-button";
+
 
 const WorkOrdersPage = () => {
   const dispatch = useDispatch();
@@ -67,7 +70,7 @@ const WorkOrdersPage = () => {
   };
 
   return (
-    <div fluid className={styles.containerFluid}>
+    <div className={styles.containerFluid}>
       <H2 className={styles.historyHeader}>Work Orders: ERP System Simulator</H2>
 
       <Row className="align-items-start">
@@ -122,6 +125,16 @@ const WorkOrdersPage = () => {
                   ))}
                 </tbody>
               </Table>
+{/* 
+              <div className={styles.tooltipWrapper}>
+                    <IconButton className={styles.tooltipIcon}>
+                      <Icon glyph="CurlyBraces" aria-label="Curly Braces" />
+                    </IconButton>
+
+                    <div className={styles.tooltipContent}>
+                      <pre>{JSON.stringify(order, null, 2)}</pre>
+                    </div>
+                  </div> */}
 
               <Pagination  className={styles.pagination}>
                 <Pagination.First

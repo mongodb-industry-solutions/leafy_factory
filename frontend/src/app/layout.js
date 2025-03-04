@@ -5,6 +5,7 @@ import { GeistSans } from "geist/font/sans";
 import ClientProvider from "./ClientProvider";
 import Header from "@/components/Header/Header";
 import NavigationBar from "@/components/NavigationBar/NavigationBar";
+import Sidebar from '@/components/Sidebar/Sidebar';
 
 export const metadata = {
   title: "Leafy Factory",
@@ -17,7 +18,8 @@ export default function RootLayout({ children }) {
       <body><ClientProvider>
       <Header/>
       <NavigationBar/>
-      {children}
+      <Sidebar/>
+      <main>{children}</main>
       </ClientProvider>
     </body>
     </html>
