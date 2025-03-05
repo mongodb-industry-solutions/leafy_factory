@@ -16,19 +16,19 @@ const Sidebar = () => {
   const [isShrunk, setIsShrunk] = useState(false);
 
   const pathname = usePathname(); 
-  // const { pathname } = useRouter(); 
 
-  const isWorkOrdersPage = pathname.includes("/workorders/");
-  const isJobsPage = pathname.includes("/jobs");
+  const isWorkOrdersPage = pathname.includes("/workorders"); 
+  const isJobsPage = pathname.includes("/jobsorders");
   const isSimulationPage = pathname.includes("/start-simulation");
 
   const fetchData = async (endpoint) => {
     try {
       const response = await axiosClient.get(endpoint);
+      console.log(`Data from ${endpoint}:`, response.data);
       if (endpoint === "/workorders") {
-        dispatch(setAllOrders(response.data.list)); 
+        dispatch(setAllOrders(response.data.list || []));
       } else if (endpoint === "/jobs") {
-        dispatch(setAllJobs(response.data.list)); 
+        dispatch(setAllJobs(response.data.list || [])); 
       }
     } catch (error) {
       console.error(`Error fetching data from ${endpoint}:`, error);
@@ -36,18 +36,20 @@ const Sidebar = () => {
   };
 
   useEffect(() => {
+    console.log("Current Path:", pathname);
     if (isWorkOrdersPage) {
       fetchData("/workorders");
     } else if (isJobsPage) {
       fetchData("/jobs");
     }
-  }, [pathname, dispatch]);
+  }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]); 
 
   const toggleShrink = () => {
     setIsShrunk(!isShrunk);
   };
 
   const renderWorkOrders = () => {
+    console.log("Returned work orders:", workOrders); 
     return workOrders.length > 0 ? (
       workOrders.map((order) => (
         <div key={order.id_work} className={styles.cardItem}>
@@ -60,6 +62,7 @@ const Sidebar = () => {
   };
 
   const renderJobs = () => {
+    console.log("Returned Jobs:", jobs); 
     return jobs.length > 0 ? (
       jobs.map((job) => (
         <div key={job.id_job} className={styles.cardItem}>
@@ -71,7 +74,6 @@ const Sidebar = () => {
     );
   };
 
-  // Don't render sidebar if it's the start-simulation page
   if (isSimulationPage) {
     return null;
   }
@@ -79,19 +81,15 @@ const Sidebar = () => {
   return (
     <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
       <div className={styles.sidebarContent}>
-        {isShrunk ? (
-          <>
-            <pre className={styles.jsonContent}>
-              {isWorkOrdersPage
-                ? JSON.stringify(workOrders, null, 2)
-                : isJobsPage
-                ? JSON.stringify(jobs, null, 2)
-                : "No data available"}
-            </pre>
-          </>
+        {!isShrunk ? (
+          <pre className={styles.jsonContent}>
+            {isWorkOrdersPage
+              ? JSON.stringify(workOrders, null, 2)
+              : JSON.stringify(jobs, null, 2)}
+          </pre>
         ) : (
           <div className={styles.details}>
-            {isWorkOrdersPage ? renderWorkOrders() : renderJobs()}
+            {isWorkOrdersPage ? renderWorkOrders() : isJobsPage ? renderJobs() : <p>No data available</p>}
           </div>
         )}
       </div>
