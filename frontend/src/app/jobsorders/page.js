@@ -32,8 +32,7 @@ const Jobs = () => {
 
   useEffect(() => {
     fetchJobs();
-    jobsRef.current = jobs;
-  }, [fetchJobs, jobs]);
+  }, [fetchJobs]);
 
   const handleCreateSuccess = async () => {
     try {
@@ -49,7 +48,7 @@ const Jobs = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 9000);
+    setTimeout(() => setIsLoading(false), 5000);
   };
 
   const indexOfLastJob = currentPage * jobsPerPage;

@@ -36,7 +36,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
   const [loadingMachines, setLoadingMachines] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  //Retrieve machines
+  // Retrieve machines
   useEffect(() => {
     const fetchMachines = async () => {
       setLoadingMachines(true);
@@ -57,7 +57,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       try {
         const response = await axiosClient.get("/workorders");
         console.log(response.data.list);
-        dispatch(setAllOrders(response.data.list));
+        dispatch(setAllOrders(response.data.list || []));
       } catch (error) {
         console.error("Error fetching work orders:", error);
       }
@@ -71,7 +71,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       (order) => order.id_work === parseInt(selectedWorkId, 10)
     );
 
-    //Valid work order retrieved
+    // Valid work order retrieved
     if (!selectedWorkOrder) {
       setErrorMessage("Invalid work order selected.");
       return;
@@ -79,7 +79,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       setErrorMessage("");
     }
 
-    //Retrieve fields from selected Work Order
+    // Retrieve fields from selected Work Order
     setJobData(prevData => ({
       ...prevData,
       workId: selectedWorkId,
@@ -87,7 +87,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     }));
   };
 
-  //Prod line selector handling
+  // Prod line selector handling
   const handleProductionLineChange = async (e) => {
     const selectedLineId = e.target.value;
 
@@ -154,7 +154,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       <Row className="mb-3">
         <Form.Group as={Col} className="mb-3" controlId="id_job">
           <Form.Label>Job ID</Form.Label>
-          <Form.Control type="number" value="" readOnly placeholder="ID shown once created" className={styles.formControl} />
+          <Form.Control type="number" readOnly placeholder="ID shown once created" className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="work_id">
@@ -190,7 +190,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
           {loadingMachines ? (
             <p>Loading machines...</p>
           ) : (
-            <Form.Control as="textarea" value={jobData.machines.map((machine) => `Machine ID selected: ${machine.id_machine}`).join("\n")} readOnly style={{ height: "100px", cursor: "not-allowed" }} />
+            <Form.Control as="textarea" value={jobData.machines.map((machine) => `Machine ID selected: ${machine.id_machine}`).join("\n")} readOnly className={styles.textareaReadOnly} />
           )}
         </Form.Group>
       </Row>
@@ -203,7 +203,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
 
         <Form.Group as={Col} controlId="target_output">
           <Form.Label>Target Output</Form.Label>
-          <Form.Control type="number" name="targetOutput" value={jobData.targetOutput} readOnly className={styles.formControl} />
+          <Form.Control type="number" value={jobData.targetOutput} readOnly className={styles.formControl} />
         </Form.Group>
       </Row>
 
@@ -217,3 +217,4 @@ const CreateJobForm = ({ onCreateSuccess }) => {
 };
 
 export default CreateJobForm;
+
