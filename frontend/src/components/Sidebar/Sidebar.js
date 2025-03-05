@@ -5,15 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import axiosClient from "../../lib/axios";
 import { setAllOrders, setTreeOrders } from "../../redux/slices/WorkOrderslice";
-import { setAllJobs } from "../../redux/slices/JobSlice";
+import { setAllJobs, setTreeJobs } from "../../redux/slices/JobSlice";
 import { usePathname } from "next/navigation";
 import styles from "./sidebar.module.css";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const workOrders = useSelector((state) => state.WorkOrders.workOrders);
-  const treeOrders = useSelector((state) => state.WorkOrders.treeOrders); // Add treeOrders
+  const treeOrders = useSelector((state) => state.WorkOrders.treeOrders); // for returning Sidebar JSON WO
   const jobs = useSelector((state) => state.Jobs.jobs);
+  const treeJobs = useSelector((state) => state.Jobs.treeJobs); // for returning Sidebar JSON Jobs
   const [isShrunk, setIsShrunk] = useState(false);
 
   const pathname = usePathname();
@@ -32,6 +33,8 @@ const Sidebar = () => {
         console.log("Response data", response.data.list)
       } else if (endpoint === "/workorders") {
         dispatch(setAllOrders(response.data.list || []));
+      } else if (endpoint === "/jobs/tree") {
+        dispatch(setTreeJobs(response.data.list || []));
       } else if (endpoint === "/jobs") {
         dispatch(setAllJobs(response.data.list || []));
       }
@@ -45,9 +48,9 @@ const Sidebar = () => {
     if (isWorkOrdersPage) {
       fetchData("/workorders/tree");
     } else if (isJobsPage) {
-      fetchData("/jobs");
+      fetchData("/jobs/tree");
     }
-  }, [pathname]);
+  }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]); 
 
   const toggleShrink = () => {
     setIsShrunk(!isShrunk);
@@ -67,15 +70,15 @@ const Sidebar = () => {
   };
 
   const renderJobs = () => {
-    console.log("Returned Jobs:", jobs);
-    return jobs.length > 0 ? (
-      jobs.map((job) => (
+    console.log("Returned tree Jobs:", treeJobs);
+    return treeJobs.length > 0 ? (
+      treeJobs.map((job) => (
         <div key={job.id_job} className={styles.cardItem}>
           {JSON.stringify(job, null, 2)}
         </div>
       ))
     ) : (
-      <p>No jobs available</p>
+      <p>No tree jobs available</p>
     );
   };
 
@@ -90,7 +93,7 @@ const Sidebar = () => {
           <pre className={styles.jsonContent}>
             {isWorkOrdersPage
               ? JSON.stringify(treeOrders, null, 2)
-              : JSON.stringify(jobs, null, 2)}
+              : JSON.stringify(treeJobs, null, 2)}
           </pre>
         ) : (
           <div className={styles.details}>
