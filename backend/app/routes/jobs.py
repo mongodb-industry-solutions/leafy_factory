@@ -553,8 +553,12 @@ def get_work_job_tree():
         }
     }
 
+    sort_stage = {
+        "$sort": { "_id": -1 }
+    }
+
     try:
-        work_order_cursor = kfk_work_orders_coll.aggregate([jobs_lookup_stage, match_job_stage, products_lookup_stage, add_fields_stage, project_stage])
+        work_order_cursor = kfk_work_orders_coll.aggregate([jobs_lookup_stage, match_job_stage, products_lookup_stage, add_fields_stage, project_stage, sort_stage])
 
         for workorder_item in work_order_cursor:
 
@@ -723,8 +727,12 @@ def get_work_job_item(id_work: int):
         }
     }
 
+    sort_stage = {
+        "$sort": { "_id": -1 }
+    }
+
     try:
-        work_order_cursor = kfk_work_orders_coll.aggregate([match_stage, jobs_lookup_stage, match_job_stage, products_lookup_stage, add_fields_stage, project_stage])
+        work_order_cursor = kfk_work_orders_coll.aggregate([match_stage, jobs_lookup_stage, match_job_stage, products_lookup_stage, add_fields_stage, project_stage, sort_stage])
 
         for workorder_item in work_order_cursor:
 
