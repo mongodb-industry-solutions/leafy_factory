@@ -21,6 +21,7 @@ const Sidebar = () => {
   const isJobsPage = pathname.includes("/jobsorders");
   const isSimulationPage = pathname.includes("/start-simulation");
 
+
   const fetchData = async (endpoint) => {
     try {
       const response = await axiosClient.get(endpoint);
