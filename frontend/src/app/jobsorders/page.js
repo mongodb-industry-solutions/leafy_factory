@@ -21,7 +21,7 @@ const Jobs = () => {
 
   const fetchJobs = useCallback(async () => {
     try {
-      const response = await axiosClient.get("/jobs/");
+      const response = await axiosClient.get("/jobs");
       dispatch(setAllJobs(response.data.list));
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
