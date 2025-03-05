@@ -101,8 +101,14 @@ def send_heartbeat(data: MachineHeartbeat):
                     "prod_line_id": data["production_line_id"],
                     "machine_id": data["machine_id"]
                 },
-                "vibration": round(vibr_value,2),
-                "temperature": round(temp_value,2),
+                "vibration": {
+                    "value": round(vibr_value,2),
+                    "unit": "mm/s"
+                },
+                "temperature": {
+                    "value": round(temp_value,2),
+                    "unit": "Celcius"
+                },
                 "temperature_status": temp_status,
                 "vibration_status": vibration_status
             }
@@ -111,7 +117,7 @@ def send_heartbeat(data: MachineHeartbeat):
 
             # Creating a copy of the heartbeat
             heartbeat_record_mqtt = heartbeat_record.copy()
-            # heartbeat_record_mqtt["timestamp"] = str(heartbeat_record_mqtt["timestamp"])
+            heartbeat_record_mqtt["timestamp"] = str(heartbeat_record_mqtt["timestamp"])
 
             insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
 

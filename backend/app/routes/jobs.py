@@ -1,8 +1,8 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
 from app.models.job_task import JobTask, UpdateJob
-from app.database import sql_conn, kfk_work_jobs_coll, raw_sensor_data_coll
-from pymongo.errors import DuplicateKeyError
+from app.database import sql_conn, kfk_work_jobs_coll, raw_sensor_data_coll, kfk_work_orders_coll
+from pymongo.errors import DuplicateKeyError, PyMongoError
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime, random, time, requests
 from dotenv import load_dotenv
@@ -430,6 +430,340 @@ def update_job_task(job_id: int, updated_job_task: UpdateJob):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to update job task: {str(e)}"
         )
+    
+
+# Get a list of work orders where a job is not empty. Uses a tree format
+@router.get("/jobs/tree",
+            summary="Gets a list of work orders where job field is not empty with tree format",
+            description="""This endpoint retrieves a list of all the work orders using the field job as a criteria (not empty) from the `leafy_factory` database 
+                           based on the provided `id_work`. The response will contain structured data including 
+                           actual and planned start/end dates, job details, product names, and quantities.""",
+            responses={
+                200: {
+                    "description": "Work order retrieved successfully",
+                    "content": {
+                        "application/json":{
+                            "example":[
+                                {
+                                    "_id":16,
+                                    "actual_end_date":"2025-02-03 02:40:38",
+                                    "actual_start_date":"2025-02-03 02:39:19",
+                                    "creation_date":"2025-02-03 02:34:35",
+                                    "nok_products":0,
+                                    "planned_end_date":"2025-02-15 02:34:14",
+                                    "planned_start_date":"2025-02-05 02:34:14",
+                                    "quantity":30,
+                                    "wo_status":"Completed",
+                                    "jobs":[
+                                        {
+                                            "creation_date":"2025-02-03 02:39:19",
+                                            "job_status":"Completed",
+                                            "nok_products":0,
+                                            "quality_rate":100,
+                                            "target_output":30
+                                        }
+                                    ],
+                                    "products":[
+                                        {
+                                            "product_name":"2 Step ladder"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                     }
+                }
+            })
+def get_work_job_tree():
+    work_order_list= []
+    MONGO_JOBS_COLLECTION_NAME = "kafka.public.jobs"
+    MONGO_PRODUCTS_COLLECTION_NAME = "kafka.public.products"
+
+    # Creation of the Match stage to retrive documents where job field is not empty
+    match_job_stage = {
+        "$match": {
+            "$expr" : {
+                "$gt": [{ "$size": "$jobs"}, 0]
+            }
+        }
+    }
+
+    # Re orders the _id field to take it as first field of the document
+    add_fields_stage = {
+        "$addFields" : {
+            "_id": "$_id.id_work"
+        }
+    }
+
+    # jobs_lookup_stage, this retrieves the data from the jobs collection and append it to the work orders document.
+    jobs_lookup_stage = {
+        "$lookup": {
+            "from": MONGO_JOBS_COLLECTION_NAME,
+            "localField": "id_work",
+            "foreignField": "work_id",
+            "as": "jobs",
+            "pipeline": [
+                {
+                    "$project": {
+                        "_id": 0,
+                        "creation_date": 1,
+                        "job_status": 1,
+                        "nok_products": 1,
+                        "quality_rate": 1,
+                        "target_output": 1
+                    }
+                }
+            ]
+        }
+    }
+
+    # products_lookup_stage, this retrieves the data from the products collection and append it to the work orders document.
+    # It only retrieves the product name.
+    products_lookup_stage = {
+        "$lookup": {
+            "from": MONGO_PRODUCTS_COLLECTION_NAME,
+            "localField": "product_id",
+            "foreignField": "id_product",
+            "as": "products",
+            "pipeline": [
+                {
+                    "$project": {
+                        "_id": 0,
+                        "product_name": 1
+                    }
+                }
+            ]
+        }
+    }
+
+    # project_stage determines the fields that are going to be retrieved from the aggregation pipeline.
+    # Ideally these are the fields returned to the frontend.
+    project_stage = {
+        "$project": {
+            "actual_end_date": 1,
+            "actual_start_date": 1,
+            "creation_date": 1,
+            "nok_products": 1,
+            "planned_end_date": 1,
+            "planned_start_date": 1,
+            "products": 1,
+            "quantity": 1,
+            "wo_status": 1,
+            "jobs": 1
+        }
+    }
+
+    try:
+        work_order_cursor = kfk_work_orders_coll.aggregate([jobs_lookup_stage, match_job_stage, products_lookup_stage, add_fields_stage, project_stage])
+
+        for workorder_item in work_order_cursor:
+
+            # Change datetime format from "2025-01-23T17:34:17.727506Z" to "2025-01-23 17:34:17"
+            workorder_item["planned_start_date"] = str(datetime.datetime.fromisoformat(workorder_item["planned_start_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+            workorder_item["planned_end_date"] = str(datetime.datetime.fromisoformat(workorder_item["planned_end_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+            workorder_item["creation_date"] = str(datetime.datetime.fromisoformat(workorder_item["creation_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+
+            # In case the actual_start_date and actual_end_date is not set
+            if workorder_item["actual_start_date"] != None:
+                workorder_item["actual_start_date"] = str(datetime.datetime.fromisoformat(workorder_item["actual_start_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+
+            if workorder_item["actual_end_date"] != None:
+                workorder_item["actual_end_date"] = str(datetime.datetime.fromisoformat(workorder_item["actual_end_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+
+            # Improved version
+            if workorder_item.get("jobs") and workorder_item["jobs"][0].get("creation_date"):
+                workorder_item["jobs"][0]["creation_date"] = datetime.datetime.fromisoformat(workorder_item["jobs"][0]["creation_date"]).strftime("%Y-%m-%d %H:%M:%S")
+
+
+            work_order_list.append(workorder_item)
+        
+        # Returns a list of JSON documents (work_order_list)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"list" : work_order_list}
+        )
+    
+    except PyMongoError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Unexpected error: {str(e)}"
+        )
+
+    
+# Get a list of work orders where a job is not empty. Uses a tree format
+@router.get("/jobs/{id_work}",
+            summary="Retrieves a specific work order by ID and where job field is not empty",
+            description="""This endpoint retrieves a specific work order from the `leafy_factory` database 
+                           based on the provided `id_work`, it will the retrieve the document only if the job field is not empty. The response will contain structured data including 
+                           actual and planned start/end dates, job details, product names, and quantities.""",
+            responses={
+                200: {
+                    "description": "Work order retrieved successfully",
+                    "content": {
+                        "application/json":{
+                            "example":[
+                                {
+                                    "_id":16,
+                                    "actual_end_date":"2025-02-03 02:40:38",
+                                    "actual_start_date":"2025-02-03 02:39:19",
+                                    "creation_date":"2025-02-03 02:34:35",
+                                    "nok_products":0,
+                                    "planned_end_date":"2025-02-15 02:34:14",
+                                    "planned_start_date":"2025-02-05 02:34:14",
+                                    "quantity":30,
+                                    "wo_status":"Completed",
+                                    "jobs":[
+                                        {
+                                            "creation_date":"2025-02-03 02:39:19",
+                                            "job_status":"Completed",
+                                            "nok_products":0,
+                                            "quality_rate":100,
+                                            "target_output":30
+                                        }
+                                    ],
+                                    "products":[
+                                        {
+                                            "product_name":"2 Step ladder"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                     }
+                }
+            })
+def get_work_job_item(id_work: int):
+    work_order_list= []
+    MONGO_JOBS_COLLECTION_NAME = "kafka.public.jobs"
+    MONGO_PRODUCTS_COLLECTION_NAME = "kafka.public.products"
+
+    # Creation of the Match stage for the pipeline
+    match_stage = {
+        "$match": {
+            "id_work": id_work
+        }
+    }
+
+    # Creation of the Match stage to retrive documents where job field is not empty
+    match_job_stage = {
+        "$match": {
+            "$expr" : {
+                "$gt": [{ "$size": "$jobs"}, 0]
+            }
+        }
+    }
+
+    # Re orders the _id field to take it as first field of the document
+    add_fields_stage = {
+        "$addFields" : {
+            "_id": "$_id.id_work"
+        }
+    }
+
+    # jobs_lookup_stage, this retrieves the data from the jobs collection and append it to the work orders document.
+    jobs_lookup_stage = {
+        "$lookup": {
+            "from": MONGO_JOBS_COLLECTION_NAME,
+            "localField": "id_work",
+            "foreignField": "work_id",
+            "as": "jobs",
+            "pipeline": [
+                {
+                    "$project": {
+                        "_id": 0,
+                        "creation_date": 1,
+                        "job_status": 1,
+                        "nok_products": 1,
+                        "quality_rate": 1,
+                        "target_output": 1
+                    }
+                }
+            ]
+        }
+    }
+
+    # products_lookup_stage, this retrieves the data from the products collection and append it to the work orders document.
+    # It only retrieves the product name.
+    products_lookup_stage = {
+        "$lookup": {
+            "from": MONGO_PRODUCTS_COLLECTION_NAME,
+            "localField": "product_id",
+            "foreignField": "id_product",
+            "as": "products",
+            "pipeline": [
+                {
+                    "$project": {
+                        "_id": 0,
+                        "product_name": 1
+                    }
+                }
+            ]
+        }
+    }
+
+    # project_stage determines the fields that are going to be retrieved from the aggregation pipeline.
+    # Ideally these are the fields returned to the frontend.
+    project_stage = {
+        "$project": {
+            "actual_end_date": 1,
+            "actual_start_date": 1,
+            "creation_date": 1,
+            "nok_products": 1,
+            "planned_end_date": 1,
+            "planned_start_date": 1,
+            "products": 1,
+            "quantity": 1,
+            "wo_status": 1,
+            "jobs": 1
+        }
+    }
+
+    try:
+        work_order_cursor = kfk_work_orders_coll.aggregate([match_stage, jobs_lookup_stage, match_job_stage, products_lookup_stage, add_fields_stage, project_stage])
+
+        for workorder_item in work_order_cursor:
+
+            # Change datetime format from "2025-01-23T17:34:17.727506Z" to "2025-01-23 17:34:17"
+            workorder_item["planned_start_date"] = str(datetime.datetime.fromisoformat(workorder_item["planned_start_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+            workorder_item["planned_end_date"] = str(datetime.datetime.fromisoformat(workorder_item["planned_end_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+            workorder_item["creation_date"] = str(datetime.datetime.fromisoformat(workorder_item["creation_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+
+            # In case the actual_start_date and actual_end_date is not set
+            if workorder_item["actual_start_date"] != None:
+                workorder_item["actual_start_date"] = str(datetime.datetime.fromisoformat(workorder_item["actual_start_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+
+            if workorder_item["actual_end_date"] != None:
+                workorder_item["actual_end_date"] = str(datetime.datetime.fromisoformat(workorder_item["actual_end_date"]).strftime("%Y-%m-%d %H:%M:%S"))
+
+            # Improved version
+            if workorder_item.get("jobs") and workorder_item["jobs"][0].get("creation_date"):
+                workorder_item["jobs"][0]["creation_date"] = datetime.datetime.fromisoformat(workorder_item["jobs"][0]["creation_date"]).strftime("%Y-%m-%d %H:%M:%S")
+
+
+            work_order_list.append(workorder_item)
+        
+        # Returns a list of JSON documents (work_order_list)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"list" : work_order_list}
+        )
+    
+    except PyMongoError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Unexpected error: {str(e)}"
+        )
+
     
 # # This endpoint streams the parts created data
 # @app.websocket("/jobs/production_data")
