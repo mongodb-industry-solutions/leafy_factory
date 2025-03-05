@@ -138,7 +138,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     };
 
     try {
-      const response = await axiosClient.post("/jobs/", addJobData);
+      const response = await axiosClient.post("/jobs", addJobData);
       dispatch(addJob(response.data));
       if (onCreateSuccess) {
         onCreateSuccess();
