@@ -3,33 +3,37 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import axiosClient from "../../lib/axios"; 
-import { setAllOrders } from "../../redux/slices/WorkOrderslice"; 
-import { setAllJobs } from "../../redux/slices/JobSlice";  
-import { usePathname } from "next/navigation";  
-import styles from "./sidebar.module.css"; 
+import axiosClient from "../../lib/axios";
+import { setAllOrders, setTreeOrders } from "../../redux/slices/WorkOrderslice";
+import { setAllJobs } from "../../redux/slices/JobSlice";
+import { usePathname } from "next/navigation";
+import styles from "./sidebar.module.css";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const workOrders = useSelector((state) => state.WorkOrders.workOrders);
-  const jobs = useSelector((state) => state.Jobs.jobs); 
+  const treeOrders = useSelector((state) => state.WorkOrders.treeOrders); // Add treeOrders
+  const jobs = useSelector((state) => state.Jobs.jobs);
   const [isShrunk, setIsShrunk] = useState(false);
 
-  const pathname = usePathname(); 
+  const pathname = usePathname();
 
-  const isWorkOrdersPage = pathname.includes("/workorders"); 
+  const isWorkOrdersPage = pathname.includes("/");
   const isJobsPage = pathname.includes("/jobsorders");
   const isSimulationPage = pathname.includes("/start-simulation");
-
 
   const fetchData = async (endpoint) => {
     try {
       const response = await axiosClient.get(endpoint);
       console.log(`Data from ${endpoint}:`, response.data);
-      if (endpoint === "/workorders") {
+
+      if (endpoint === "/workorders/tree") {
+        dispatch(setTreeOrders(response.data.list || []));
+        console.log("Response data", response.data.list)
+      } else if (endpoint === "/workorders") {
         dispatch(setAllOrders(response.data.list || []));
       } else if (endpoint === "/jobs") {
-        dispatch(setAllJobs(response.data.list || [])); 
+        dispatch(setAllJobs(response.data.list || []));
       }
     } catch (error) {
       console.error(`Error fetching data from ${endpoint}:`, error);
@@ -39,31 +43,31 @@ const Sidebar = () => {
   useEffect(() => {
     console.log("Current Path:", pathname);
     if (isWorkOrdersPage) {
-      fetchData("/workorders");
+      fetchData("/workorders/tree");
     } else if (isJobsPage) {
       fetchData("/jobs");
     }
-  }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]); 
+  }, [pathname]);
 
   const toggleShrink = () => {
     setIsShrunk(!isShrunk);
   };
 
   const renderWorkOrders = () => {
-    console.log("Returned work orders:", workOrders); 
-    return workOrders.length > 0 ? (
-      workOrders.map((order) => (
+    console.log("Returned tree orders:", treeOrders);
+    return treeOrders.length > 0 ? (
+      treeOrders.map((order) => (
         <div key={order.id_work} className={styles.cardItem}>
           {JSON.stringify(order, null, 2)}
         </div>
       ))
     ) : (
-      <p>No work orders available</p>
+      <p>No tree orders available</p>
     );
   };
 
   const renderJobs = () => {
-    console.log("Returned Jobs:", jobs); 
+    console.log("Returned Jobs:", jobs);
     return jobs.length > 0 ? (
       jobs.map((job) => (
         <div key={job.id_job} className={styles.cardItem}>
@@ -85,7 +89,7 @@ const Sidebar = () => {
         {!isShrunk ? (
           <pre className={styles.jsonContent}>
             {isWorkOrdersPage
-              ? JSON.stringify(workOrders, null, 2)
+              ? JSON.stringify(treeOrders, null, 2)
               : JSON.stringify(jobs, null, 2)}
           </pre>
         ) : (
