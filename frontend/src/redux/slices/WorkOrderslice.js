@@ -4,6 +4,7 @@ const WorkOrderslice = createSlice({
     name: "WorkOrders",
     initialState: {
         workOrders: [],
+        treeOrders: [],
     },
     reducers: {
         addOrder: (state, action) => {
@@ -20,13 +21,17 @@ const WorkOrderslice = createSlice({
                 workOrders: action.payload
             }
         },
+        setTreeOrders: (state, action) => {
+            state.treeOrders = action.payload;
+        },
     }
 })
 
 export const {
     addOrder, 
     removeOrder,
-    setAllOrders
+    setAllOrders,
+    setTreeOrders
 } = WorkOrderslice.actions
 
 export default WorkOrderslice.reducer

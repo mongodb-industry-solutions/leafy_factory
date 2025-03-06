@@ -4,6 +4,7 @@ const JobSlice = createSlice({
   name: "Jobs",
   initialState: {
     jobs: [],
+    treeJobs: []
   },
   reducers: {
     addJob: (state, action) => {
@@ -18,6 +19,9 @@ const JobSlice = createSlice({
         jobs: action.payload,
       };
     },
+    setTreeJobs: (state, action) => {
+      state.treeJobs = action.payload;
+  },
   },
 });
 
@@ -25,6 +29,7 @@ export const {
   addJob,
   removeJob,
   setAllJobs,
+  setTreeJobs
 } = JobSlice.actions;
 
 export default JobSlice.reducer;
