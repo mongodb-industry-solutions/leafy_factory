@@ -12,14 +12,14 @@ import styles from "./sidebar.module.css";
 const Sidebar = () => {
   const dispatch = useDispatch();
   const workOrders = useSelector((state) => state.WorkOrders.workOrders);
-  const treeOrders = useSelector((state) => state.WorkOrders.treeOrders); // for returning Sidebar JSON WO
+  const treeOrders = useSelector((state) => state.WorkOrders.treeOrders);
   const jobs = useSelector((state) => state.Jobs.jobs);
-  const treeJobs = useSelector((state) => state.Jobs.treeJobs); // for returning Sidebar JSON Jobs
+  const treeJobs = useSelector((state) => state.Jobs.treeJobs);
   const [isShrunk, setIsShrunk] = useState(false);
 
   const pathname = usePathname();
 
-  const isWorkOrdersPage = pathname.includes("/");
+  const isWorkOrdersPage = pathname === "/";
   const isJobsPage = pathname.includes("/jobsorders");
   const isSimulationPage = pathname.includes("/start-simulation");
 
@@ -28,9 +28,9 @@ const Sidebar = () => {
       const response = await axiosClient.get(endpoint);
       console.log(`Data from ${endpoint}:`, response.data);
 
+      // Clear previous data when switching pages
       if (endpoint === "/workorders/tree") {
         dispatch(setTreeOrders(response.data.list || []));
-        console.log("Response data", response.data.list)
       } else if (endpoint === "/workorders") {
         dispatch(setAllOrders(response.data.list || []));
       } else if (endpoint === "/jobs/tree") {
@@ -45,12 +45,16 @@ const Sidebar = () => {
 
   useEffect(() => {
     console.log("Current Path:", pathname);
+    
+    // Reset data on route change
     if (isWorkOrdersPage) {
+      dispatch(setTreeOrders([]));  // Clear previous work orders
       fetchData("/workorders/tree");
     } else if (isJobsPage) {
+      dispatch(setTreeJobs([]));  // Clear previous jobs data
       fetchData("/jobs/tree");
     }
-  }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]); 
+  }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]);
 
   const toggleShrink = () => {
     setIsShrunk(!isShrunk);
