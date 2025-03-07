@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Code from "@leafygreen-ui/code";
+import { PiBracketsCurlyBold } from "react-icons/pi";
 import axiosClient from "../../lib/axios";
 import { setAllOrders, setTreeOrders } from "../../redux/slices/WorkOrderslice";
 import { setAllJobs, setTreeJobs } from "../../redux/slices/JobSlice";
@@ -28,7 +29,6 @@ const Sidebar = () => {
       const response = await axiosClient.get(endpoint);
       console.log(`Data from ${endpoint}:`, response.data);
 
-      // Clear previous data when switching pages
       if (endpoint === "/workorders/tree") {
         dispatch(setTreeOrders(response.data.list || []));
       } else if (endpoint === "/workorders") {
@@ -46,12 +46,11 @@ const Sidebar = () => {
   useEffect(() => {
     console.log("Current Path:", pathname);
     
-    // Reset data on route change
     if (isWorkOrdersPage) {
-      dispatch(setTreeOrders([]));  // Clear previous work orders
+      dispatch(setTreeOrders([]));  
       fetchData("/workorders/tree");
     } else if (isJobsPage) {
-      dispatch(setTreeJobs([]));  // Clear previous jobs data
+      dispatch(setTreeJobs([])); 
       fetchData("/jobs/tree");
     }
   }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]);
@@ -91,29 +90,32 @@ const Sidebar = () => {
   }
 
   return (
-    <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
-      <div className={styles.sidebarContent}>
-        {!isShrunk ? (
-          <pre className={styles.jsonContent}>
-            {isWorkOrdersPage
-              ? JSON.stringify(treeOrders, null, 2)
-              : JSON.stringify(treeJobs, null, 2)}
-          </pre>
-        ) : (
-          <div className={styles.details}>
-            {isWorkOrdersPage ? renderWorkOrders() : isJobsPage ? renderJobs() : <p>No data available</p>}
-          </div>
-        )}
-      </div>
-
-      <div className={styles["toggle-button"]} onClick={toggleShrink}>
+    <>
+        <div className={styles["toggle-button"]} onClick={toggleShrink}>
         {isShrunk ? (
-          <FaChevronLeft style={{ color: "#2B664C" }} />
+        <PiBracketsCurlyBold  style={{ color: "#2B664C" }} />
         ) : (
-          <FaChevronRight style={{ color: "#2B664C" }} />
+        <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
         )}
-      </div>
-    </div>
+        </div>
+
+        <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
+        
+        <div className={styles.sidebarContent}>
+            {!isShrunk ? (
+            <Code language="javascript" className={styles.jsonContent}>
+                {isWorkOrdersPage
+                ? JSON.stringify(treeOrders, null, 2)
+                : JSON.stringify(treeJobs, null, 2)}
+            </Code>
+            ) : (
+            <div className={styles.details}>
+                {isWorkOrdersPage ? renderWorkOrders() : isJobsPage ? renderJobs() : <p>No data available</p>}
+            </div>
+            )}
+        </div>
+        </div>
+    </>
   );
 };
 
