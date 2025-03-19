@@ -148,11 +148,11 @@ async def retrieve_machine_details():
     
 
 @router.get("/machines/machine_details/{id_machine}",
-                summary="Gets the machine details by id_machine",
+                summary="Returns the machine details by id_machine",
                 description="",
                 responses={
                     200: {
-                        "description": "Work orders list retrieved successfully",
+                        "description": "Returns full details of a machine, including, work orders and jobs processed by the machine",
                         "content": {
                             "application/json":{
                                 "factory": {
