@@ -400,3 +400,250 @@ async def retrieve_machine_details(id_machine: int):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve machine details: {str(e)}")
+    
+
+@router.get("/machines/machine_details_tree",
+                summary="Returns the machine details by id_machine",
+                description="",
+                responses={
+                    200: {
+                        "description": "Returns full details of a machine, including, work orders and jobs processed by the machine",
+                        "content": {
+                            "application/json":{
+                                "factory": {
+                                    "location": "qro_fact_1",
+                                    "timestamp": "2025-03-19 16:40:17.013268",
+                                    "production_lines": [
+                                        {
+                                            "production_line_id": 1,
+                                            "machines": [
+                                                {
+                                                    "_id": 1,
+                                                    "machine_id": 1,
+                                                    "details": {
+                                                        "machine_status": "Available",
+                                                        "last_maintenance": "2024-10-31 14:25:00",
+                                                        "operator": "Ada Lovelace",
+                                                        "avg_temperature": "70.27",
+                                                        "avg_vibration": "0.002",
+                                                        "temp_values": 70,
+                                                        "vib_values": 0.01
+                                                    },
+                                                    "work_orders": [
+                                                        {
+                                                            "id_work": 3,
+                                                            "nok_products": 10,
+                                                            "quantity": 10,
+                                                            "wo_status": "Completed",
+                                                            "jobs": [
+                                                                {
+                                                                    "id_job": 4,
+                                                                    "creation_date": "2025-01-28T18:04:06.641978Z",
+                                                                    "job_status": "Completed",
+                                                                    "nok_products": 10,
+                                                                    "quality_rate": 0,
+                                                                    "target_output": 10
+                                                                }
+                                                            ],
+                                                            "products": [
+                                                                {
+                                                                    "product_name": "2 Step ladder"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+async def retrieve_machine_details():
+    """This endpoint retrieves the machine details from the jobs, products and work_orders collections."""
+    
+    # The demo currently work with only one factory
+    FACTORY_ID = "qro_fact_1"
+
+    # TODO Retrieved the production lines from the MongoDB production_lines collection
+    PRODUCTION_LINE_ID = [1, 2]
+
+    machine_details_dict = {}
+
+    factory_dict = {
+        "factory": {
+            "location": "Plant A",
+            "timestamp": datetime.now()
+        }
+    }
+
+    prod_line_dict = {}
+
+    try:
+        # MongoDB Aggregation stages
+        # This stage joins the work_orders with the jobs colelction
+        lookup_jobs_stage = {
+            "$lookup": {
+                "from": "kafka.public.jobs",
+                "localField": "id_work",
+                "foreignField": "work_id",
+                "as": "jobs",
+                "pipeline": [
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "creation_date": 1,
+                            "job_status": 1,
+                            "nok_products": 1,
+                            "quality_rate": 1,
+                            "target_output": 1,
+                            "id_job": 1
+                        }
+                    }
+                ]
+            }
+        }
+
+        # This stage joins the jobs with the products collection
+        lookup_products_stage = {
+            "$lookup": {
+                "from": "kafka.public.products",
+                "localField": "product_id",
+                "foreignField": "id_product",
+                "as": "products",
+                "pipeline": [
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "product_name": 1
+                        }
+                    }
+                ]
+            }
+        }
+
+        # This stage joins the jobs with the jobs_machines collection
+        lookup_jobs_machines_stage = {
+            "$lookup": {
+                "from": "kafka.public.jobs_machines",
+                "localField": "jobs.id_job",
+                "foreignField": "job_id",
+                "as": "job_machines"
+            }
+        }
+        
+        # This stage separates the elements of jobs_machines
+        lookup_unwind_stage = {
+            "$unwind": "$job_machines"
+        }
+
+        # This stage groups the elements by machine_id and aggregate work_orders per machine
+        lookup_group_stage = {
+            "$group": {
+                "_id": "$job_machines.machine_id",
+                "machine_id": { 
+                    "$first": "$job_machines.machine_id" 
+                },
+                "machine_status": {
+                    "$first": "$machines.machine_status[]" 
+                },
+                "work_orders": {
+                    "$push": {
+                        "id_work": "$id_work",
+                        "nok_products": "$nok_products",
+                        "quantity": "$quantity",
+                        "wo_status": "$wo_status",
+                        "jobs": "$jobs",
+                        "products": "$products"
+                    }
+                }
+            }
+        }
+
+        # This stage projects the fields the query will show
+        lookup_project_stage = {
+            "$project": {
+                "machine_id": 1,
+                "work_orders": 1
+            }
+        }
+
+        # Execute the aggregation against the work_orders collection.
+        machine_details_cursor = kfk_work_orders_coll.aggregate(
+            [
+                lookup_jobs_stage, 
+                lookup_products_stage, 
+                lookup_jobs_machines_stage,
+                lookup_unwind_stage, 
+                lookup_group_stage, 
+                lookup_project_stage
+            ]
+        )
+
+        machine_details_list = machine_details_cursor.to_list()
+
+        # Retrieve machine details:
+        machine_details_doc = kfk_machines_coll.find_one({"id_machine": machine_details_list[0]["machine_id"]})
+        machine_details_dict["machine_status"] = machine_details_doc["machine_status"]
+        machine_details_dict["last_maintenance"] = str(datetime.fromisoformat(machine_details_doc["last_maintenance"]).strftime("%Y-%m-%d %H:%M:%S"))
+        machine_details_dict["operator"] = machine_details_doc["operator"]
+        machine_details_dict["avg_temperature"] = machine_details_doc["avg_temperature"]
+        machine_details_dict["avg_vibration"] = machine_details_doc["avg_vibration"]
+        machine_details_dict["temp_values"] = float(machine_details_doc['temp_values'].to_decimal())
+        machine_details_dict["vib_values"] = float(machine_details_doc['vib_values'].to_decimal())
+
+        machine_details_list[0]["details"] = machine_details_dict
+
+        # machine_details_list and machine_details_dict are already defined
+        updated_list = []
+
+        for item in machine_details_list:
+            # Create a new dictionary with keys ordered as desired
+            updated_item = OrderedDict()
+            updated_item["_id"] = item["_id"]
+            updated_item["machine_id"] = item["machine_id"]
+            updated_item["details"] = machine_details_dict
+            updated_item["work_orders"] = item["work_orders"]
+
+            # Add the updated item to the new list
+            updated_list.append(updated_item)
+
+        # Adding the production line to the document
+        if updated_list[0]["machine_id"] == 1 or updated_list[0]["machine_id"] == 2:
+            production_line = PRODUCTION_LINE_ID[0]
+        elif updated_list[0]["machine_id"] == 3 or updated_list[0]["machine_id"] == 4:
+            production_line = PRODUCTION_LINE_ID[1]
+
+        # Adding the updated_list dict to the production_lines dict
+        prod_line_dict = {
+            "production_lines": [
+                {
+                    "production_line_id": production_line,
+                    "machines": updated_list
+                }
+            ]
+            
+        }
+
+        # Adding the updated_list dict to the production_lines dict
+        machine_details_dict = {
+            "factory": {
+                "location": FACTORY_ID,
+                "timestamp": str(datetime.now()),
+                "production_lines": prod_line_dict["production_lines"]
+            }
+        }
+
+         # Print the updated JSON object
+        print(json.dumps(machine_details_dict, indent=4))
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"result": machine_details_dict}
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve machine details: {str(e)}")
