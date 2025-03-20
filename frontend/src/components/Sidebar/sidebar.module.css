@@ -1,77 +1,53 @@
 .sidebar {
     background-color: #fbfcfc;
-    width: 240px; 
+    width: fit-content;
     transition: width 0.3s ease;
     grid-area: side-nav;
     overflow-y: auto;
     list-style: none;
-    z-index: 9999; 
-    padding-left: 24px;
+    z-index: 9999;
+    padding-left: 5px;
     position: fixed;
-    top: 110px;
+    top: 7%;
     bottom: 0;
-    right: 0;  
+    right: 0;
   }
   
   .sidebar.shrunk {
-    width: 70px; 
+    width: 0px;  
     padding-left: 0px;
   }
   
-  .sidebarContent {
-    max-height: 100vh;
-    overflow-y: auto;
-    padding-right: 15px;  
+  .sidebar.shrunk .sidebarContent {
+    display: none;  
   }
   
-  .sidebarImage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+  .sidebar.shrunk .details {
+    visibility: hidden;
+    opacity: 0;
   }
-  
-  .sidebarImage img {
-    width: 40px; 
-    height: 40px;
-  }
-  
-  .jsonContent {
-    padding: 10px;
-    background-color: #f1f1f1;
-    border-radius: 4px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-size: 12px;
-    color: #000000;
-    overflow-x: auto;
-  } 
   
   .toggle-button {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 10px; 
+    right: 5%;
     padding: 10px;
     background-color: #ffffff;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     transform: translateY(-50%);
+    z-index: 10000; 
   }
   
   .toggle-button:hover {
     background-color: #c07cf1;
-  }
-  
-  .details {
-    font-size: 12px;
-    color: #000000;
   }
   
   .cardItem {
@@ -79,6 +55,7 @@
     padding: 8px;
   }
   
-  .cardItem br {
-    margin-bottom: 5px;
+  .sidebar.shrunk .cardItem {
+    display: none;
   }
+    
