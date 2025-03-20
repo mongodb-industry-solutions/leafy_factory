@@ -4,13 +4,12 @@ import React, { useState } from "react";
 import Modal from "@leafygreen-ui/modal";
 import { H3, Body } from "@leafygreen-ui/typography";
 import Icon from "@leafygreen-ui/icon";
-import IconButton from "@leafygreen-ui/icon-button";
+//import IconButton from "@leafygreen-ui/icon-button";
 import PropTypes from "prop-types";
 import styles from "./InfoWizard.module.css";
 import Button from "@leafygreen-ui/button";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
 import Banner from "@leafygreen-ui/banner";
-
 
 const InfoWizard = ({
   open,
@@ -33,7 +32,6 @@ const InfoWizard = ({
           <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
             {sections.map((tab, tabIndex) => (
               <Tab key={tabIndex} name={tab.heading}>
-                
                 <Banner className={styles.banner} variant="warning">
                   Once you're done with the demo, ensure the simulation is stopped. Click the  “Start Shopfloor Simulation” button, to
                   view the “Stop shopfloor simulator” button.
@@ -46,13 +44,13 @@ const InfoWizard = ({
                         <ul className={styles.list}>
                           {
                             section.body.map((item, idx) => (
-                              typeof (item) == 'object'
-                                ? <li>
+                              typeof (item) === 'object'
+                                ? <li key={idx}>
                                   {item.heading}
                                   <ul className={styles.list}>
                                     {
-                                      item.body.map((subItem, idx) => (
-                                        <li key={idx}><Body>{subItem}</Body></li>
+                                      item.body.map((subItem, subIdx) => (
+                                        <li key={subIdx}><Body>{subItem}</Body></li>
                                       ))
                                     }
                                   </ul>

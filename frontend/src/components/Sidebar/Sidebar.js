@@ -17,26 +17,33 @@ const Sidebar = () => {
   const jobs = useSelector((state) => state.Jobs.jobs);
   const treeJobs = useSelector((state) => state.Jobs.treeJobs);
   const [isShrunk, setIsShrunk] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
 
+  
   const pathname = usePathname();
 
   const isWorkOrdersPage = pathname === "/";
   const isJobsPage = pathname.includes("/jobsorders");
   const isSimulationPage = pathname.includes("/start-simulation");
 
-  const fetchData = async (endpoint) => {
+  const fetchData = async (endpoint, id_work = null) => {
     try {
-      const response = await axiosClient.get(endpoint);
-      console.log(`Data from ${endpoint}:`, response.data);
+      const url = id_work ? `${endpoint}/${id_work}` : endpoint;
+      const response = await axiosClient.get(url);
+      console.log(`Data from ${url}:`, response.data);
 
-      if (endpoint === "/workorders/tree") {
-        dispatch(setTreeOrders(response.data.list || []));
-      } else if (endpoint === "/workorders") {
+      if (endpoint === "/workorders") {
         dispatch(setAllOrders(response.data.list || []));
-      } else if (endpoint === "/jobs/tree") {
-        dispatch(setTreeJobs(response.data.list || []));
+      } else if (endpoint === "/workorders/tree") {
+        dispatch(setTreeOrders(response.data.list || []));
       } else if (endpoint === "/jobs") {
         dispatch(setAllJobs(response.data.list || []));
+      } else if (endpoint === "/jobs/tree") {
+        dispatch(setTreeJobs(response.data.list || []));
+      }
+
+      if (id_work) {
+        setSelectedData(response.data);
       }
     } catch (error) {
       console.error(`Error fetching data from ${endpoint}:`, error);
@@ -55,15 +62,19 @@ const Sidebar = () => {
     }
   }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]);
 
-  const toggleShrink = () => {
-    setIsShrunk(!isShrunk);
+  const handleWorkOrderClick = (id_work) => {
+    fetchData("/workorders", id_work);
+  };
+
+  const handleJobClick = (id_work) => {
+    fetchData("/jobs", id_work);
   };
 
   const renderWorkOrders = () => {
     console.log("Returned tree orders:", treeOrders);
     return treeOrders.length > 0 ? (
       treeOrders.map((order) => (
-        <div key={order.id_work} className={styles.cardItem}>
+        <div key={order.id_work} className={styles.cardItem} onClick={() => handleWorkOrderClick(order.id_work)}>
           {JSON.stringify(order, null, 2)}
         </div>
       ))
@@ -76,7 +87,7 @@ const Sidebar = () => {
     console.log("Returned tree Jobs:", treeJobs);
     return treeJobs.length > 0 ? (
       treeJobs.map((job) => (
-        <div key={job.id_job} className={styles.cardItem}>
+        <div key={job.id_job} className={styles.cardItem} onClick={() => handleJobClick(job.id_work)}>
           {JSON.stringify(job, null, 2)}
         </div>
       ))
@@ -85,36 +96,41 @@ const Sidebar = () => {
     );
   };
 
+  const toggleShrink = () => {
+    setIsShrunk(prevState => !prevState);
+  };
+
   if (isSimulationPage) {
     return null;
   }
 
   return (
     <>
-        <div className={styles["toggle-button"]} onClick={toggleShrink}>
+      <div className={styles["toggle-button"]} onClick={toggleShrink}>
         {isShrunk ? (
-        <PiBracketsCurlyBold  style={{ color: "#2B664C" }} />
+          <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
         ) : (
-        <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
+          <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
         )}
-        </div>
+      </div>
 
-        <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
-        
+      <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
         <div className={styles.sidebarContent}>
-            {!isShrunk ? (
+          {!isShrunk ? (
             <Code language="javascript" className={styles.jsonContent}>
-                {isWorkOrdersPage
+              {selectedData
+                ? JSON.stringify(selectedData, null, 2)
+                : isWorkOrdersPage
                 ? JSON.stringify(treeOrders, null, 2)
                 : JSON.stringify(treeJobs, null, 2)}
             </Code>
-            ) : (
+          ) : (
             <div className={styles.details}>
-                {isWorkOrdersPage ? renderWorkOrders() : isJobsPage ? renderJobs() : <p>No data available</p>}
+              {isWorkOrdersPage ? renderWorkOrders() : isJobsPage ? renderJobs() : <p>No data available</p>}
             </div>
-            )}
+          )}
         </div>
-        </div>
+      </div>
     </>
   );
 };
