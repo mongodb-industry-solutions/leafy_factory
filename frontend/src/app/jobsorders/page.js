@@ -4,11 +4,14 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../../lib/axios";
 import { Table, Row, Col, Container, Pagination } from "react-bootstrap";
-import { setAllJobs } from "../../redux/slices/JobSlice";
+import { setAllJobs, setSelectJob } from "../../redux/slices/JobSlice";
 import CreateJobForm from "../../components/CreateJobForm/CreateJobForm";
 import styles from "./jobs.module.css";
 import { H2, H3, Body } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
+import Icon from "@leafygreen-ui/icon";
+import IconButton from "@leafygreen-ui/icon-button";
+import Tooltip from "@leafygreen-ui/tooltip";
 
 const Jobs = () => {
   const dispatch = useDispatch();
@@ -24,7 +27,7 @@ const Jobs = () => {
       const response = await axiosClient.get("/jobs");
       dispatch(setAllJobs(response.data.list));
     } catch (error) {
-      console.error("There was a problem with your fetch operation:", error);
+      console.log("There was a problem with your fetch operation:", error);
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +43,7 @@ const Jobs = () => {
       await fetchJobs();
       setIsLoading(false);
     } catch (error) {
-      console.error("Failed to refresh job data after submission:", error);
+      console.log("Failed to refresh job data after submission:", error);
       setIsLoading(false);
     }
   };
@@ -72,6 +75,21 @@ const Jobs = () => {
     return items;
   };
 
+  const handleJobClick = (work_id) => {
+    console.log("Clicked on job with work order ID:", work_id);
+    fetchJobDetails(work_id);
+  };
+
+  const fetchJobDetails = async (work_id) => {
+    try {
+                                              // jobs/{id_work} where work_id is the id_work sent to the API for the Sidebar
+      const response = await axiosClient.get(`/jobs/${work_id}`);
+      dispatch(setSelectJob(response.data));
+    } catch (error) {
+      console.log("There was a problem with your fetch operation:", error);
+    }
+  };
+
   return (
     <Container fluid className={styles.containerFluid}>
       <H2 className={styles.historyHeader}>Jobs: MES System Simulator</H2>
@@ -90,6 +108,7 @@ const Jobs = () => {
               <Table striped bordered hover responsive className={styles.table}>
                 <thead>
                   <tr>
+                    <th>Actions</th>
                     <th>Job ID</th>
                     <th>Target Output</th>
                     <th>Job Status</th>
@@ -102,6 +121,15 @@ const Jobs = () => {
                 <tbody>
                   {currentJobs.map((job) => (
                     <tr key={job.id_job}>
+                      <td>
+                        <Tooltip align="top" justify="middle" trigger={
+                          <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleJobClick(job.work_id)}>
+                            <Icon glyph="CurlyBraces" />
+                          </IconButton>
+                        }>
+                          ID's DocModel
+                        </Tooltip>
+                      </td>
                       <td>{job.id_job}</td>
                       <td>{job.target_output}</td>
                       <td>
@@ -133,7 +161,6 @@ const Jobs = () => {
           )}
         </Col>
       </Row>
-
     </Container>
   );
 };
