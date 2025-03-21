@@ -4,14 +4,14 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "./../lib/axios";  
 import { Table, Row, Col, Pagination } from "react-bootstrap";
-import { setAllOrders } from "../redux/slices/WorkOrderslice";
+import { setAllOrders, setSelectWorkOrder } from "../redux/slices/WorkOrderslice";
 import CreateForm from "../components/CreateForm/CreateForm";
-import { H2, H3, Body } from "@leafygreen-ui/typography";
+import { H2, H3 } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
+import Icon from "@leafygreen-ui/icon";
+import IconButton from "@leafygreen-ui/icon-button";
+import Tooltip from "@leafygreen-ui/tooltip";
 import styles from "./workorders.module.css";
-//import Icon from "@leafygreen-ui/icon";
-//import IconButton from "@leafygreen-ui/icon-button";
-
 
 const WorkOrdersPage = () => {
   const dispatch = useDispatch();
@@ -23,10 +23,9 @@ const WorkOrdersPage = () => {
   const fetchWorkOrders = useCallback(async () => {
     try {
       const response = await axiosClient.get("/workorders");
-      const workOrders = response.data.list;
-      dispatch(setAllOrders([...workOrders])); 
+      dispatch(setAllOrders(response.data.list || [])); 
     } catch (error) {
-      console.error("There was a problem with your fetch operation:", error);
+      console.error("Error fetching work orders:", error);
     } finally {
       setIsLoading(false);
     }
@@ -38,8 +37,17 @@ const WorkOrdersPage = () => {
     return () => clearInterval(intervalId);
   }, [fetchWorkOrders]);
 
-  const handleSubmitSuccess = () => {
-    fetchWorkOrders();
+  const fetchWorkOrderDetails = async (id_work) => {
+    try {
+      const response = await axiosClient.get(`/workorders/${id_work}`);
+      dispatch(setSelectWorkOrder(response.data));
+    } catch (error) {
+      console.error("Error fetching work order details:", error);
+    }
+  };
+
+  const handleWorkOrderClick = (id_work) => {
+    fetchWorkOrderDetails(id_work);
   };
 
   const handlePageChange = (pageNumber) => {
@@ -76,7 +84,7 @@ const WorkOrdersPage = () => {
       <Row className="align-items-start">
         <Col lg={5} md={6} sm={12} className={styles.formWrapper}>
           <H3 className={styles.H3}>Create a New Work Order</H3>
-          <CreateForm onSubmitSuccess={handleSubmitSuccess} />
+          <CreateForm onSubmitSuccess={fetchWorkOrders} />
         </Col>
 
         <Col lg={7} md={6} sm={12} className={styles.tableWrapper}>
@@ -87,6 +95,7 @@ const WorkOrdersPage = () => {
               <Table striped bordered hover responsive className={styles.table}>
                 <thead>
                   <tr>
+                    <th>Actions</th>
                     <th>ID</th>
                     <th>Status</th>
                     <th>Creation Date</th>
@@ -101,19 +110,25 @@ const WorkOrdersPage = () => {
                 <tbody>
                   {currentOrders.map((order) => (
                     <tr key={order.id_work}>
+                      <td>
+                        <Tooltip align="top" justify="middle" trigger={
+                          <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleWorkOrderClick(order.id_work)}>
+                            <Icon glyph="CurlyBraces" />
+                          </IconButton>
+                        }>
+                          ID's DocModel
+                        </Tooltip>
+                      </td>
                       <td>{order.id_work}</td>
-                     
-
                       <td>
                         <Badge variant={
                           order.wo_status === "Completed" ? "green" :
                           order.wo_status === "Created" ? "blue" :
-                              "lightGray"
+                          "lightGray"
                         }>
                           {order.wo_status}
                         </Badge>
                       </td>
-
                       <td>{order.creation_date}</td>
                       <td>{order.product_name}</td>
                       <td>{order.quantity}</td>
@@ -125,18 +140,8 @@ const WorkOrdersPage = () => {
                   ))}
                 </tbody>
               </Table>
-{/* 
-              <div className={styles.tooltipWrapper}>
-                    <IconButton className={styles.tooltipIcon}>
-                      <Icon glyph="CurlyBraces" aria-label="Curly Braces" />
-                    </IconButton>
 
-                    <div className={styles.tooltipContent}>
-                      <pre>{JSON.stringify(order, null, 2)}</pre>
-                    </div>
-                  </div> */}
-
-              <Pagination  className={styles.pagination}>
+              <Pagination className={styles.pagination}>
                 <Pagination.First
                   onClick={() => handlePageChange(1)}
                   disabled={currentPage === 1}

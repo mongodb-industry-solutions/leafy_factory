@@ -5,129 +5,99 @@ import { useDispatch, useSelector } from "react-redux";
 import Code from "@leafygreen-ui/code";
 import { PiBracketsCurlyBold } from "react-icons/pi";
 import axiosClient from "../../lib/axios";
-import { setAllOrders, setTreeOrders } from "../../redux/slices/WorkOrderslice";
-import { setAllJobs, setTreeJobs } from "../../redux/slices/JobSlice";
+import { setSelectWorkOrder } from "../../redux/slices/WorkOrderslice";
+import { setSelectJob } from "../../redux/slices/JobSlice";
 import { usePathname } from "next/navigation";
 import styles from "./sidebar.module.css";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
-  const workOrders = useSelector((state) => state.WorkOrders.workOrders);
-  const treeOrders = useSelector((state) => state.WorkOrders.treeOrders);
-  const jobs = useSelector((state) => state.Jobs.jobs);
-  const treeJobs = useSelector((state) => state.Jobs.treeJobs);
+  const selectWorkOrder = useSelector((state) => state.WorkOrders.selectWorkOrder);
+  const selectJob = useSelector((state) => state.Jobs.selectJob);
   const [isShrunk, setIsShrunk] = useState(false);
-  const [selectedData, setSelectedData] = useState(null);
 
-  
   const pathname = usePathname();
-
   const isWorkOrdersPage = pathname === "/";
-  const isJobsPage = pathname.includes("/jobsorders");
-  const isSimulationPage = pathname.includes("/start-simulation");
+  const isJobsPage = pathname.includes("/jobs");
 
-  const fetchData = async (endpoint, id_work = null) => {
+  // Fetch Work Order Details
+  const fetchWorkOrderDetails = async (id_work) => {
+    console.log("Fetching work order details for id:", id_work); // Check the id_work value
     try {
-      const url = id_work ? `${endpoint}/${id_work}` : endpoint;
-      const response = await axiosClient.get(url);
-      console.log(`Data from ${url}:`, response.data);
-
-      if (endpoint === "/workorders") {
-        dispatch(setAllOrders(response.data.list || []));
-      } else if (endpoint === "/workorders/tree") {
-        dispatch(setTreeOrders(response.data.list || []));
-      } else if (endpoint === "/jobs") {
-        dispatch(setAllJobs(response.data.list || []));
-      } else if (endpoint === "/jobs/tree") {
-        dispatch(setTreeJobs(response.data.list || []));
-      }
-
-      if (id_work) {
-        setSelectedData(response.data);
-      }
+      const response = await axiosClient.get(`/workorders/${id_work}`);
+      dispatch(setSelectWorkOrder(response.data));  // Store work order data
     } catch (error) {
-      console.error(`Error fetching data from ${endpoint}:`, error);
+      if (error.response) {
+        console.log("Error fetching work order details:", error.response.data);
+      } else if (error.request) {
+        console.log("No response received:", error.request);
+      } else {
+        console.log("Error setting up request:", error.message);
+      }
+    }
+  };
+
+  // Fetch Job Details (using work_id as id_work in the API request)
+  const fetchJobDetails = async (work_id) => {
+    console.log("Fetching job details for work_id:", work_id); // Check the work_id value
+    try {
+      // Send the work_id as id_work in the API request URL for jobs/{id_work}
+      const response = await axiosClient.get(`/jobs/${work_id}`);  // Now this will correctly be jobs/{id_work}
+      dispatch(setSelectJob(response.data));  // Store job data
+    } catch (error) {
+      if (error.response) {
+        console.log("Error fetching job details:", error.response.data);
+      } else if (error.request) {
+        console.log("No response received:", error.request);
+      } else {
+        console.log("Error setting up request:", error.message);
+      }
     }
   };
 
   useEffect(() => {
-    console.log("Current Path:", pathname);
-    
-    if (isWorkOrdersPage) {
-      dispatch(setTreeOrders([]));  
-      fetchData("/workorders/tree");
-    } else if (isJobsPage) {
-      dispatch(setTreeJobs([])); 
-      fetchData("/jobs/tree");
+    if (isWorkOrdersPage && selectWorkOrder?.id_work) {
+      fetchWorkOrderDetails(selectWorkOrder.id_work); // Use id_work for Work Orders API
     }
-  }, [pathname, isWorkOrdersPage, isJobsPage, dispatch]);
 
-  const handleWorkOrderClick = (id_work) => {
-    fetchData("/workorders", id_work);
-  };
-
-  const handleJobClick = (id_work) => {
-    fetchData("/jobs", id_work);
-  };
-
-  const renderWorkOrders = () => {
-    console.log("Returned tree orders:", treeOrders);
-    return treeOrders.length > 0 ? (
-      treeOrders.map((order) => (
-        <div key={order.id_work} className={styles.cardItem} onClick={() => handleWorkOrderClick(order.id_work)}>
-          {JSON.stringify(order, null, 2)}
-        </div>
-      ))
-    ) : (
-      <p>No tree orders available</p>
-    );
-  };
-
-  const renderJobs = () => {
-    console.log("Returned tree Jobs:", treeJobs);
-    return treeJobs.length > 0 ? (
-      treeJobs.map((job) => (
-        <div key={job.id_job} className={styles.cardItem} onClick={() => handleJobClick(job.id_work)}>
-          {JSON.stringify(job, null, 2)}
-        </div>
-      ))
-    ) : (
-      <p>No tree jobs available</p>
-    );
-  };
+    if (isJobsPage && selectJob?.work_id) {
+      // Here is the critical fix: sending the work_id from the job object to jobs/{id_work}
+      fetchJobDetails(selectJob.work_id);  // Send work_id, which will be used as id_work in the API
+    }
+  }, [selectWorkOrder, selectJob, isWorkOrdersPage, isJobsPage]);
 
   const toggleShrink = () => {
-    setIsShrunk(prevState => !prevState);
+    setIsShrunk((prevState) => !prevState);
   };
 
-  if (isSimulationPage) {
+  if (pathname.includes("/start-simulation")) {
     return null;
   }
 
   return (
     <>
       <div className={styles["toggle-button"]} onClick={toggleShrink}>
-        {isShrunk ? (
-          <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
-        ) : (
-          <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
-        )}
+        <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
       </div>
 
       <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
         <div className={styles.sidebarContent}>
           {!isShrunk ? (
-            <Code language="javascript" className={styles.jsonContent}>
-              {selectedData
-                ? JSON.stringify(selectedData, null, 2)
-                : isWorkOrdersPage
-                ? JSON.stringify(treeOrders, null, 2)
-                : JSON.stringify(treeJobs, null, 2)}
-            </Code>
+            <>
+              {isWorkOrdersPage && (
+                <Code language="javascript" className={styles.jsonContent}>
+                  {selectWorkOrder ? JSON.stringify(selectWorkOrder, null, 2) : "No Work Order Selected"}
+                </Code>
+              )}
+
+              {isJobsPage && (
+                <Code language="javascript" className={styles.jsonContent}>
+                  {selectJob ? JSON.stringify(selectJob, null, 2) : "No Job Selected"}
+                </Code>
+              )}
+            </>
           ) : (
-            <div className={styles.details}>
-              {isWorkOrdersPage ? renderWorkOrders() : isJobsPage ? renderJobs() : <p>No data available</p>}
-            </div>
+            <p>Click on a {} ID to see the DocModel</p>
           )}
         </div>
       </div>

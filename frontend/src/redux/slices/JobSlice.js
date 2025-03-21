@@ -22,6 +22,9 @@ const JobSlice = createSlice({
     setTreeJobs: (state, action) => {
       state.treeJobs = action.payload;
   },
+    setSelectJob: (state, action) => {
+      state.selectJob = action.payload;
+    },
   },
 });
 
@@ -29,7 +32,8 @@ export const {
   addJob,
   removeJob,
   setAllJobs,
-  setTreeJobs
+  setTreeJobs,
+  setSelectJob
 } = JobSlice.actions;
 
 export default JobSlice.reducer;
