@@ -82,7 +82,7 @@ const Jobs = () => {
 
   const fetchJobDetails = async (work_id) => {
     try {
-                                              // jobs/{id_work} where work_id is the id_work sent to the API for the Sidebar
+    // jobs/{id_work} where work_id is the id_work sent to the API for the Sidebar
       const response = await axiosClient.get(`/jobs/${work_id}`);
       dispatch(setSelectJob(response.data));
     } catch (error) {
