@@ -34,7 +34,7 @@ function ShopfloorComponent() {
       console.log("Fetched Machine Details: ", response.data.result);
       setMachines(response.data.result);
     } catch (error) {
-      console.error("Error fetching machine details:", error);
+      console.log("Error fetching machine details:", error);
     }
   };
 
@@ -44,7 +44,7 @@ function ShopfloorComponent() {
       console.log("Fetched Factory Details: ", response.data);
       setFactoryDetails(response.data);
     } catch (error) {
-      console.error("Error fetching factory details:", error);
+      console.log("Error fetching factory details:", error);
     }
   };
 
@@ -263,8 +263,8 @@ function ShopfloorComponent() {
                     <ListGroup.Item className={styles.cardItem}><strong>Operator:</strong> {machine.operator}</ListGroup.Item>
                   </ListGroup>
 
-                  {/* Tooltip icon to show Machine JSON Data */}
-                  <div className={styles.tooltipWrapper}>
+                  {/* Tooltip icon to show Machine JSON Data inside {} */}
+                  {/* <div className={styles.tooltipWrapper}>
                     <IconButton className={styles.tooltipIcon}>
                       <Icon glyph="CurlyBraces" aria-label="Curly Braces" />
                     </IconButton>
@@ -272,13 +272,13 @@ function ShopfloorComponent() {
                     <div className={styles.tooltipContent}>
                       <pre>{JSON.stringify(machine, null, 2)}</pre>
                     </div>
-                  </div>
+                  </div> */}
 
                 </Card.Body>
               </Card>
             </Col>
 
-            {/** 
+            {/** CARDS WITH MACHINE DATA
             <Col md={3} className="prod-card">
               <Card className="prod-card">
                 <Card.Body className="card-body">
