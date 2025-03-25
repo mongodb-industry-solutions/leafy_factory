@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Code from "@leafygreen-ui/code";
+import dynamic from "next/dynamic";
 import { PiBracketsCurlyBold } from "react-icons/pi";
 import CloseButton from 'react-bootstrap/CloseButton';
 import Tooltip from 'react-bootstrap/Tooltip';
@@ -13,15 +13,20 @@ import { setSelectJob } from "../../redux/slices/JobSlice";
 import { usePathname } from "next/navigation";
 import styles from "./sidebar.module.css";
 
+// Dynamical Code to avoid SSR bug
+const Code = dynamic(() => import("@leafygreen-ui/code"), { ssr: false });
+
 const Sidebar = () => {
   const dispatch = useDispatch();
   const selectWorkOrder = useSelector((state) => state.WorkOrders.selectWorkOrder);
   const selectJob = useSelector((state) => state.Jobs.selectJob);
   const [isShrunk, setIsShrunk] = useState(false);
+  const [machineDetails, setMachineDetails] = useState(null); 
 
   const pathname = usePathname();
   const isWorkOrdersPage = pathname === "/";
   const isJobsPage = pathname.includes("/jobs");
+  const isStartSimulationPage = pathname.includes("/start-simulation");
 
   const fetchWorkOrderDetails = async (id_work) => {
     console.log("Fetching work order details for id:", id_work); 
@@ -55,6 +60,18 @@ const Sidebar = () => {
     }
   };
 
+  const fetchMachineDetails = async () => {
+    if (isStartSimulationPage) {
+      try {
+        const response = await axiosClient.get("/machines/machine_details");
+        setMachineDetails(response.data.result); 
+        console.log("Fetched machine details:", response.data.result);
+      } catch (error) {
+        console.log("Error fetching machine details:", error);
+      }
+    }
+  };
+
   useEffect(() => {
     if (isWorkOrdersPage && selectWorkOrder?.id_work) {
       fetchWorkOrderDetails(selectWorkOrder.id_work);
@@ -63,14 +80,18 @@ const Sidebar = () => {
     if (isJobsPage && selectJob?.work_id) {
       fetchJobDetails(selectJob.work_id);
     }
-  }, [selectWorkOrder, selectJob, isWorkOrdersPage, isJobsPage]);
+
+    if (isStartSimulationPage) {
+      fetchMachineDetails(); 
+    }
+  }, [selectWorkOrder, selectJob, isWorkOrdersPage, isJobsPage, isStartSimulationPage]);
 
   const toggleShrink = () => {
     setIsShrunk((prevState) => !prevState);
   };
 
-  if (pathname.includes("/start-simulation")) {
-    return null;
+  if (pathname.includes("/start-simulation") && !machineDetails) {
+    return null; 
   }
 
   return (
@@ -88,7 +109,7 @@ const Sidebar = () => {
           {!isShrunk ? (
             <>
               <OverlayTrigger placement="top" overlay={<Tooltip id="hide-sidebar">Hide sidebar</Tooltip>} >
-                <CloseButton aria-label="Hide Sidebar" onClick={toggleShrink} />
+                <CloseButton className={styles["close-button"]} aria-label="Hide Sidebar" onClick={toggleShrink} />
               </OverlayTrigger>
 
               {isWorkOrdersPage && (
@@ -101,6 +122,15 @@ const Sidebar = () => {
                 <Code language="javascript" className={styles.jsonContent}>
                   {selectJob ? JSON.stringify(selectJob, null, 2) : "Please select a Job ID"}
                 </Code>
+              )}
+
+              {isStartSimulationPage && machineDetails && (
+                <div>
+                  <h3>Machine Details</h3>
+                  <Code language="javascript" className={styles.jsonContent}>
+                    {JSON.stringify(machineDetails, null, 2)}
+                  </Code>
+                </div>
               )}
             </>
           ) : (

@@ -35,6 +35,11 @@ const InfoWizard = ({
           >
             {sections.map((tab, tabIndex) => (
               <Tab key={tabIndex} name={tab.heading}>
+              <Banner className={styles.banner} variant="warning">
+                  Once you're done with the demo, ensure the simulation is
+                  stopped. Click the “Start Shopfloor Simulation” button to view
+                  the “Stop shopfloor simulator” button.
+              </Banner>
                 {tab.content.map((section, sectionIndex) => (
                   <div key={sectionIndex} className={styles.section}>
                     {section.heading && (
@@ -76,11 +81,6 @@ const InfoWizard = ({
                     )}
                   </div>
                 ))}
-                <Banner className={styles.banner} variant="warning">
-                  Once you're done with the demo, ensure the simulation is
-                  stopped. Click the “Start Shopfloor Simulation” button to view
-                  the “Stop shopfloor simulator” button.
-                </Banner>
               </Tab>
             ))}
           </Tabs>
