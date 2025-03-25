@@ -223,7 +223,7 @@ def create_work_order(work_order: WorkOrder):
 def get_work_order():
     work_order_list= []
     try:
-        work_order_cursor = kfk_work_orders_coll.find({},{"_insertedTS": 0, "_modifiedTS": 0}).limit(100).sort({"creation_date": -1})
+        work_order_cursor = kfk_work_orders_coll.find({},{"_insertedTS": 0, "_modifiedTS": 0}).limit(15).sort({"creation_date": -1})
 
         for workorder_item in work_order_cursor:
             
