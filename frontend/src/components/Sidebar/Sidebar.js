@@ -13,7 +13,7 @@ import { setSelectJob } from "../../redux/slices/JobSlice";
 import { usePathname } from "next/navigation";
 import styles from "./sidebar.module.css";
 
-// Dynamical Code to avoid SSR bug
+// Dynamical Code to avoid SSR bug  
 const Code = dynamic(() => import("@leafygreen-ui/code"), { ssr: false });
 
 const Sidebar = () => {
@@ -85,6 +85,7 @@ const Sidebar = () => {
       fetchMachineDetails(); 
     }
   }, [selectWorkOrder, selectJob, isWorkOrdersPage, isJobsPage, isStartSimulationPage]);
+
 
   const toggleShrink = () => {
     setIsShrunk((prevState) => !prevState);
