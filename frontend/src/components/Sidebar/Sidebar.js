@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Code from "@leafygreen-ui/code";
 import { PiBracketsCurlyBold } from "react-icons/pi";
+import CloseButton from 'react-bootstrap/CloseButton';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import axiosClient from "../../lib/axios";
 import { setSelectWorkOrder } from "../../redux/slices/WorkOrderslice";
 import { setSelectJob } from "../../redux/slices/JobSlice";
@@ -20,12 +23,11 @@ const Sidebar = () => {
   const isWorkOrdersPage = pathname === "/";
   const isJobsPage = pathname.includes("/jobs");
 
-  // Fetch Work Order Details
   const fetchWorkOrderDetails = async (id_work) => {
-    console.log("Fetching work order details for id:", id_work); // Check the id_work value
+    console.log("Fetching work order details for id:", id_work); 
     try {
       const response = await axiosClient.get(`/workorders/${id_work}`);
-      dispatch(setSelectWorkOrder(response.data));  // Store work order data
+      dispatch(setSelectWorkOrder(response.data));  
     } catch (error) {
       if (error.response) {
         console.log("Error fetching work order details:", error.response.data);
@@ -37,13 +39,11 @@ const Sidebar = () => {
     }
   };
 
-  // Fetch Job Details (using work_id as id_work in the API request)
   const fetchJobDetails = async (work_id) => {
-    console.log("Fetching job details for work_id:", work_id); // Check the work_id value
+    console.log("Fetching job details for work_id:", work_id); 
     try {
-      // Send the work_id as id_work in the API request URL for jobs/{id_work}
-      const response = await axiosClient.get(`/jobs/${work_id}`);  // Now this will correctly be jobs/{id_work}
-      dispatch(setSelectJob(response.data));  // Store job data
+      const response = await axiosClient.get(`/jobs/${work_id}`);
+      dispatch(setSelectJob(response.data));
     } catch (error) {
       if (error.response) {
         console.log("Error fetching job details:", error.response.data);
@@ -57,12 +57,11 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (isWorkOrdersPage && selectWorkOrder?.id_work) {
-      fetchWorkOrderDetails(selectWorkOrder.id_work); // Use id_work for Work Orders API
+      fetchWorkOrderDetails(selectWorkOrder.id_work);
     }
 
     if (isJobsPage && selectJob?.work_id) {
-      // Here is the critical fix: sending the work_id from the job object to jobs/{id_work}
-      fetchJobDetails(selectJob.work_id);  // Send work_id, which will be used as id_work in the API
+      fetchJobDetails(selectJob.work_id);
     }
   }, [selectWorkOrder, selectJob, isWorkOrdersPage, isJobsPage]);
 
@@ -76,23 +75,31 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className={styles["toggle-button"]} onClick={toggleShrink}>
-        <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
-      </div>
+      {isShrunk && (
+        <div className={styles["toggle-button"]} onClick={toggleShrink}>
+          <OverlayTrigger placement="top" overlay={<Tooltip id="view-sidebar">Show DocModel</Tooltip>} >
+            <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
+          </OverlayTrigger>
+        </div>
+      )}
 
       <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
         <div className={styles.sidebarContent}>
           {!isShrunk ? (
             <>
+              <OverlayTrigger placement="top" overlay={<Tooltip id="hide-sidebar">Hide sidebar</Tooltip>} >
+                <CloseButton aria-label="Hide Sidebar" onClick={toggleShrink} />
+              </OverlayTrigger>
+
               {isWorkOrdersPage && (
                 <Code language="javascript" className={styles.jsonContent}>
-                  {selectWorkOrder ? JSON.stringify(selectWorkOrder, null, 2) : "No Work Order Selected"}
+                  {selectWorkOrder ? JSON.stringify(selectWorkOrder, null, 2) : "Please select a Work Order ID"}
                 </Code>
               )}
 
               {isJobsPage && (
                 <Code language="javascript" className={styles.jsonContent}>
-                  {selectJob ? JSON.stringify(selectJob, null, 2) : "No Job Selected"}
+                  {selectJob ? JSON.stringify(selectJob, null, 2) : "Please select a Job ID"}
                 </Code>
               )}
             </>
