@@ -22,43 +22,50 @@ const InfoWizard = ({
 
   return (
     <>
-      {/* Bigger button for navbars */}
       <Button onClick={() => setOpen((prev) => !prev)} leftGlyph={<Icon glyph={iconGlyph} />}>
-        Tell me more!
+        {tooltipText}
       </Button>
 
       <Modal open={open} setOpen={setOpen} className={styles.modal}>
         <div className={styles.modalContent}>
-          <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
+          <Tabs
+            aria-label="info wizard tabs"
+            setSelected={setSelected}
+            selected={selected}
+          >
             {sections.map((tab, tabIndex) => (
               <Tab key={tabIndex} name={tab.heading}>
-                <Banner className={styles.banner} variant="warning">
-                  Once you're done with the demo, ensure the simulation is stopped. Click the  “Start Shopfloor Simulation” button, to
-                  view the “Stop shopfloor simulator” button.
-                </Banner>
+              <Banner className={styles.banner} variant="warning">
+                  Once you're done with the demo, ensure the simulation is
+                  stopped. Click the “Start Shopfloor Simulation” button to view
+                  the “Stop shopfloor simulator” button.
+              </Banner>
                 {tab.content.map((section, sectionIndex) => (
                   <div key={sectionIndex} className={styles.section}>
-                    {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
+                    {section.heading && (
+                      <H3 className={styles.modalH3}>{section.heading}</H3>
+                    )}
                     {section.body &&
                       (Array.isArray(section.body) ? (
                         <ul className={styles.list}>
-                          {
-                            section.body.map((item, idx) => (
-                              typeof (item) === 'object'
-                                ? <li key={idx}>
-                                  {item.heading}
-                                  <ul className={styles.list}>
-                                    {
-                                      item.body.map((subItem, subIdx) => (
-                                        <li key={subIdx}><Body>{subItem}</Body></li>
-                                      ))
-                                    }
-                                  </ul>
-                                </li>
-                                : <li key={idx}><Body>{item}</Body></li>
+                          {section.body.map((item, idx) =>
+                            typeof item === "object" ? (
+                              <li key={idx}>
+                                {item.heading}
+                                <ul className={styles.list}>
+                                  {item.body.map((subItem, subIdx) => (
+                                    <li key={subIdx}>
+                                      <Body>{subItem}</Body>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </li>
+                            ) : (
+                              <li key={idx}>
+                                <Body>{item}</Body>
+                              </li>
                             )
-                            )
-                          }
+                          )}
                         </ul>
                       ) : (
                         <Body>{section.body}</Body>
@@ -90,11 +97,14 @@ InfoWizard.propTypes = {
   iconGlyph: PropTypes.string,
   sections: PropTypes.arrayOf(
     PropTypes.shape({
-      heading: PropTypes.string.isRequired, // Tab title
+      heading: PropTypes.string.isRequired,
       content: PropTypes.arrayOf(
         PropTypes.shape({
           heading: PropTypes.string,
-          body: PropTypes.string,
+          body: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])),
+          ]),
           image: PropTypes.shape({
             src: PropTypes.string.isRequired,
             alt: PropTypes.string.isRequired,
