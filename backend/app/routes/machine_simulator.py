@@ -113,15 +113,11 @@ def send_heartbeat(data: MachineHeartbeat):
                 "vibration_status": vibration_status
             }
 
-            print(f"First heartbeat: {heartbeat_record}")
-
             # Creating a copy of the heartbeat
             heartbeat_record_mqtt = heartbeat_record.copy()
             heartbeat_record_mqtt["timestamp"] = str(heartbeat_record_mqtt["timestamp"])
 
             insert_heartbeat_result = raw_sensor_data_coll.insert_one(heartbeat_record)
-
-            print(f"Second heartbeat: {heartbeat_record_mqtt}")
 
             # mqtt_client.publish(MQTT_TOPIC, payload=json.dumps(heartbeat_record_mqtt, default=json_serial))
 
