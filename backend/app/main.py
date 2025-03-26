@@ -5,6 +5,7 @@ from app.routes.products import router as products_router
 from app.routes.jobs import router as jobs_router
 from app.routes.machine_simulator import router as machines_router
 from app.routes.machines import router as machines_status
+from app.routes.change_stream_listener import router as ws_stream_sensor
 # from app.routes.change_stream_listener import start_change_stream_listener
 
 app = FastAPI(title="Leafy Factory APIs")
@@ -30,3 +31,4 @@ app.include_router(products_router)
 app.include_router(jobs_router)
 app.include_router(machines_router)
 app.include_router(machines_status)
+app.include_router(ws_stream_sensor)
