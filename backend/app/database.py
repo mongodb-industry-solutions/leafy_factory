@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 from psycopg import connect
 from psycopg.errors import OperationalError
 from dotenv import load_dotenv
@@ -17,9 +18,11 @@ SQL_DATABASE=os.getenv("SQL_DATABASE")
 
 # This file defines the connection to our database, in this case the MongoDB Cluster.
 mongo_conn = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
+motor_client = AsyncIOMotorClient(MONGO_URI)
 
 # MongoDB Database connection
 db = mongo_conn["leafy_factory"]
+db_motor = motor_client["leafy_factory"]
 
 # MongoDB Work Orders Collection
 kfk_work_orders_coll = db["kafka.public.work_orders"]
@@ -33,6 +36,7 @@ kfk_work_jobs_coll = db["kafka.public.jobs"]
 
 # MongoDB Raw Sensor Data Collection
 raw_sensor_data_coll = db["raw_sensor_data"]
+motor_raw_sensor_data_coll = db_motor["raw_sensor_data"]
 
 # MongoDB Factories Collection
 factories_data_coll = db["factories"]
