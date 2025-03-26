@@ -229,6 +229,7 @@ async def retrieve_machine_details(id_machine: int):
 
     try:
         # MongoDB Aggregation stages
+
         # This stage joins the work_orders with the jobs colelction
         lookup_jobs_stage = {
             "$lookup": {
@@ -238,13 +239,11 @@ async def retrieve_machine_details(id_machine: int):
                 "as": "jobs",
                 "pipeline": [
                     {
-                        "$project": {
+                        "$project": {                            
+                            # "job_status": 1,
+                            # "nok_products": 1,
+                            # "target_output": 1,
                             "_id": 0,
-                            "creation_date": 1,
-                            "job_status": 1,
-                            "nok_products": 1,
-                            "quality_rate": 1,
-                            "target_output": 1,
                             "id_job": 1
                         }
                     }
@@ -298,11 +297,11 @@ async def retrieve_machine_details(id_machine: int):
                 "work_orders": {
                     "$push": {
                         "id_work": "$id_work",
-                        "nok_products": "$nok_products",
-                        "quantity": "$quantity",
-                        "wo_status": "$wo_status",
-                        "jobs": "$jobs",
-                        "products": "$products"
+                        # "nok_products": "$nok_products",
+                        # "quantity": "$quantity",
+                        # "wo_status": "$wo_status",
+                        "jobs": "$jobs"
+                        # "products": "$products"
                     }
                 }
             }
