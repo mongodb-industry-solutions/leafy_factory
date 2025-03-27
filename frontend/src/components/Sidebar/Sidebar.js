@@ -96,6 +96,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
   if (!shouldShowSidebar) {
     return null;
   }
+  
 
   return (
     <>
@@ -132,7 +133,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
               </Code>
             )}
 
-            {isStartSimulationPage && selectedMachineDetails && ( // Show machine details if available
+            {isStartSimulationPage && selectedMachineDetails && (
               <div className="tabs">
                 <Tabs aria-label="tabs" setSelectedTab={setSelectedTab} selectedTab={selectedTab}>
                   <Tab name="Machine Details">
