@@ -127,7 +127,7 @@ const Jobs = () => {
                             <Icon glyph="CurlyBraces" />
                           </IconButton>
                         }>
-                          ID's DocModel
+                          View Document Model
                         </Tooltip>
                       </td>
                       <td>{job.id_job}</td>
