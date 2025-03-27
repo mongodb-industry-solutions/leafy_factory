@@ -6,13 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { startShopfloor, stopShopfloor, shopfloorFailure } from "../../redux/slices/ShopFloorslice";
 import axiosClient from "../../lib/axios.js";
 import { Form, Row, Col, Card, ListGroup, Spinner, Alert } from "react-bootstrap";
-import Image from "next/image";
+//import Image from "next/image";
 import ChartsEmbedSDK from '@mongodb-js/charts-embed-dom'
 import Button from "@leafygreen-ui/button";
 import styles from "./simulation.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import { H2, H3, Body } from "@leafygreen-ui/typography";
+import Sidebar from "../../components/Sidebar/Sidebar";
 
 
 function ShopfloorComponent() {
@@ -26,7 +27,7 @@ function ShopfloorComponent() {
   const [idMachine, setIdMachine] = useState("");
   const [temperature, setTemperature] = useState();
   const [vibration, setVibration] = useState(3.8);
-
+  const [selectedMachineDetails, setSelectedMachineDetails] = useState(null);
 
   const fetchMachineDetails = async () => {
     try {
@@ -45,6 +46,16 @@ function ShopfloorComponent() {
       setFactoryDetails(response.data);
     } catch (error) {
       console.log("Error fetching factory details:", error);
+    }
+  };
+
+  const fetchMachineDetailsById = async (id_machine) => {
+    try {
+      const response = await axiosClient.get(`/machines/machine_details/${id_machine}`);
+      console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
+      setSelectedMachineDetails(response.data); // Pass this data to the Sidebar
+    } catch (error) {
+      console.error(`Error fetching machine details for ID ${id_machine}:`, error);
     }
   };
 
@@ -156,25 +167,23 @@ function ShopfloorComponent() {
 
   return (
     <div className="shopfloor-container">
+      <Sidebar selectedMachineDetails={selectedMachineDetails} /> {/* Pass the data to Sidebar */}
 
       <div className={styles.buttonWrapper}>
         <Button variant={isRunning ? "danger" : "baseGreen"} onClick={toggleSimulation}>
           {isRunning ? "Stop Shopfloor Simulator" : "Start Shopfloor Simulator"}
         </Button>
-
       </div>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
-
       <Form onSubmit={handleFormSubmit} className={styles.formWrapper}>
-        <H3 className={styles.H3}>Change Thresholds</H3>
+        <H3 className={styles.H3}>Change Values</H3>
         <div className={styles.alerts}>
           <Alert variant={getTemperature(temperature)}>New Temperature: {temperature}°C</Alert>
           <Alert variant={getVibration(vibration)}>New Vibration: {vibration} mm/s</Alert>
         </div>
 
         <div className={styles.formFields}>
-
           <Form.Group className={styles.formGroup} controlId="machine_id">
             <Form.Label>Select Machine ID</Form.Label>
             <Form.Control type="string" as="select" value={idMachine} onChange={(e) => setIdMachine(String(e.target.value))} required>
@@ -199,7 +208,6 @@ function ShopfloorComponent() {
             <Form.Label>Vibration (mm/s)</Form.Label>
             <Form.Control type="number" step="0.1" min={3.8} value={vibration} onChange={(e) => setVibration(Number(e.target.value))} required />
           </Form.Group>
-
         </div>
 
         <Button type="submit" disabled={!idMachine || idMachine === "Please enter desired value" || !temperature || temperature === "Please enter desired value" || !vibration} variant="primary">
@@ -235,27 +243,6 @@ function ShopfloorComponent() {
                       </div>
                     </ListGroup.Item>
 
-
-                    {/*
-                    <ListGroup.Item>
-                      {machine.machine_status === "Available" ? (
-                        <Button variant="success" disabled>
-                          <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
-                          Status {machine.id_machine}: Available
-                        </Button>
-                      ) : machine.machine_status === "Running" ? (
-                        <Button variant="warning" disabled>
-                          <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
-                          Machine {machine.id_machine}: Running
-                        </Button>
-                      ) : (
-                        <Button variant="danger" disabled>
-                          Machine {machine.id_machine}: {machine.machine_status}
-                        </Button>
-                      )}
-                    </ListGroup.Item>
-                    */}
-
                     <ListGroup.Item className={styles.cardItem}><strong>Production Line:</strong> {machine.production_line_id}</ListGroup.Item>
                     <ListGroup.Item className={styles.cardItem}><strong>Avg Temperature:</strong> {Number(machine.avg_temperature).toFixed(1)} °C</ListGroup.Item>
                     <ListGroup.Item className={styles.cardItem}><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(2)} mm/s</ListGroup.Item>
@@ -263,45 +250,32 @@ function ShopfloorComponent() {
                     <ListGroup.Item className={styles.cardItem}><strong>Operator:</strong> {machine.operator}</ListGroup.Item>
                   </ListGroup>
 
-                  {/* Tooltip icon to show Machine JSON Data inside {} */}
-                  {/* <div className={styles.tooltipWrapper}>
-                    <IconButton className={styles.tooltipIcon}>
+                  <div className={styles.tooltipWrapper}>
+                    <IconButton
+                      className={styles.tooltipIcon}
+                      onClick={() => fetchMachineDetailsById(machine.id_machine)} // Add onClick handler
+                    >
                       <Icon glyph="CurlyBraces" aria-label="Curly Braces" />
                     </IconButton>
 
-                    <div className={styles.tooltipContent}>
+                    {/* <div className={styles.tooltipContent}>
                       <pre>{JSON.stringify(machine, null, 2)}</pre>
-                    </div>
-                  </div> */}
-
-                </Card.Body>
-              </Card>
-            </Col>
-
-            {/** CARDS WITH MACHINE DATA
-            <Col md={3} className="prod-card">
-              <Card className="prod-card">
-                <Card.Body className="card-body">
-                  <Card.Title className="text-center">Machine JSON Data</Card.Title>
-                  <div className="card-body">
-                    <pre>{JSON.stringify(machine, null, 2)}</pre>
+                    </div> */}
                   </div>
+
                 </Card.Body>
               </Card>
             </Col>
-
-            */}
           </React.Fragment>
         ))}
       </Row>
+
 
       <div className={styles.buttonWrapper}>
         <Button onClick={refreshChart} variant="primary">Refresh Chart</Button>
       </div>
 
-      <div className="chart">
-        <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
-      </div>
+      <div ref={chartDiv} />
     </div>
   );
 }
