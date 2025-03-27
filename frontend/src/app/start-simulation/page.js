@@ -3,7 +3,7 @@
 import "../styles.css";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { startShopfloor, stopShopfloor, shopfloorFailure } from "../../redux/slices/ShopFloorslice";
+import { startShopfloor, stopShopfloor, shopfloorFailure, addSensorData} from "../../redux/slices/ShopFloorslice";
 import axiosClient from "../../lib/axios.js";
 import { Form, Row, Col, Card, ListGroup, Spinner, Alert } from "react-bootstrap";
 //import Image from "next/image";
@@ -29,6 +29,7 @@ function ShopfloorComponent() {
   const [temperature, setTemperature] = useState();
   const [vibration, setVibration] = useState(3.8);
   const [selectedMachineDetails, setSelectedMachineDetails] = useState(null);
+  const sensorData = useSelector(state => state.ShopFloor.sensorData)
 
   const fetchMachineDetails = async () => {
     try {
@@ -108,6 +109,33 @@ function ShopfloorComponent() {
     return () => clearInterval(interval);
   }, []);
 
+  // Connect to WebSocket for real-time MongoDB Change Streams
+  useEffect(() => {
+    // Create WebSocket URL based on backend URL (replace http with ws)
+    const wsUrl = "ws://localhost:8000/ws/stream_sensor/1";
+    const ws = new WebSocket(wsUrl);
+    // Handle WebSocket events
+    ws.onopen = () => {
+      console.log('WebSocket connected to MongoDB Change Stream');
+    };
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      dispatch(addSensorData(data))
+      console.log(data)
+    };
+    // Clean up on component unmount
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+
   //Refresh for manually chart return
   const refreshChart = () => {
     if (chartRef.current) {
@@ -168,7 +196,18 @@ function ShopfloorComponent() {
 
   return (
     <div className="shopfloor-container">
-      <Sidebar selectedMachineDetails={selectedMachineDetails} /> {/* Pass the data to Sidebar */}
+
+{
+        sensorData.map((sensorItem, index) => (
+          <div key={index}>
+            {
+              sensorItem.temperature_status
+            }
+          </div>
+        ))
+}
+
+      <Sidebar selectedMachineDetails={selectedMachineDetails} />
 
       <div className={styles.buttonWrapper}>
         <Button variant={isRunning ? "danger" : "baseGreen"} onClick={toggleSimulation}>
