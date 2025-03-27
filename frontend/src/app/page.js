@@ -116,7 +116,7 @@ const WorkOrdersPage = () => {
                             <Icon glyph="CurlyBraces" />
                           </IconButton>
                         }>
-                          ID's DocModel
+                          View Document Model
                         </Tooltip>
                       </td>
                       <td>{order.id_work}</td>

@@ -5,6 +5,7 @@ const shopfloorSlice = createSlice({
   initialState: {
     isRunning: false,
     error: null,
+    machineDetails: null,
   },
   reducers: {
     startShopfloor: (state) => {
@@ -18,6 +19,12 @@ const shopfloorSlice = createSlice({
     shopfloorFailure: (state, action) => {
       state.error = action.payload;
     },
+    setMachineDetails: (state, action) => {
+      state.machineDetails = action.payload;
+    },
+    setMachineDetailsError: (state, action) => {
+      state.error = action.payload;
+    },
   },
 });
 
@@ -25,6 +32,8 @@ export const {
   startShopfloor,
   stopShopfloor,
   shopfloorFailure,
+  setMachineDetails,
+  setMachineDetailsError,
 } = shopfloorSlice.actions;
 
 export default shopfloorSlice.reducer;
