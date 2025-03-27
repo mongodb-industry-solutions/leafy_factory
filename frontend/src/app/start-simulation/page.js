@@ -13,6 +13,7 @@ import styles from "./simulation.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import { H2, H3, Body } from "@leafygreen-ui/typography";
+import Tooltip from "@leafygreen-ui/tooltip";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
 
@@ -216,60 +217,69 @@ function ShopfloorComponent() {
       </Form>
 
       <Row>
-        {machines.map(machine => (
+      {machines.slice()
+        .sort((a, b) => a.id_machine - b.id_machine).map((machine) => (
           <React.Fragment key={machine.id_machine}>
             <Col md={3} className={styles.prodCards}>
               <Card className={styles.card}>
-                <Card.Img className={styles.cardImg} variant="top"
-                  src="/ProdLine.png" alt={`Machine ${machine.id_machine}`} />
+                <Card.Img className={styles.cardImg} variant="top" src="/ProdLine.png" alt={`Machine ${machine.id_machine}`} />
                 <Card.Body className={styles.cardBody}>
-                  <Card.Title className={styles.cardTitle}>Machine : {machine.id_machine}</Card.Title>
+                  <Card.Title className={styles.cardTitle}>
+                    Machine : {machine.id_machine}
+                  </Card.Title>
                   <ListGroup variant="flush">
                     <ListGroup.Item className={styles.statusContainer}>
-                      <div
-                        className={`${styles.statusLabel} ${machine.machine_status === "Available"
+                      <div className={`${styles.statusLabel} ${
+                          machine.machine_status === "Available"
                             ? styles.available
                             : machine.machine_status === "Running"
-                              ? styles.running
-                              : styles.danger
-                          }`}
-                      >
-                        <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
-                        {machine.machine_status === "Available"
-                          ? `Status ${machine.id_machine}: Available`
-                          : machine.machine_status === "Running"
-                            ? `Machine ${machine.id_machine}: Running`
-                            : `Machine ${machine.id_machine}: ${machine.machine_status}`}
-                      </div>
-                    </ListGroup.Item>
-
-                    <ListGroup.Item className={styles.cardItem}><strong>Production Line:</strong> {machine.production_line_id}</ListGroup.Item>
-                    <ListGroup.Item className={styles.cardItem}><strong>Avg Temperature:</strong> {Number(machine.avg_temperature).toFixed(1)} °C</ListGroup.Item>
-                    <ListGroup.Item className={styles.cardItem}><strong>Avg Vibration:</strong> {Number(machine.avg_vibration).toFixed(2)} mm/s</ListGroup.Item>
-                    <ListGroup.Item className={styles.cardItem}><strong>Last Maintenance:</strong> {machine.last_maintenance}</ListGroup.Item>
-                    <ListGroup.Item className={styles.cardItem}><strong>Operator:</strong> {machine.operator}</ListGroup.Item>
-                  </ListGroup>
-
-                  <div className={styles.tooltipWrapper}>
-                    <IconButton
-                      aria-label="Show Machine Details"
-                      className={styles.tooltipIcon}
-                      onClick={() => fetchMachineDetailsById(machine.id_machine)} // Add onClick handler
-                    >
-                      <Icon glyph="CurlyBraces" aria-label="Curly Braces" title="Curly Braces Icon" />
-                    </IconButton>
-
-                    {/* <div className={styles.tooltipContent}>
-                      <pre>{JSON.stringify(machine, null, 2)}</pre>
-                    </div> */}
+                            ? styles.running
+                            : styles.danger
+                        }`}>
+                    <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true"/>
+                    {machine.machine_status === "Available"
+                      ? `Status ${machine.id_machine}: Available`
+                      : machine.machine_status === "Running"
+                      ? `Machine ${machine.id_machine}: Running`
+                      : `Machine ${machine.id_machine}: ${machine.machine_status}`}
                   </div>
+                </ListGroup.Item>
 
-                </Card.Body>
-              </Card>
-            </Col>
-          </React.Fragment>
-        ))}
-      </Row>
+                <ListGroup.Item className={styles.cardItem}>
+                  <strong>Production Line:</strong> {machine.production_line_id}
+                </ListGroup.Item>
+                <ListGroup.Item className={styles.cardItem}>
+                  <strong>Avg Temperature:</strong>{" "}
+                  {Number(machine.avg_temperature).toFixed(1)} °C
+                </ListGroup.Item>
+                <ListGroup.Item className={styles.cardItem}>
+                  <strong>Avg Vibration:</strong>{" "}
+                  {Number(machine.avg_vibration).toFixed(2)} mm/s
+                </ListGroup.Item>
+                <ListGroup.Item className={styles.cardItem}>
+                  <strong>Last Maintenance:</strong>{" "}
+                  {machine.last_maintenance}
+                </ListGroup.Item>
+                <ListGroup.Item className={styles.cardItem}>
+                  <strong>Operator:</strong> {machine.operator}
+                </ListGroup.Item>
+              </ListGroup>
+
+              <div className={styles.tooltipWrapper}>
+              <Tooltip align="top" justify="middle" trigger={
+                <IconButton aria-label="Show Machine Details" className={styles.tooltipIcon} onClick={() => fetchMachineDetailsById(machine.id_machine)} >
+                  <Icon glyph="CurlyBraces" aria-label="Curly Braces" title="Curly Braces Icon"/>
+                </IconButton>
+                }>
+                View Document Model
+              </Tooltip>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </React.Fragment>
+    ))}
+</Row>
 
 
       <div className={styles.buttonWrapper}>

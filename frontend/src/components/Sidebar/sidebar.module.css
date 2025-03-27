@@ -65,4 +65,8 @@
   .sidebar.shrunk .cardItem {
     display: none;
   }
-    
+
+  .tabs {
+    display: flex;
+    margin: 72px;
+  }
