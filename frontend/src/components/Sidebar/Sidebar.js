@@ -72,14 +72,14 @@ const Sidebar = ({ selectedMachineDetails }) => { // Accept selectedMachineDetai
     setIsShrunk((prevState) => !prevState);
   };
 
-  // Determine if the sidebar should be visible
+  // Sidebar visibility
   const shouldShowSidebar =
     (isWorkOrdersPage && selectWorkOrder) ||
     (isJobsPage && selectJob) ||
     (isStartSimulationPage && selectedMachineDetails);
 
   if (!shouldShowSidebar) {
-    return null; // Do not render the sidebar if no ID is selected
+    return null;
   }
 
   return (

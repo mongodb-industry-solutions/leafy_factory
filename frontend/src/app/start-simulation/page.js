@@ -252,10 +252,11 @@ function ShopfloorComponent() {
 
                   <div className={styles.tooltipWrapper}>
                     <IconButton
+                      aria-label="Show Machine Details"
                       className={styles.tooltipIcon}
                       onClick={() => fetchMachineDetailsById(machine.id_machine)} // Add onClick handler
                     >
-                      <Icon glyph="CurlyBraces" aria-label="Curly Braces" />
+                      <Icon glyph="CurlyBraces" aria-label="Curly Braces" title="Curly Braces Icon" />
                     </IconButton>
 
                     {/* <div className={styles.tooltipContent}>
