@@ -325,7 +325,9 @@ function ShopfloorComponent() {
         <Button onClick={refreshChart} variant="primary">Refresh Chart</Button>
       </div>
 
-      <div ref={chartDiv} />
+      <div className="chart">
+        <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
+      </div>
     </div>
   );
 }
