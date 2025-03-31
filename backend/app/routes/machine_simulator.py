@@ -71,25 +71,27 @@ def send_heartbeat(data: MachineHeartbeat):
         
         # Conditionals to set machine's temperature
         if data["temperature"] in temperature_threshold:
-            temp_value = data["temperature"]
+            # temp_value = data["temperature"]
+            temp_value = random.uniform(data["temperature"],data["temperature"] + 1)
             temp_status = "Normal"
         elif data["temperature"] in temperature_high_threshold:
-            temp_value = data["temperature"]
+            temp_value = random.uniform(data["temperature"],data["temperature"] + 1)
             temp_status = "High"
         else:
-            temp_value = data["temperature"]
+            temp_value = random.uniform(data["temperature"],data["temperature"] + 1)
             temp_status = "Excessive"
 
         
         # Conditionals to set machine's vibration
         if (data["vibration"] >= vibration_normal_values[0]) and (data["vibration"] < vibration_normal_values[1]):
-            vibr_value = data["vibration"]
+            # vibr_value = data["vibration"]
+            vibr_value = random.uniform(data["vibration"], data["vibration"] + 1)
             vibration_status = "Normal"
         elif (data["vibration"] >= vibration_high_values[0]) and data["vibration"] < vibration_high_values[1]:
-            vibr_value = data["vibration"]
+            vibr_value = random.uniform(data["vibration"], data["vibration"] + 1)
             vibration_status = "High"
         else:
-            vibr_value = data["vibration"]
+            vibr_value = random.uniform(data["vibration"], data["vibration"] + 1)
             vibration_status = "Excessive"
         
         try: 
