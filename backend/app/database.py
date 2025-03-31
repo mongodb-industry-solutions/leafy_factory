@@ -26,6 +26,7 @@ db_motor = motor_client["leafy_factory"]
 
 # MongoDB Work Orders Collection
 kfk_work_orders_coll = db["kafka.public.work_orders"]
+motor_kfk_work_orders_coll = db_motor["kafka.public.work_orders"]
 
 # MongoDB Products Collection
 kfk_products_coll = db["kafka.public.products"]
@@ -33,6 +34,7 @@ products_coll = db["products"]
 
 # MongoDB Jobs Collection
 kfk_work_jobs_coll = db["kafka.public.jobs"]
+motor_kfk_work_jobs_coll = db_motor["kafka.public.jobs"]
 
 # MongoDB Raw Sensor Data Collection
 raw_sensor_data_coll = db["raw_sensor_data"]
