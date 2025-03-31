@@ -43,7 +43,7 @@ const CreateForm = ({onSubmitSuccess}) => {
       quantity: quantity,
       status: "Created",
       creation_date: creationDate,
-      product_cat_id: product === "2 Step ladder" ? 1 : product === "Titanium Hammer" ? 2 : 0
+      product_cat_id: product === "Gear housing" ? 1 : product === "Cogwheel" ? 2 : 0
     };
 
     try {
@@ -78,8 +78,8 @@ const CreateForm = ({onSubmitSuccess}) => {
           <Form.Label>Product</Form.Label>
           <Form.Select value={product} onChange={handleProductChange} required>
             <option value="">Please select a product</option>
-            <option value="Titanium Hammer">Titanium Hammer</option>
-            <option value="2 Step ladder">2 Step ladder</option>
+            <option value="Cogwheel">Cogwheel</option>
+            <option value="Gear housing">Gear housing</option>
           </Form.Select>
         </Form.Group>
       </Row>

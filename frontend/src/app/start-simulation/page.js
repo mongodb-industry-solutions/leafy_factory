@@ -197,7 +197,7 @@ function ShopfloorComponent() {
   return (
     <div className="shopfloor-container">
 
-{
+{/* {
         sensorData.map((sensorItem, index) => (
           <div key={index}>
             {
@@ -205,7 +205,7 @@ function ShopfloorComponent() {
             }
           </div>
         ))
-}
+} */}
 
       <Sidebar selectedMachineDetails={selectedMachineDetails} />
 
