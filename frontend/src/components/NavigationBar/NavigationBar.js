@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 
 const NavigationBar = () => {
   const [openHelpModal, setOpenHelpModal] = useState(false);
-  const pathname = usePathname(); // Correct hook for Next.js App Router
+  const pathname = usePathname(); 
 
   return (
     <nav className={styles.navbar}>
@@ -73,7 +73,7 @@ const NavigationBar = () => {
                     heading: 'Work Orders',
                     body: [
                       'Once the simulation is running, go to the Work orders tab and allow the Table of Work Orders History to be shown',
-                      'Fill in the "Create a New Work Order” form, and select the desired product (Titanium Hammer or 2 Step Ladder) & quantity for target output and Submit.',
+                      'Fill in the "Create a New Work Order” form, and select the desired product (Cogwheel or Gear housing) & quantity for target output and Submit.',
                       'Wait a few seconds for the work order to be received, it will be shown on the Work Orders history under “Created” status'
                     ]
                   },
