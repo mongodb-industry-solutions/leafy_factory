@@ -3,7 +3,8 @@
 import "../styles.css";
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { startShopfloor, stopShopfloor, shopfloorFailure, addSensorData} from "../../redux/slices/ShopFloorslice";
+import { startShopfloor, stopShopfloor, shopfloorFailure, addSensorData } from "../../redux/slices/ShopFloorslice";
+import { resetSidebar } from "../../redux/slices/SidebarSlice";
 import axiosClient from "../../lib/axios.js";
 import { Form, Row, Col, Card, ListGroup, Spinner, Alert } from "react-bootstrap";
 //import Image from "next/image";
@@ -56,6 +57,7 @@ function ShopfloorComponent() {
       const response = await axiosClient.get(`/machines/machine_details/${id_machine}`);
       console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
       setSelectedMachineDetails(response.data); // Pass this data to the Sidebar
+      dispatch(resetSidebar());
     } catch (error) {
       console.error(`Error fetching machine details for ID ${id_machine}:`, error);
     }
@@ -64,12 +66,13 @@ function ShopfloorComponent() {
   useEffect(() => {
     fetchMachineDetails();
     fetchFactoryDetails();
+    
     // MongoDB Chart declaration and refresh of data per minute
     const sdk = new ChartsEmbedSDK({
       baseUrl: "https://charts.mongodb.com/charts-jeffn-zsdtj"
     });
     const chart = sdk.createChart({
-      chartId: "4f846f1e-0268-473c-b00b-90b4ccf4cb2e"
+      chartId: "2999c40d-d187-440a-8b27-99e9abec89f1"
     });
     chartRef.current = chart;
     (async () => {
@@ -109,12 +112,9 @@ function ShopfloorComponent() {
     return () => clearInterval(interval);
   }, []);
 
-  // Connect to WebSocket for real-time MongoDB Change Streams
   useEffect(() => {
-    // Create WebSocket URL based on backend URL (replace http with ws)
-    const wsUrl = "ws://localhost:8000/ws/stream_sensor/1";
+    const wsUrl = "ws://localhost:8000/ws/stream_sensor/";
     const ws = new WebSocket(wsUrl);
-    // Handle WebSocket events
     ws.onopen = () => {
       console.log('WebSocket connected to MongoDB Change Stream');
     };
@@ -122,14 +122,13 @@ function ShopfloorComponent() {
       console.log('WebSocket disconnected');
     };
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.log('WebSocket error:', error);
     };
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       dispatch(addSensorData(data))
       console.log(data)
     };
-    // Clean up on component unmount
     return () => {
       ws.close();
     };
@@ -325,7 +324,9 @@ function ShopfloorComponent() {
         <Button onClick={refreshChart} variant="primary">Refresh Chart</Button>
       </div>
 
-      <div ref={chartDiv} />
+      <div className="chart">
+        <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
+      </div>
     </div>
   );
 }

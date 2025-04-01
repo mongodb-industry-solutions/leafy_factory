@@ -3,14 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
-import { PiBracketsCurlyBold } from "react-icons/pi";
 import CloseButton from "react-bootstrap/CloseButton";
 import Tooltip from "react-bootstrap/Tooltip";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
-import { Body } from "@leafygreen-ui/typography";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { setSelectWorkOrder } from "../../redux/slices/WorkOrderslice";
 import { setSelectJob } from "../../redux/slices/JobSlice";
+import { toggleSidebar, openSidebar, setSidebarShrunk } from "../../redux/slices/SidebarSlice";
 import { usePathname } from "next/navigation";
 import styles from "./sidebar.module.css";
 
@@ -21,29 +20,23 @@ const Sidebar = ({ selectedMachineDetails }) => {
   const dispatch = useDispatch();
   const selectWorkOrder = useSelector((state) => state.WorkOrders.selectWorkOrder);
   const selectJob = useSelector((state) => state.Jobs.selectJob);
-  const [isShrunk, setIsShrunk] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
+  const isShrunk = useSelector((state) => state.Sidebar.isShrunk);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [timeSeriesData, setTimeSeriesData] = useState(null);
 
   const pathname = usePathname();
   const isWorkOrdersPage = pathname === "/";
   const isJobsPage = pathname.includes("/jobs");
   const isStartSimulationPage = pathname.includes("/start-simulation");
 
- //console.log("isStartSimulationPage:", isStartSimulationPage);
-
   const fetchWorkOrderDetails = async (id_work) => {
     console.log("Fetching work order details for id:", id_work);
     try {
       const response = await axiosClient.get(`/workorders/${id_work}`);
       dispatch(setSelectWorkOrder(response.data));
+      dispatch(openSidebar());
     } catch (error) {
-      if (error.response) {
-        console.log("Error fetching work order details:", error.response.data);
-      } else if (error.request) {
-        console.log("No response received:", error.request);
-      } else {
-        console.log("Error setting up request:", error.message);
-      }
+      console.log("Error fetching work order details:", error);
     }
   };
 
@@ -52,26 +45,40 @@ const Sidebar = ({ selectedMachineDetails }) => {
     try {
       const response = await axiosClient.get(`/jobs/${work_id}`);
       dispatch(setSelectJob(response.data));
+      dispatch(openSidebar());
     } catch (error) {
-      if (error.response) {
-        console.log("Error fetching job details:", error.response.data);
-      } else if (error.request) {
-        console.log("No response received:", error.request);
-      } else {
-        console.log("Error setting up request:", error.message);
-      }
+      console.log("Error fetching job details:", error);
     }
   };
 
-  const fetchMachineDetailsById = async (id_machine) => {
-    try {
-      const response = await axiosClient.get(`/machines/machine_details/${id_machine}`);
-      console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
-      setSelectedMachineDetails(response.data); // Pass this data to the Sidebar
-    } catch (error) {
-      console.error(`Error fetching machine details for ID ${id_machine}:`, error);
+  useEffect(() => {
+    if (isStartSimulationPage && selectedMachineDetails?.id_machine) {
+      const wsUrl = `/ws/stream_sensor/${id_machine}`;
+      const ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        console.log("WebSocket connected for Time Series data");
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setTimeSeriesData(data);
+        console.log("Time Series Data:", data);
+      };
+
+      ws.onerror = (error) => {
+        console.log("WebSocket error:", error);
+      };
+
+      ws.onclose = () => {
+        console.log("WebSocket disconnected");
+      };
+
+      return () => {
+        ws.close();
+      };
     }
-  };
+  }, [isStartSimulationPage, selectedMachineDetails]);
 
   useEffect(() => {
     if (isWorkOrdersPage && selectWorkOrder?.id_work) {
@@ -81,10 +88,18 @@ const Sidebar = ({ selectedMachineDetails }) => {
     if (isJobsPage && selectJob?.work_id) {
       fetchJobDetails(selectJob.work_id);
     }
-  }, [selectWorkOrder, selectJob, isWorkOrdersPage, isJobsPage]);
+
+    if (isStartSimulationPage && selectedMachineDetails?.id_machine) {
+      fetchMachineDetailsById(selectedMachineDetails.id_machine);
+    }
+  }, [selectWorkOrder, selectJob, selectedMachineDetails, isWorkOrdersPage, isJobsPage, isStartSimulationPage]);
 
   const toggleShrink = () => {
-    setIsShrunk((prevState) => !prevState);
+    dispatch(toggleSidebar());
+  };
+
+  const reopenSidebar = () => {
+    dispatch(setSidebarShrunk(false));
   };
 
   // Sidebar visibility
@@ -96,67 +111,71 @@ const Sidebar = ({ selectedMachineDetails }) => {
   if (!shouldShowSidebar) {
     return null;
   }
-  
 
   return (
     <>
-    {/* {isShrunk && ( 
-      <div className={styles["toggle-button"]} onClick={toggleShrink}>
-        <OverlayTrigger placement="top" overlay={<Tooltip id="view-sidebar">Show DocModel</Tooltip>} >
-          <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
-        </OverlayTrigger>
+      <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
+        <div className={styles.sidebarContent}>
+          <OverlayTrigger placement="top" overlay={<Tooltip id="hide-sidebar">Hide sidebar</Tooltip>}>
+            <CloseButton
+              className={styles["close-button"]}
+              aria-label="Hide Sidebar"
+              onClick={() => {
+                if (isShrunk) {
+                  reopenSidebar();
+                } else {
+                  toggleShrink();
+                }
+              }}
+            />
+          </OverlayTrigger>
+
+          {!isShrunk && (
+            <>
+              {isWorkOrdersPage && (
+                <Code language="javascript" className={styles.jsonContent}>
+                  {JSON.stringify(selectWorkOrder, null, 2)}
+                </Code>
+              )}
+
+              {isJobsPage && (
+                <Code language="javascript" className={styles.jsonContent}>
+                  {JSON.stringify(selectJob, null, 2)}
+                </Code>
+              )}
+
+              {isStartSimulationPage && selectedMachineDetails && (
+                <div className="tabs">
+                  <Tabs
+                    aria-label="tabs"
+                    onChange={(index) => setSelectedIndex(index)}
+                    tab={selectedIndex}
+                  >
+                    <Tab name="Machine Details">
+                      <div>
+                        <Code language="javascript" className={styles.jsonContent}>
+                          {JSON.stringify(selectedMachineDetails, null, 2)}
+                        </Code>
+                      </div>
+                    </Tab>
+                    <Tab name="Time Series">
+                      <div>
+                        {timeSeriesData ? (
+                          <Code language="javascript" className={styles.jsonContent}>
+                            {JSON.stringify(timeSeriesData, null, 2)}
+                          </Code>
+                        ) : (
+                          <p>Loading Time Series data...</p>
+                        )}
+                      </div>
+                    </Tab>
+                  </Tabs>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
-    {/* )} */}
-
-
-    <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
-      <div className={styles.sidebarContent}>
-        {!isShrunk ? (
-          <>
-            <OverlayTrigger placement="top" overlay={<Tooltip id="hide-sidebar">Hide sidebar</Tooltip>}>
-              <CloseButton
-                className={styles["close-button"]}
-                aria-label="Hide Sidebar"
-                onClick={toggleShrink}
-              />
-            </OverlayTrigger>
-
-            {isWorkOrdersPage && (
-              <Code language="javascript" className={styles.jsonContent}>
-                {JSON.stringify(selectWorkOrder, null, 2)}
-              </Code>
-            )}
-
-            {isJobsPage && (
-              <Code language="javascript" className={styles.jsonContent}>
-                {JSON.stringify(selectJob, null, 2)}
-              </Code>
-            )}
-
-            {isStartSimulationPage && selectedMachineDetails && (
-              <div className="tabs">
-                <Tabs aria-label="tabs" setSelectedTab={setSelectedTab} selectedTab={selectedTab}>
-                  <Tab name="Machine Details">
-                    <Body>
-                      <Code language="javascript" className={styles.jsonContent}>
-                        {JSON.stringify(selectedMachineDetails, null, 2)}
-                      </Code>
-                    </Body>
-                  </Tab>
-                  <Tab name="Time Series">
-                    <Body>
-                      <p>WIP Time Series collection</p>
-                    </Body>
-                  </Tab>
-                </Tabs>
-              </div>
-            )}
-          </>
-        ) : (
-          <p>Click on a {} ID to see the DocModel</p>
-        )}
-      </div>
-    </div>
     </>
   );
 };
