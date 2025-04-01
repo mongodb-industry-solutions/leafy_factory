@@ -22,14 +22,12 @@ const Sidebar = ({ selectedMachineDetails }) => {
   const selectWorkOrder = useSelector((state) => state.WorkOrders.selectWorkOrder);
   const selectJob = useSelector((state) => state.Jobs.selectJob);
   const [isShrunk, setIsShrunk] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0); // Use selectedIndex to control the active tab
 
   const pathname = usePathname();
   const isWorkOrdersPage = pathname === "/";
   const isJobsPage = pathname.includes("/jobs");
   const isStartSimulationPage = pathname.includes("/start-simulation");
-
- //console.log("isStartSimulationPage:", isStartSimulationPage);
 
   const fetchWorkOrderDetails = async (id_work) => {
     console.log("Fetching work order details for id:", id_work);
@@ -37,13 +35,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
       const response = await axiosClient.get(`/workorders/${id_work}`);
       dispatch(setSelectWorkOrder(response.data));
     } catch (error) {
-      if (error.response) {
-        console.log("Error fetching work order details:", error.response.data);
-      } else if (error.request) {
-        console.log("No response received:", error.request);
-      } else {
-        console.log("Error setting up request:", error.message);
-      }
+      console.log("Error fetching work order details:", error);
     }
   };
 
@@ -53,13 +45,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
       const response = await axiosClient.get(`/jobs/${work_id}`);
       dispatch(setSelectJob(response.data));
     } catch (error) {
-      if (error.response) {
-        console.log("Error fetching job details:", error.response.data);
-      } else if (error.request) {
-        console.log("No response received:", error.request);
-      } else {
-        console.log("Error setting up request:", error.message);
-      }
+      console.los("Error fetching job details:", error);
     }
   };
 
@@ -67,9 +53,9 @@ const Sidebar = ({ selectedMachineDetails }) => {
     try {
       const response = await axiosClient.get(`/machines/machine_details/${id_machine}`);
       console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
-      setSelectedMachineDetails(response.data); // Pass this data to the Sidebar
+      setSelectedMachineDetails(response.data);
     } catch (error) {
-      console.error(`Error fetching machine details for ID ${id_machine}:`, error);
+      console.log(`Error fetching machine details for ID ${id_machine}:`, error);
     }
   };
 
@@ -96,67 +82,70 @@ const Sidebar = ({ selectedMachineDetails }) => {
   if (!shouldShowSidebar) {
     return null;
   }
-  
 
   return (
     <>
-    {/* {isShrunk && ( 
-      <div className={styles["toggle-button"]} onClick={toggleShrink}>
-        <OverlayTrigger placement="top" overlay={<Tooltip id="view-sidebar">Show DocModel</Tooltip>} >
-          <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
-        </OverlayTrigger>
-      </div>
-    {/* )} */}
+          {/* {isShrunk && ( 
+        <div className={styles["toggle-button"]} onClick={toggleShrink}>
+          <OverlayTrigger placement="top" overlay={<Tooltip id="view-sidebar">Show DocModel</Tooltip>} >
+            <PiBracketsCurlyBold style={{ color: "#2B664C" }} />
+          </OverlayTrigger>
+        </div>
+      )} */}
+      <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
+        <div className={styles.sidebarContent}>
+          {!isShrunk ? (
+            <>
+              <OverlayTrigger placement="top" overlay={<Tooltip id="hide-sidebar">Hide sidebar</Tooltip>}>
+                <CloseButton
+                  className={styles["close-button"]}
+                  aria-label="Hide Sidebar"
+                  onClick={toggleShrink}
+                />
+              </OverlayTrigger>
 
+              {isWorkOrdersPage && (
+                <Code language="javascript" className={styles.jsonContent}>
+                  {JSON.stringify(selectWorkOrder, null, 2)}
+                </Code>
+              )}
 
-    <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
-      <div className={styles.sidebarContent}>
-        {!isShrunk ? (
-          <>
-            <OverlayTrigger placement="top" overlay={<Tooltip id="hide-sidebar">Hide sidebar</Tooltip>}>
-              <CloseButton
-                className={styles["close-button"]}
-                aria-label="Hide Sidebar"
-                onClick={toggleShrink}
-              />
-            </OverlayTrigger>
+              {isJobsPage && (
+                <Code language="javascript" className={styles.jsonContent}>
+                  {JSON.stringify(selectJob, null, 2)}
+                </Code>
+              )}
 
-            {isWorkOrdersPage && (
-              <Code language="javascript" className={styles.jsonContent}>
-                {JSON.stringify(selectWorkOrder, null, 2)}
-              </Code>
-            )}
-
-            {isJobsPage && (
-              <Code language="javascript" className={styles.jsonContent}>
-                {JSON.stringify(selectJob, null, 2)}
-              </Code>
-            )}
-
-            {isStartSimulationPage && selectedMachineDetails && (
-              <div className="tabs">
-                <Tabs aria-label="tabs" setSelectedTab={setSelectedTab} selectedTab={selectedTab}>
-                  <Tab name="Machine Details">
-                    <Body>
+              {isStartSimulationPage && selectedMachineDetails && (
+                <div className="tabs">
+                  <Tabs
+                    aria-label="tabs"
+                    onChange={(index) => setSelectedIndex(index)} // Update selectedIndex on tab change
+                    selectedTab={selectedIndex} // Use selectedTab to control the active tab
+                  >
+                    <Tab name="Machine Details">
+                      <Body>
+                        <Code language="javascript" className={styles.jsonContent}>
+                          {JSON.stringify(selectedMachineDetails, null, 2)}
+                        </Code>
+                      </Body>
+                    </Tab>
+                    <Tab name="Time Series">
+                      <Body>
                       <Code language="javascript" className={styles.jsonContent}>
-                        {JSON.stringify(selectedMachineDetails, null, 2)}
-                      </Code>
-                    </Body>
-                  </Tab>
-                  <Tab name="Time Series">
-                    <Body>
-                      <p>WIP Time Series collection</p>
-                    </Body>
-                  </Tab>
-                </Tabs>
-              </div>
-            )}
-          </>
-        ) : (
-          <p>Click on a {} ID to see the DocModel</p>
-        )}
+                          {JSON.stringify(selectedMachineDetails, null, 2)}
+                        </Code>
+                      </Body>
+                    </Tab>
+                  </Tabs>
+                </div>
+              )}
+            </>
+          ) : (
+            <p>Click on a {} ID to see the DocModel</p>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 };
