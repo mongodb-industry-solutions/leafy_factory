@@ -14,11 +14,9 @@ async def send_message_to_machine(machine_id: int, message: str):
     """
     Send a message to all WebSocket clients connected to a specific machine_id.
     """
-    # print(f"Machine message: {message}")
     if machine_id in active_connections:
         for connection in active_connections[machine_id]:
             try:
-                print(f"For connection the message is : {message}")
                 await connection.send_text(message)
             except Exception:
                 # Remove disconnected WebSocket connections
@@ -45,7 +43,6 @@ async def websocket_stream_sensor_data(websocket: WebSocket, machine_id: int):
     if machine_id not in active_connections:
         active_connections[machine_id] = []
     active_connections[machine_id].append(websocket)
-    print(f"Active connections {active_connections}")
 
     try:
         # Watch only inserts for the specified machine
