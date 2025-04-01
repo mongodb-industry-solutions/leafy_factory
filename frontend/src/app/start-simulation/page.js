@@ -69,7 +69,7 @@ function ShopfloorComponent() {
       baseUrl: "https://charts.mongodb.com/charts-jeffn-zsdtj"
     });
     const chart = sdk.createChart({
-      chartId: "4f846f1e-0268-473c-b00b-90b4ccf4cb2e"
+      chartId: "2999c40d-d187-440a-8b27-99e9abec89f1"
     });
     chartRef.current = chart;
     (async () => {
