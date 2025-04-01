@@ -7,7 +7,7 @@ import { PiBracketsCurlyBold } from "react-icons/pi";
 import CloseButton from "react-bootstrap/CloseButton";
 import Tooltip from "react-bootstrap/Tooltip";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
-import { Body } from "@leafygreen-ui/typography";
+//import { Body } from "@leafygreen-ui/typography";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { setSelectWorkOrder } from "../../redux/slices/WorkOrderslice";
 import { setSelectJob } from "../../redux/slices/JobSlice";
@@ -53,7 +53,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
     try {
       const response = await axiosClient.get(`/machines/machine_details/${id_machine}`);
       console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
-      setSelectedMachineDetails(response.data);
+      selectedMachineDetails(response.data);
     } catch (error) {
       console.log(`Error fetching machine details for ID ${id_machine}:`, error);
     }
@@ -121,21 +121,19 @@ const Sidebar = ({ selectedMachineDetails }) => {
                   <Tabs
                     aria-label="tabs"
                     onChange={(index) => setSelectedIndex(index)} // Update selectedIndex on tab change
-                    selectedTab={selectedIndex} // Use selectedTab to control the active tab
+                    tab={selectedIndex} // Use selectedTab to control the active tab
                   >
                     <Tab name="Machine Details">
-                      <Body>
+                      <div>
                         <Code language="javascript" className={styles.jsonContent}>
                           {JSON.stringify(selectedMachineDetails, null, 2)}
                         </Code>
-                      </Body>
+                      </div>
                     </Tab>
                     <Tab name="Time Series">
-                      <Body>
-                      <Code language="javascript" className={styles.jsonContent}>
-                          {JSON.stringify(selectedMachineDetails, null, 2)}
-                        </Code>
-                      </Body>
+                      <div>
+                        <p>WIP Time Series collection</p>
+                      </div>
                     </Tab>
                   </Tabs>
                 </div>
