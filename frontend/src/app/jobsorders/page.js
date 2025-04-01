@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../../lib/axios";
 import { Table, Row, Col, Container, Pagination } from "react-bootstrap";
 import { setAllJobs, setSelectJob } from "../../redux/slices/JobSlice";
+import { resetSidebar } from "../../redux/slices/SidebarSlice";
 import CreateJobForm from "../../components/CreateJobForm/CreateJobForm";
 import styles from "./jobs.module.css";
 import { H2, H3, Body } from "@leafygreen-ui/typography";
@@ -76,7 +77,7 @@ const Jobs = () => {
   };
 
   const handleJobClick = (work_id) => {
-    console.log("Clicked on job with work order ID:", work_id);
+console.log("Clicked on job with work order ID:", work_id);
     fetchJobDetails(work_id);
   };
 
@@ -85,6 +86,7 @@ const Jobs = () => {
     // jobs/{id_work} where work_id is the id_work sent to the API for the Sidebar
       const response = await axiosClient.get(`/jobs/${work_id}`);
       dispatch(setSelectJob(response.data));
+      dispatch(resetSidebar());
     } catch (error) {
       console.log("There was a problem with your fetch operation:", error);
     }
