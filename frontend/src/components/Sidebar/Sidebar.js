@@ -27,8 +27,6 @@ const Sidebar = ({ selectedMachineDetails }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const sensorData = useSelector(state => state.ShopFloor.sensorData)
 
-  //const [timeSeriesData, setTimeSeriesData] = useState(null);
-
   const pathname = usePathname();
   const isWorkOrdersPage = pathname === "/";
   const isJobsPage = pathname.includes("/jobs");
@@ -71,7 +69,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
   }, []);
 
   useEffect(() => {
-    if (!selectedOption) return; // Ensure selectedOption is set before opening WebSocket
+    if (!selectedOption) return;
 
     console.log("Web Socket Sidebar");
 
@@ -91,7 +89,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
     };
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      dispatch(addSensorData(data)); // Update Redux state with new sensor data
+      dispatch(addSensorData(data)); 
       console.log("Received sensor data:", data);
     };
 
@@ -99,7 +97,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
     return () => {
       ws.close();
     };
-  }, [selectedOption]); // Re-run effect when selectedOption changes
+  }, [selectedOption]); 
 
   const toggleShrink = () => {
     dispatch(toggleSidebar());
@@ -169,7 +167,7 @@ const Sidebar = ({ selectedMachineDetails }) => {
                       <div>
                         <Select
                           value={selectedOption}
-                          onChange={(value) => setSelectedOption(value)} // Fix: Use the value directly
+                          onChange={(value) => setSelectedOption(value)}
                           aria-label="Select a machine"
                         >
                           <Option value="1">Machine 1</Option>
@@ -178,12 +176,12 @@ const Sidebar = ({ selectedMachineDetails }) => {
                           <Option value="4">Machine 4</Option>
                         </Select>
 
-                        {sensorData ? (
+                        {sensorData && sensorData.length > 0 ? (
                           <Code language="javascript" className={styles.jsonContent}>
-                            {JSON.stringify(sensorData, null, 2)}
+                            {JSON.stringify(sensorData[sensorData.length - 1], null, 2)}
                           </Code>
                         ) : (
-                          <p>Loading Time Series data...</p>
+                          <p>Start the Simulator and Select a Machine</p>
                         )}
                       </div>
                     </Tab>

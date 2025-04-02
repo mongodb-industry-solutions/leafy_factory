@@ -4,12 +4,19 @@ import React, { useState } from "react";
 import Modal from "@leafygreen-ui/modal";
 import { H3, Body } from "@leafygreen-ui/typography";
 import Icon from "@leafygreen-ui/icon";
-//import IconButton from "@leafygreen-ui/icon-button";
 import PropTypes from "prop-types";
 import styles from "./InfoWizard.module.css";
 import Button from "@leafygreen-ui/button";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
 import Banner from "@leafygreen-ui/banner";
+
+const ModalWithRef = ({ open, setOpen, className, children }) => (
+  <Modal open={open} setOpen={setOpen} className={className}>
+    {children}
+  </Modal>
+);
+
+ModalWithRef.displayName = "ModalWithRef";
 
 const InfoWizard = ({
   open,
@@ -26,7 +33,7 @@ const InfoWizard = ({
         {tooltipText}
       </Button>
 
-      <Modal open={open} setOpen={setOpen} className={styles.modal}>
+      <ModalWithRef open={open} setOpen={setOpen} className={styles.modal}>
         <div className={styles.modalContent}>
           <Tabs
             aria-label="info wizard tabs"
@@ -35,11 +42,11 @@ const InfoWizard = ({
           >
             {sections.map((tab, tabIndex) => (
               <Tab key={tabIndex} name={tab.heading}>
-              <Banner className={styles.banner} variant="warning">
+                <Banner className={styles.banner} variant="warning">
                   Once you're done with the demo, ensure the simulation is
                   stopped. Click the “Start Shopfloor Simulation” button to view
                   the “Stop shopfloor simulator” button.
-              </Banner>
+                </Banner>
                 {tab.content.map((section, sectionIndex) => (
                   <div key={sectionIndex} className={styles.section}>
                     {section.heading && (
@@ -85,7 +92,7 @@ const InfoWizard = ({
             ))}
           </Tabs>
         </div>
-      </Modal>
+      </ModalWithRef>
     </>
   );
 };
