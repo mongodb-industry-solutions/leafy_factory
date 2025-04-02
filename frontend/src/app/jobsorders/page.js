@@ -124,7 +124,7 @@ const Jobs = () => {
                 </thead>
                 <tbody>
                   {currentJobs
-                    .sort((a, b) => b.id_job - a.id_job) // Sort jobs by ID from newest to oldest
+                    .sort((a, b) => b.id_job - a.id_job)
                     .map((job) => (
                       <tr key={job.id_job}>
                         <td>
