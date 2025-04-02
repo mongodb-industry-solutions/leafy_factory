@@ -111,7 +111,7 @@ const WorkOrdersPage = () => {
                 </thead>
                 <tbody>
                   {currentOrders
-                    .sort((a, b) => b.id_work - a.id_work) // Sort by ID in descending order
+                    .sort((a, b) => b.id_work - a.id_work)
                     .map((order) => (
                       <tr key={order.id_work}>
                         <td>
