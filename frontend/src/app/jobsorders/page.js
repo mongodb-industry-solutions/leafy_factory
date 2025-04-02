@@ -36,7 +36,9 @@ const Jobs = () => {
 
   useEffect(() => {
     fetchJobs();
-  }, [fetchJobs]);
+    const intervalId = setInterval(fetchJobs, 2000);
+    return () => clearInterval(intervalId);
+    }, [fetchJobs, jobs]);
 
   const handleCreateSuccess = async () => {
     try {
@@ -65,7 +67,7 @@ const Jobs = () => {
     for (let number = 1; number <= totalPages; number++) {
       if (number === 1 || number === totalPages || (number >= currentPage - 2 && number <= currentPage + 2)) {
         items.push(
-          <Pagination.Item key={number} active={number === currentPage} onClick={() => handlePageChange(number)}>
+          <Pagination.Item key={`page-${number}`} active={number === currentPage} onClick={() => handlePageChange(number)}>
             {number}
           </Pagination.Item>
         );
@@ -77,13 +79,13 @@ const Jobs = () => {
   };
 
   const handleJobClick = (work_id) => {
-console.log("Clicked on job with work order ID:", work_id);
+    console.log("Clicked on job with work order ID:", work_id);
     fetchJobDetails(work_id);
   };
 
   const fetchJobDetails = async (work_id) => {
     try {
-    // jobs/{id_work} where work_id is the id_work sent to the API for the Sidebar
+    // jobs/{id_work} where work_id is the id_work sent to the API for the Sidebarar
       const response = await axiosClient.get(`/jobs/${work_id}`);
       dispatch(setSelectJob(response.data));
       dispatch(resetSidebar());
@@ -121,34 +123,36 @@ console.log("Clicked on job with work order ID:", work_id);
                   </tr>
                 </thead>
                 <tbody>
-                  {currentJobs.map((job) => (
-                    <tr key={job.id_job}>
-                      <td>
-                        <Tooltip align="top" justify="middle" trigger={
-                          <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleJobClick(job.work_id)}>
-                            <Icon glyph="CurlyBraces" />
-                          </IconButton>
-                        }>
-                          View Document Model
-                        </Tooltip>
-                      </td>
-                      <td>{job.id_job}</td>
-                      <td>{job.target_output}</td>
-                      <td>
-                        <Badge variant={
-                          job.job_status === "Completed" ? "green" :
-                          job.job_status === "Created" ? "blue" :
-                              "lightGray"
-                        }>
-                          {job.job_status}
-                        </Badge>
-                      </td>
-                      <td>{job.creation_date ? !isNaN(new Date(job.creation_date)) ? new Date(job.creation_date).toISOString() : "Invalid date" : "Loading"}</td>
-                      <td>{job.work_id}</td>
-                      <td>{job.nOk_products}</td>
-                      <td>{job.quality_rate}%</td>
-                    </tr>
-                  ))}
+                  {currentJobs
+                    .sort((a, b) => b.id_job - a.id_job)
+                    .map((job) => (
+                      <tr key={job.id_job}>
+                        <td>
+                          <Tooltip align="top" justify="middle" trigger={
+                            <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleJobClick(job.work_id)}>
+                              <Icon glyph="CurlyBraces" />
+                            </IconButton>
+                          }>
+                            View Document Model
+                          </Tooltip>
+                        </td>
+                        <td>{job.id_job}</td>
+                        <td>{job.target_output}</td>
+                        <td>
+                          <Badge variant={
+                            job.job_status === "Completed" ? "green" :
+                            job.job_status === "Created" ? "blue" :
+                                "lightGray"
+                          }>
+                            {job.job_status}
+                          </Badge>
+                        </td>
+                        <td>{job.creation_date ? !isNaN(new Date(job.creation_date)) ? new Date(job.creation_date).toISOString() : "Invalid date" : "Loading"}</td>
+                        <td>{job.work_id}</td>
+                        <td>{job.nok_products}</td>
+                        <td>{job.quality_rate}%</td>
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
 

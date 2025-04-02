@@ -48,7 +48,7 @@ const CreateForm = ({onSubmitSuccess}) => {
 
     try {
       //const response = await axios.post("http://localhost:8000/workorders/", addWorkOrder);
-      const response = await axiosClient.post("/workorders/", addWorkOrder);
+      const response = await axiosClient.post("/workorders", addWorkOrder);
       console.log("Work order created successfully", response.data);
       dispatch(addOrder(response.data));
 
