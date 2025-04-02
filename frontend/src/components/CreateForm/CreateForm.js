@@ -43,7 +43,7 @@ const CreateForm = ({onSubmitSuccess}) => {
       quantity: quantity,
       status: "Created",
       creation_date: creationDate,
-      product_cat_id: product === "Gear housing" ? 1 : product === "Cogwheel" ? 2 : 0
+      product_cat_id: product === "Cogwheel" ? 1 : product === "Gear housing" ? 2 : 0
     };
 
     try {
