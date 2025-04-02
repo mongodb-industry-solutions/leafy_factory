@@ -16,7 +16,8 @@ import IconButton from "@leafygreen-ui/icon-button";
 import { H3 } from "@leafygreen-ui/typography";
 import Tooltip from "@leafygreen-ui/tooltip";
 import Sidebar from "../../components/Sidebar/Sidebar";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ShopfloorComponent() {
   const dispatch = useDispatch();
@@ -182,6 +183,28 @@ function ShopfloorComponent() {
     }
   };
 
+  const handleTemperatureChange = (value) => {
+    const temp = Number(value);
+    setTemperature(temp);
+
+    if (temp >= 81 && temp <= 110) {
+      toast.warning("Warning: Temperature is in the high range!");
+    } else if (temp > 110) {
+      toast.error("Danger: Temperature is in the excessive range!");
+    }
+  };
+
+  const handleVibrationChange = (value) => {
+    const vib = Number(value);
+    setVibration(vib);
+
+    if (vib >= 7 && vib < 11) {
+      toast.warning("Warning: Vibration is in the high range!");
+    } else if (vib >= 11) {
+      toast.error("Danger: Vibration is in the excessive range!");
+    }
+  };
+
   const getTemperature = (temperature) => {
     if (temperature <= 80) return "success";
     if (temperature <= 110) return "warning";
@@ -196,6 +219,7 @@ function ShopfloorComponent() {
 
   return (
     <div className="shopfloor-container">
+      <ToastContainer />
 
 {/* {
         sensorData.map((sensorItem, index) => (
@@ -226,34 +250,87 @@ function ShopfloorComponent() {
           <Alert variant={getVibration(vibration)}>New Vibration: {vibration} mm/s</Alert>
         </div>
 
+{/*         {temperature >= 81 && temperature <= 110 && (
+          <Alert variant="warning" className={styles.alert}>
+            Warning: Temperature is in the high range!
+          </Alert>
+        )}
+        {temperature > 110 && (
+          <Alert variant="danger" className={styles.alert}>
+            Danger: Temperature is in the excessive range!
+          </Alert>
+        )}
+        {vibration >= 7 && vibration < 11 && (
+          <Alert variant="warning" className={styles.alert}>
+            Warning: Vibration is in the high range!
+          </Alert>
+        )}
+        {vibration >= 11 && (
+          <Alert variant="danger" className={styles.alert}>
+            Danger: Vibration is in the excessive range!
+          </Alert>
+        )} */}
+
         <div className={styles.formFields}>
           <Form.Group className={styles.formGroup} controlId="machine_id">
             <Form.Label>Select Machine ID</Form.Label>
-            <Form.Control type="string" as="select" value={idMachine} onChange={(e) => setIdMachine(String(e.target.value))} required>
+            <Form.Control
+              type="string"
+              as="select"
+              value={idMachine}
+              onChange={(e) => setIdMachine(String(e.target.value))}
+              required
+            >
               <option value="">Please enter desired value</option>
-              {["1", "2", "3", "4"].map(id => (
-                <option key={id} value={id}>{id}</option>
+              {["1", "2", "3", "4"].map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
               ))}
             </Form.Control>
           </Form.Group>
 
           <Form.Group className={styles.formGroup} controlId="temperature">
             <Form.Label>Temperature (°C)</Form.Label>
-            <Form.Control as="select" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} required>
+            <Form.Control
+              as="select"
+              value={temperature}
+              onChange={(e) => handleTemperatureChange(e.target.value)}
+              required
+            >
               <option value="">Please enter desired value</option>
-              {Array.from({ length: 61 }, (_, i) => i + 70).map(temp => (
-                <option key={temp} value={temp}>{temp}</option>
+              {Array.from({ length: 61 }, (_, i) => i + 70).map((temp) => (
+                <option key={temp} value={temp}>
+                  {temp}
+                </option>
               ))}
             </Form.Control>
           </Form.Group>
 
           <Form.Group className={styles.formGroup} controlId="vibration">
             <Form.Label>Vibration (mm/s)</Form.Label>
-            <Form.Control type="number" step="0.1" min={3.8} value={vibration} onChange={(e) => setVibration(Number(e.target.value))} required />
+            <Form.Control
+              type="number"
+              step="0.1"
+              min={3.8}
+              value={vibration}
+              onChange={(e) => handleVibrationChange(e.target.value)}
+              required
+            />
           </Form.Group>
         </div>
 
-        <Button type="submit" disabled={!idMachine || idMachine === "Please enter desired value" || !temperature || temperature === "Please enter desired value" || !vibration} variant="primary">
+        <Button
+          type="submit"
+          disabled={
+            !idMachine ||
+            idMachine === "Please enter desired value" ||
+            !temperature ||
+            temperature === "Please enter desired value" ||
+            !vibration
+          }
+          variant="primary"
+        >
           Update Machine Values
         </Button>
       </Form>
