@@ -52,35 +52,6 @@ const Sidebar = ({ selectedMachineDetails }) => {
   };
 
   useEffect(() => {
-    if (isStartSimulationPage && selectedMachineDetails?.id_machine) {
-      const wsUrl = `/ws/stream_sensor/${id_machine}`;
-      const ws = new WebSocket(wsUrl);
-
-      ws.onopen = () => {
-        console.log("WebSocket connected for Time Series data");
-      };
-
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setTimeSeriesData(data);
-        console.log("Time Series Data:", data);
-      };
-
-      ws.onerror = (error) => {
-        console.log("WebSocket error:", error);
-      };
-
-      ws.onclose = () => {
-        console.log("WebSocket disconnected");
-      };
-
-      return () => {
-        ws.close();
-      };
-    }
-  }, [isStartSimulationPage, selectedMachineDetails]);
-
-  useEffect(() => {
     if (isWorkOrdersPage && selectWorkOrder?.id_work) {
       fetchWorkOrderDetails(selectWorkOrder.id_work);
     }
@@ -92,6 +63,36 @@ const Sidebar = ({ selectedMachineDetails }) => {
     if (isStartSimulationPage && selectedMachineDetails?.id_machine) {
       fetchMachineDetailsById(selectedMachineDetails.id_machine);
     }
+
+    console.log("The Sidebar is open");
+    console.log("Web Socket Sidebar");
+
+    // Ensure selectedMachineDetails.id_machine is available
+    const machineId = selectedMachineDetails?.id_machine || "default_machine_id";
+    const wsUrl = `ws://localhost:8000/ws/stream_sensor/${machineId}`;
+    const ws = new WebSocket(wsUrl);
+
+    // Handle WebSocket events
+    ws.onopen = () => {
+      console.log("WebSocket connected to MongoDB Change Stream");
+    };
+    ws.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      dispatch(addSensorData(data));
+      console.log(data);
+    };
+
+    // Clean up on component unmount
+    return () => {
+      console.log("Cleaning up WebSocket connection");
+      ws.close();
+    };
   }, [selectWorkOrder, selectJob, selectedMachineDetails, isWorkOrdersPage, isJobsPage, isStartSimulationPage]);
 
   const toggleShrink = () => {

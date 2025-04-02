@@ -56,17 +56,17 @@ function ShopfloorComponent() {
     try {
       const response = await axiosClient.get(`/machines/machine_details/${id_machine}`);
       console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
-      setSelectedMachineDetails(response.data); // Pass this data to the Sidebar
+      setSelectedMachineDetails(response.data); // Ensure this updates the state
       dispatch(resetSidebar());
     } catch (error) {
-      console.error(`Error fetching machine details for ID ${id_machine}:`, error);
+      console.log(`Error fetching machine details for ID ${id_machine}:`, error);
     }
   };
 
   useEffect(() => {
     fetchMachineDetails();
     fetchFactoryDetails();
-    
+
     // MongoDB Chart declaration and refresh of data per minute
     const sdk = new ChartsEmbedSDK({
       baseUrl: "https://charts.mongodb.com/charts-jeffn-zsdtj"
@@ -112,27 +112,28 @@ function ShopfloorComponent() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const wsUrl = "ws://localhost:8000/ws/stream_sensor/";
-    const ws = new WebSocket(wsUrl);
-    ws.onopen = () => {
-      console.log('WebSocket connected to MongoDB Change Stream');
-    };
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
-    ws.onerror = (error) => {
-      console.log('WebSocket error:', error);
-    };
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      dispatch(addSensorData(data))
-      console.log(data)
-    };
-    return () => {
-      ws.close();
-    };
-  }, []);
+  // useEffect(() => {
+  //   console.log("Web Socket Start Simulator")
+  //   const wsUrl = "ws://localhost:8000/ws/stream_sensor/1";
+  //   const ws = new WebSocket(wsUrl);
+  //   ws.onopen = () => {
+  //     console.log('WebSocket connected to MongoDB Change Stream');
+  //   };
+  //   ws.onclose = () => {
+  //     console.log('WebSocket disconnected');
+  //   };
+  //   ws.onerror = (error) => {
+  //     console.log('WebSocket error:', error);
+  //   };
+  //   ws.onmessage = (event) => {
+  //     const data = JSON.parse(event.data);
+  //     dispatch(addSensorData(data))
+  //     console.log(data)
+  //   };
+  //   return () => {
+  //     ws.close();
+  //   };
+  // }, []);
 
 
   //Refresh for manually chart return
@@ -206,7 +207,10 @@ function ShopfloorComponent() {
         ))
 } */}
 
-      <Sidebar selectedMachineDetails={selectedMachineDetails} />
+      <Sidebar 
+        selectedMachineDetails={selectedMachineDetails} 
+        fetchMachineDetailsById={fetchMachineDetailsById} 
+      />
 
       <div className={styles.buttonWrapper}>
         <Button variant={isRunning ? "danger" : "baseGreen"} onClick={toggleSimulation}>
