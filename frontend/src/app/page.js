@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axiosClient from "./../lib/axios";  
+import axiosClient from "../lib/axios.js";
 import { Table, Row, Col, Pagination } from "react-bootstrap";
 import { setAllOrders, setSelectWorkOrder } from "../redux/slices/WorkOrderslice";
-import { toggleSidebar, setSidebarShrunk, openSidebar, resetSidebar } from "../redux/slices/SidebarSlice"; // Import all actions
+import { resetSidebar } from "../redux/slices/SidebarSlice";
 import CreateForm from "../components/CreateForm/CreateForm";
 import { H2, H3 } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
