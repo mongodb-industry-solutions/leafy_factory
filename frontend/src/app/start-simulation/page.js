@@ -13,7 +13,7 @@ import Button from "@leafygreen-ui/button";
 import styles from "./simulation.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
-import { H2, H3, Body } from "@leafygreen-ui/typography";
+import { H3 } from "@leafygreen-ui/typography";
 import Tooltip from "@leafygreen-ui/tooltip";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
@@ -112,28 +112,28 @@ function ShopfloorComponent() {
     return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-  //   console.log("Web Socket Start Simulator")
-  //   const wsUrl = "ws://localhost:8000/ws/stream_sensor/1";
-  //   const ws = new WebSocket(wsUrl);
-  //   ws.onopen = () => {
-  //     console.log('WebSocket connected to MongoDB Change Stream');
-  //   };
-  //   ws.onclose = () => {
-  //     console.log('WebSocket disconnected');
-  //   };
-  //   ws.onerror = (error) => {
-  //     console.log('WebSocket error:', error);
-  //   };
-  //   ws.onmessage = (event) => {
-  //     const data = JSON.parse(event.data);
-  //     dispatch(addSensorData(data))
-  //     console.log(data)
-  //   };
-  //   return () => {
-  //     ws.close();
-  //   };
-  // }, []);
+/*   useEffect(() => {
+    console.log("Web Socket Start Simulator")
+    const wsUrl = "ws://localhost:8000/ws/stream_sensor/1";
+    const ws = new WebSocket(wsUrl);
+    ws.onopen = () => {
+      console.log('WebSocket connected to MongoDB Change Stream');
+    };
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+    ws.onerror = (error) => {
+      console.log('WebSocket error:', error);
+    };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      dispatch(addSensorData(data))
+      console.log(data)
+    };
+    return () => {
+      ws.close();
+    };
+  }, []); */
 
 
   //Refresh for manually chart return
