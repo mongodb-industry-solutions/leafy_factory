@@ -110,36 +110,38 @@ const WorkOrdersPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentOrders.map((order) => (
-                    <tr key={order.id_work}>
-                      <td>
-                        <Tooltip align="top" justify="middle" trigger={
-                          <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleWorkOrderClick(order.id_work)}>
-                            <Icon glyph="CurlyBraces" />
-                          </IconButton>
-                        }>
-                          View Document Model
-                        </Tooltip>
-                      </td>
-                      <td>{order.id_work}</td>
-                      <td>
-                        <Badge variant={
-                          order.wo_status === "Completed" ? "green" :
-                          order.wo_status === "Created" ? "blue" :
-                          "lightGray"
-                        }>
-                          {order.wo_status}
-                        </Badge>
-                      </td>
-                      <td>{order.creation_date}</td>
-                      <td>{order.product_name}</td>
-                      <td>{order.quantity}</td>
-                      <td>{order.planned_start_date}</td>
-                      <td>{order.planned_end_date}</td>
-                      <td>{order.planned_cost}</td>
-                      <td>{order.actual_cost}</td>
-                    </tr>
-                  ))}
+                  {currentOrders
+                    .sort((a, b) => b.id_work - a.id_work) // Sort by ID in descending order
+                    .map((order) => (
+                      <tr key={order.id_work}>
+                        <td>
+                          <Tooltip align="top" justify="middle" trigger={
+                            <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleWorkOrderClick(order.id_work)}>
+                              <Icon glyph="CurlyBraces" />
+                            </IconButton>
+                          }>
+                            View Document Model
+                          </Tooltip>
+                        </td>
+                        <td>{order.id_work}</td>
+                        <td>
+                          <Badge variant={
+                            order.wo_status === "Completed" ? "green" :
+                            order.wo_status === "Created" ? "blue" :
+                            "lightGray"
+                          }>
+                            {order.wo_status}
+                          </Badge>
+                        </td>
+                        <td>{order.creation_date}</td>
+                        <td>{order.product_name}</td>
+                        <td>{order.quantity}</td>
+                        <td>{order.planned_start_date}</td>
+                        <td>{order.planned_end_date}</td>
+                        <td>{order.planned_cost}</td>
+                        <td>{order.actual_cost}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
 
