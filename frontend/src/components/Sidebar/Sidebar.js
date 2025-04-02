@@ -6,9 +6,11 @@ import dynamic from "next/dynamic";
 import CloseButton from "react-bootstrap/CloseButton";
 import Tooltip from "react-bootstrap/Tooltip";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
+import { Select, Option } from "@leafygreen-ui/select";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { setSelectWorkOrder } from "../../redux/slices/WorkOrderslice";
 import { setSelectJob } from "../../redux/slices/JobSlice";
+import { addSensorData } from "@/redux/slices/ShopFloorslice";
 import { toggleSidebar, openSidebar, setSidebarShrunk } from "../../redux/slices/SidebarSlice";
 import { usePathname } from "next/navigation";
 import styles from "./sidebar.module.css";
@@ -21,8 +23,9 @@ const Sidebar = ({ selectedMachineDetails }) => {
   const selectWorkOrder = useSelector((state) => state.WorkOrders.selectWorkOrder);
   const selectJob = useSelector((state) => state.Jobs.selectJob);
   const isShrunk = useSelector((state) => state.Sidebar.isShrunk);
+  const [selectedOption, setSelectedOption] = useState(""); 
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [timeSeriesData, setTimeSeriesData] = useState(null);
+  const sensorData = useSelector(state => state.ShopFloor.sensorData)
 
   const pathname = usePathname();
   const isWorkOrdersPage = pathname === "/";
@@ -52,35 +55,6 @@ const Sidebar = ({ selectedMachineDetails }) => {
   };
 
   useEffect(() => {
-    if (isStartSimulationPage && selectedMachineDetails?.id_machine) {
-      const wsUrl = `/ws/stream_sensor/${id_machine}`;
-      const ws = new WebSocket(wsUrl);
-
-      ws.onopen = () => {
-        console.log("WebSocket connected for Time Series data");
-      };
-
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setTimeSeriesData(data);
-        console.log("Time Series Data:", data);
-      };
-
-      ws.onerror = (error) => {
-        console.log("WebSocket error:", error);
-      };
-
-      ws.onclose = () => {
-        console.log("WebSocket disconnected");
-      };
-
-      return () => {
-        ws.close();
-      };
-    }
-  }, [isStartSimulationPage, selectedMachineDetails]);
-
-  useEffect(() => {
     if (isWorkOrdersPage && selectWorkOrder?.id_work) {
       fetchWorkOrderDetails(selectWorkOrder.id_work);
     }
@@ -92,7 +66,38 @@ const Sidebar = ({ selectedMachineDetails }) => {
     if (isStartSimulationPage && selectedMachineDetails?.id_machine) {
       fetchMachineDetailsById(selectedMachineDetails.id_machine);
     }
-  }, [selectWorkOrder, selectJob, selectedMachineDetails, isWorkOrdersPage, isJobsPage, isStartSimulationPage]);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedOption) return;
+
+    console.log("Web Socket Sidebar");
+
+    // Create WebSocket URL based on backend URL (replace http with ws)
+    const wsUrl = `ws://localhost:8000/ws/stream_sensor/${selectedOption}`;
+    const ws = new WebSocket(wsUrl);
+
+    // Handle WebSocket events
+    ws.onopen = () => {
+      console.log(`WebSocket connected to MongoDB Change Stream for option: ${selectedOption}`);
+    };
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+    ws.onerror = (error) => {
+      console.warn('WebSocket error:', error);
+    };
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      dispatch(addSensorData(data)); 
+      console.log("Received sensor data:", data);
+    };
+
+    // Clean up on component unmount or when selectedOption changes
+    return () => {
+      ws.close();
+    };
+  }, [selectedOption]); 
 
   const toggleShrink = () => {
     dispatch(toggleSidebar());
@@ -160,12 +165,23 @@ const Sidebar = ({ selectedMachineDetails }) => {
                     </Tab>
                     <Tab name="Time Series">
                       <div>
-                        {timeSeriesData ? (
+                        <Select
+                          value={selectedOption}
+                          onChange={(value) => setSelectedOption(value)}
+                          aria-label="Select a machine"
+                        >
+                          <Option value="1">Machine 1</Option>
+                          <Option value="2">Machine 2</Option>
+                          <Option value="3">Machine 3</Option>
+                          <Option value="4">Machine 4</Option>
+                        </Select>
+
+                        {sensorData && sensorData.length > 0 ? (
                           <Code language="javascript" className={styles.jsonContent}>
-                            {JSON.stringify(timeSeriesData, null, 2)}
+                            {JSON.stringify(sensorData[sensorData.length - 1], null, 2)}
                           </Code>
                         ) : (
-                          <p>Loading Time Series data...</p>
+                          <p>Start the Simulator and Select a Machine</p>
                         )}
                       </div>
                     </Tab>
