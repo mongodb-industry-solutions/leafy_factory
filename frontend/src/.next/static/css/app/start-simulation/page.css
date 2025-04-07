@@ -1,0 +1,260 @@
+/*!************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./app/styles.css ***!
+  \************************************************************************************************************************************************************************************************************************************************************/
+
+.history-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  margin-top: 70px;
+}
+
+
+.stepper-img {
+  margin: 5px 10% 0 10%;
+  align-items: center;
+  width: calc(100% / 2.5);
+  height: auto;
+}
+
+.chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 30, 43, 0.1);
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1200px !important;
+  height: 740px !important;
+  margin: 50px auto;
+}
+
+.progress-bar {
+  background-color: #00ed64 !important;
+  color: black; 
+  font-size: 14px;
+  text-align: center;
+  transition: width 1s ease-in-out;
+  padding: 5px;
+  margin: 10px 10% 10px 10%;
+}
+
+.progress {
+  background-color: #e0e0e0;
+}
+
+.pagination {
+  justify-content: center;
+}
+
+.pagination .page-item .page-link {
+  color: #00684a;
+}
+.pagination .page-item.active .page-link,
+.pagination .page-item.active .page-link:hover {
+  background-color: #00684a;
+  border-color: #00684a;
+  color: #ffff;
+}
+.pagination .page-item .page-link:hover {
+  color: #004d00;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+
+  .navbar-left {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .image-container {
+    max-width: 90%;
+    padding: 0 10px;
+  }
+
+  .navbar .nav-link {
+    font-size: 16px;
+    padding: 7px 10px;
+  }
+}
+
+.form-wrapper {
+  padding: 10px;
+}
+
+.chart {
+  width: 95%;
+  max-width: 100%;
+  height: 400px;
+  padding: 15px;
+}
+
+.table-dark-green th,
+.table-dark-green td {
+  font-size: 14px;
+}
+
+.navtext,
+.history-header,
+.table th,
+.table td,
+body,
+.button,
+.button-sim {
+  font-family: "Lato", sans-serif;
+}
+
+/*!**************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./app/start-simulation/simulation.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************/
+.simulation_buttonWrapper__QZrj9 {
+    display: flex;
+    justify-content: center;
+    /* Centers button horizontally */
+    margin-top: 80px;
+    /* Adds spacing above the button */
+}
+
+.simulation_H3__zqksb {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.simulation_alerts__bJ9gE{
+    display: flex;
+    justify-content: center; /* Centers the alerts horizontally */
+    align-items: center; /* Aligns them vertically */
+    gap: 16px; /* Adds spacing between the alerts */
+    margin-top: 20px; /* Adjust as needed */
+}
+
+.simulation_formWrapper__nZh4T {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: max-content;
+    margin: 0 auto;
+    /* Centers the form horizontally */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    text-align: center;
+    margin-top: 30px;
+}
+
+.simulation_formGroup__eMGQe {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.simulation_formFields__cjfrR{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.simulation_prodCards__1ZsaI{
+    margin-top: 40px;
+}
+
+.simulation_card__Jz4_M {
+    box-shadow: 0 5px 5px 4px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow */
+    border: none;
+    background-color: white;
+    margin-bottom: 30px;
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
+.simulation_cardImg__Lbe8S {
+    width: 100px;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.simulation_cardBody__ZffmY {
+    text-align: center;
+}
+
+.simulation_cardTitle__tpLhg {
+    font-size: 16pt;
+}
+
+.simulation_cardItem__MeMGk {
+    font-size: 12pt;
+}
+
+
+.simulation_statusLabel___Q84I {
+    display: flex;
+    align-items: center; /* Aligns them vertically */
+    margin-left: 50px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+  
+  .simulation_available__IYb32 {
+    background-color: #E9FF99;
+    color:#00684A;
+  }
+  
+  .simulation_running__PFCXi {
+    background-color: #FFEEA9;
+    color: #944F01;
+   
+  }
+  
+  .simulation_danger__KFamv {
+    background-color: #FFEAE5;
+    color: #970606;
+  }
+  
+/* Tooltip or modal style for "Machine JSON Data" */
+.simulation_tooltipIcon__Nw8GX {
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.simulation_tooltipContent__BIrYe {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fafafa;
+
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    text-align: left;
+}
+
+.simulation_tooltipWrapper__WllBP {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Positions it to the top-right corner */
+    z-index: 1000;
+    width: -moz-fit-content;
+    width: fit-content;
+  }
+  
+
+.simulation_tooltipWrapper__WllBP:hover .simulation_tooltipContent__BIrYe {
+    display: block;
+}

@@ -1,0 +1,24 @@
+{
+  "name": "mongodb-sink-connector-mqtt", 
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+    "tasks.max": "1",
+    "topics": "kafka.public.mqtt_data",
+    "connection.uri": "mongodb+srv://leafy_factory:6CZpgCe3qWuWBGqd@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority&appName=IST-Shared",
+    "database": "leafy_factory",
+    "collection": "raw_sensor_data_mqtt",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": false,
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": false,
+    "writemodel.strategy": "com.mongodb.kafka.connect.sink.writemodel.strategy.InsertOneDefaultStrategy",
+    "errors.tolerance": "all",
+    "errors.log.enable": true,
+    "errors.log.include.messages": true,
+    "transforms": "TimestampConverter",
+    "transforms.TimestampConverter.type": "org.apache.kafka.connect.transforms.TimestampConverter$Value",
+    "transforms.TimestampConverter.field": "timestamp",
+    "transforms.TimestampConverter.target.type": "Timestamp",
+    "transforms.TimestampConverter.format": "yyyy-MM-dd'T'HH:mm:ss"
+  }
+}

@@ -1,0 +1,11 @@
+.formControl {
+    background-color: #f8f9fa;
+    cursor: "not-allowed";
+}
+
+.buttonWrapper {
+    display: flex;
+    justify-content: center; /* Centers button horizontally */
+    margin-top: 15px; /* Adds spacing above the button */
+  }
+  
