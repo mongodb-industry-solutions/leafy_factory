@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import CloseButton from "react-bootstrap/CloseButton";
-import Tooltip from "react-bootstrap/Tooltip";
+//import Tooltip from "react-bootstrap/Tooltip";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
 import { Select, Option } from "@leafygreen-ui/select";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+//import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { setSelectWorkOrder } from "../../redux/slices/WorkOrderslice";
 import { setSelectJob } from "../../redux/slices/JobSlice";
 import { addSensorData } from "@/redux/slices/ShopFloorslice";
@@ -121,7 +121,6 @@ const Sidebar = ({ selectedMachineDetails }) => {
     <>
       <div className={`${styles.sidebar} ${isShrunk ? styles.shrunk : ""}`}>
         <div className={styles.sidebarContent}>
-          <OverlayTrigger placement="top" overlay={<Tooltip id="hide-sidebar">Hide sidebar</Tooltip>}>
             <CloseButton
               className={styles["close-button"]}
               aria-label="Hide Sidebar"
@@ -133,7 +132,6 @@ const Sidebar = ({ selectedMachineDetails }) => {
                 }
               }}
             />
-          </OverlayTrigger>
 
           {!isShrunk && (
             <>

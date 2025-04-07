@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {Form, Col, Row } from "react-bootstrap";
-import axiosClient from "../../lib/axios";  
+import React, { useState } from "react";
+import { Form, Col, Row } from "react-bootstrap";
+import axiosClient from "../../lib/axios";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../redux/slices/WorkOrderslice";
 import Button from "@leafygreen-ui/button";
@@ -15,27 +15,15 @@ const CreateForm = ({onSubmitSuccess}) => {
   const [product, setProduct] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [creationDate] = useState(new Date().toISOString());
-  const [plannedStartDate] = useState(() => {
+  const [plannedStartDate, setPlannedStartDate] = useState(() => {
     const today = new Date();
     today.setDate(today.getDate() + 2);
     return today.toISOString();
   });
+  const [plannedEndDate, setPlannedEndDate] = useState("");
 
-  const [plannedEndDate, setPlannedEndDate] = useState(() => {
-    const startDate = new Date(plannedStartDate);
-    startDate.setDate(startDate.getDate() + 10);
-    return startDate.toISOString();
-  });
-
-  useEffect(() => {
-    const startDate = new Date(plannedStartDate);
-    startDate.setDate(startDate.getDate() + 10);
-    setPlannedEndDate(startDate.toISOString());
-  }, [plannedStartDate]); 
-  
   const handleSubmit = async (event) => {
     event.preventDefault();
-
 
     const addWorkOrder = {
       planned_start_date: plannedStartDate,
@@ -85,55 +73,78 @@ const CreateForm = ({onSubmitSuccess}) => {
       </Row>
 
       <Row className="mb-3">
-
-        <Form.Group as={Col} controlId="wo_status">
+    {/* <Form.Group as={Col} controlId="wo_status">
           <Form.Label>Work Order Status</Form.Label>
           <Form.Control type="text" value="Created" readOnly className={styles.formControl} />
-        </Form.Group>
+        </Form.Group> */}
 
         <Form.Group as={Col} controlId="form_quantity">
           <Form.Label>Quantity</Form.Label>
           <Form.Select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} required>
-            {[...Array(30).keys()].map(number =>
+            {[...Array(30).keys()].map((number) => (
               <option key={number + 1} value={number + 1}>
                 {number + 1}
               </option>
-            )}
+            ))}
           </Form.Select>
         </Form.Group>
-      </Row>
 
-      <Row className="mb-3">
-        <Form.Group as={Col} className="mb-3" controlId="creation_date">
+        <Form.Group as={Col} className="mb-3" controlId="creation_date" style={{ display: "none" }}>
           <Form.Label>Creation Date</Form.Label>
           <Form.Control type="text" value={creationDate} readOnly className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} className="mb-3" controlId="planned_start_date">
           <Form.Label>Planned Start Date</Form.Label>
-          <Form.Control type="text" value={plannedStartDate} readOnly className={styles.formControl} />
+          <Form.Control
+            type="date"
+            value={plannedStartDate.split("T")[0]}
+            min={new Date(new Date().setDate(new Date().getDate() + 2))
+              .toISOString()
+              .split("T")[0]}
+            onChange={(e) => {
+              const selectedDate = new Date(e.target.value);
+              const minDate = new Date();
+              minDate.setDate(minDate.getDate() + 2);
+
+              if (selectedDate >= minDate) {
+                setPlannedStartDate(selectedDate.toISOString());
+                setPlannedEndDate(""); 
+              }
+            }}
+            required
+          />
         </Form.Group>
 
         <Form.Group as={Col} controlId="planned_end_date">
           <Form.Label>Planned End Date</Form.Label>
-          <Form.Control type="text" value={plannedEndDate} readOnly className={styles.formControl} />
-        </Form.Group>
-      </Row>
-
-      <Row className="mb-3" style={{ display: "none" }}>
-        <Form.Group as={Col} controlId="actual_start_date">
-          <Form.Label>Actual Start Date</Form.Label>
-          <Form.Control type="text" value="" readOnly />
-        </Form.Group>
-
-        <Form.Group as={Col} controlId="actual_end_date">
-          <Form.Label>Actual End Date</Form.Label>
-          <Form.Control type="text" value="" readOnly />
+          <Form.Control
+            type="date"
+            value={plannedEndDate.split("T")[0]}
+            min={
+              plannedStartDate
+                ? new Date(new Date(plannedStartDate).setDate(new Date(plannedStartDate).getDate() + 10))
+                    .toISOString()
+                    .split("T")[0]
+                : ""
+            }
+            onChange={(e) => {
+              if (!plannedStartDate) {
+                alert("Please select a Planned Start Date first.");
+                return;
+              }
+              setPlannedEndDate(new Date(e.target.value).toISOString());
+            }}
+            required
+            disabled={!plannedStartDate}
+          />
         </Form.Group>
       </Row>
 
       <div className={styles.buttonWrapper}>
-        <Button type="submit" variant="baseGreen">Submit Work Order</Button>
+        <Button type="submit" variant="baseGreen">
+          Submit Work Order
+        </Button>
       </div>
     </Form>
   );
