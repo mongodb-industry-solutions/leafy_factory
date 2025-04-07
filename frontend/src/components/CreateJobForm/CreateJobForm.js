@@ -161,11 +161,14 @@ const CreateJobForm = ({ onCreateSuccess }) => {
           <Form.Label>Work ID</Form.Label>
           <Form.Select value={jobData.workId} onChange={handleWorkIdChange} required>
             <option value="">Select Work Order</option>
-            {workOrders.filter((order) => order.wo_status === "Created").map((order) => (
-              <option key={order.id_work} value={order.id_work}>
-                {order.id_work} - {order.product_name}
-              </option>
-            ))}
+            {workOrders
+              .filter((order) => order.wo_status === "Created")
+              .sort((a, b) => b.id_work - a.id_work)
+              .map((order) => (
+                <option key={order.id_work} value={order.id_work}>
+                  {order.id_work} - {order.product_name}
+                </option>
+              ))}
           </Form.Select>
         </Form.Group>
       </Row>
@@ -190,20 +193,20 @@ const CreateJobForm = ({ onCreateSuccess }) => {
           {loadingMachines ? (
             <p>Loading machines...</p>
           ) : (
-            <Form.Control as="textarea" value={jobData.machines.map((machine) => `Machine ID selected: ${machine.id_machine}`).join("\n")} readOnly className={styles.textareaReadOnly} />
+            <Form.Control as="textarea" value={jobData.machines.map((machine) => `Machine ID selected: ${machine.id_machine}`).join("\n")} readOnly className={styles.formControl} />
           )}
-        </Form.Group>
-      </Row>
-
-      <Row className="mb-3">
-        <Form.Group as={Col} controlId="jobStatus">
-          <Form.Label>Status</Form.Label>
-          <Form.Control type="text" value={jobData.jobStatus} readOnly className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} controlId="target_output">
           <Form.Label>Target Output</Form.Label>
           <Form.Control type="number" value={jobData.targetOutput} readOnly className={styles.formControl} />
+        </Form.Group>
+      </Row>
+
+      <Row className="mb-3" >
+        <Form.Group as={Col} controlId="jobStatus" style={{ display: "none" }}>
+          <Form.Label>Status</Form.Label>
+          <Form.Control type="text" value={jobData.jobStatus} readOnly className={styles.formControl} />
         </Form.Group>
       </Row>
 
