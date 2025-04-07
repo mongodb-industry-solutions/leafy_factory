@@ -68,7 +68,7 @@ const WorkOrdersPage = () => {
     for (let number = 1; number <= totalPages; number++) {
       if (number === 1 || number === totalPages || (number >= currentPage - 2 && number <= currentPage + 2)) {
         items.push(
-          <Pagination.Item key={number} active={number === currentPage} onClick={() => handlePageChange(number)}>
+          <Pagination.Item key={`page-${number}`} active={number === currentPage} onClick={() => handlePageChange(number)}>
             {number}
           </Pagination.Item>
         );
@@ -112,8 +112,8 @@ const WorkOrdersPage = () => {
                 <tbody>
                   {currentOrders
                     .sort((a, b) => b.id_work - a.id_work)
-                    .map((order) => (
-                      <tr key={order.id_work}>
+                    .map((order, index) => (
+                      <tr key={order.id_work || `order-${index}`}>
                         <td>
                           <Tooltip align="top" justify="middle" trigger={
                             <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleWorkOrderClick(order.id_work)}>
