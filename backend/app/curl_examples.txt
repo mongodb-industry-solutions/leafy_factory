@@ -1,0 +1,319 @@
+# Creation of a curl example
+
+curl -XPUT \
+  'http://localhost:8000/workorders/1' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "actual_start_date": "2024-12-12T00:00:00.000Z",
+  "actual_end_date": "2024-12-12T00:00:00.000Z",
+  "final_product_cost_per_job" : {
+    "cost_ok_with_overhead" : 12.5,
+    "cost_nok_with_overhead" : 2.5,
+    "nOk_products" : 2,
+    "total_cost" : 15
+  }
+}'
+
+
+curl -XPOST \
+  'http://localhost:8000/workorders' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "planned_start_date": "2024-12-19T00:00:00.000Z",
+  "planned_end_date": "2024-12-19T00:00:00.000Z",
+  "product_cat_id": 1,
+  "quantity": 10,
+  "status": "Created"
+}'
+
+
+curl -XPOST \
+  'http://localhost:8000/workorders/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "planned_start_date": "01/21/2025 00:00:00.00",
+  "planned_end_date": "01/21/2025 00:00:00.00",
+  "product_cat_id": 2,
+  "quantity": 10,
+  "status": "Created",
+  "cost" : {
+    "planned" : {
+      "raw_material_cost_per_product" : 14.82,
+      "overhead_per_product": 0.50,
+      "total_cost_per_product" : 15.32
+    }
+  }
+}'
+
+
+curl -XPOST \
+  'http://localhost:8000/workorders/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "planned_start_date": "2024-12-12 00:00:00.00",
+  "planned_end_date": "2024-12-12 00:00:00",
+  "product_cat_id": 2,
+  "quantity": 10,
+  "status": "Created",
+  "cost" : {
+    "planned" : {
+      "raw_material_cost_per_product" : 14.82,
+      "overhead_per_product": 0.50,
+      "total_cost_per_product" : 15.32
+    }
+  }
+}'
+
+curl -XGET 'http://localhost:8000/workorders/'
+curl -XGET 'http://localhost:8000/jobs/'
+curl -XGET 'https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/workorders'
+curl -XGET 'http://localhost:8000/products_materials/2'
+curl -XGET 'http://localhost:8000/products/2'
+
+curl -XGET 'http://localhost:8000/jobs/'
+
+curl -XPOST \
+  'http://localhost:8000/jobs/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "work_order_id": "2",
+  "factory" : {
+    "factory_id" : "qro_fact_1",
+    "production_lines" : [
+      {
+        "production_line_id" : 1,
+        "machines" : [1, 2]
+      }
+    ]
+  },
+  "target_output": 20
+}'
+
+
+curl -XPUT \
+  'http://localhost:8000/workorders/2' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "actual_start_date": "2025-01-21 00:00:00.00",
+  "actual_end_date": "2025-01-21 00:00:00.00",
+  "final_product_cost_per_job": {
+    "nOk_products": 3,
+    "cost_ok_with_overhead": 2,
+    "cost_nok_with_overhead": 2.5,
+    "total_cost": 5
+  }
+}'
+
+## SQL CURL to insert a Job
+curl -XPOST \
+  'http://localhost:8000/jobs/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "work_order_id": "2",
+  "factory" : {
+    "factory_id" : "qro_fact_1",
+    "production_lines" : [
+      {
+        "production_line_id" : 1,
+        "machines" : [1, 2]
+      }
+    ]
+  },
+  "target_output": 15
+}'
+
+curl -XPUT \
+  'http://localhost:8000/jobs/1' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "nok_products": "0",
+  "quality_rate": "100"
+}'
+
+
+
+curl -XPOST \
+'http://localhost:8000/lambda/start-simulation' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "machine_id": "Machine_1",
+  "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/test-communication"
+}'
+
+
+curl -XPOST \
+'http://localhost:8000/lambda/start-simulation' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "machine_id": "Machine_1",
+  "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/test-communication"
+}'
+
+curl -XPOST \
+'http://localhost:8000/lambda/start-simulation' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "machine_id": "Machine_1",
+  "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/heartbeat"
+}'
+
+curl -XPOST \
+'http://localhost:8000/lambda/start-simulation' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "factory_id": "qro_fact_1",
+  "production_line_id": "1",
+  "machine_id": "1",
+  "heartbeat_url": "https://b3f5-2a09-bac0-1000-417-00-9f-38.ngrok-free.app/machines/heartbeat"
+}'
+
+curl -XPOST \
+'http://localhost:8000/machines/ts_heartbeat' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "factory_id": "qro_fact_1",
+  "production_line_id": "1",
+  "machine_id": "1",
+  "vibration": "0.05",
+  "temperature": "10"
+}'
+
+
+curl -XGET \
+'http://localhost:8000/machines/machine_details' \
+-H 'accept: application/json' \
+-H 'Content-Type: application/json' \
+-d '{
+  "factory_id": "qro_fact_1",
+  "production_line_id": "1"
+}'
+
+curl -XPOST 'http://localhost:8000/start-simulation'
+curl -XPOST 'http://localhost:8000/stop-simulation'
+curl -XGET 'http://localhost:8000/machines/machine_details'
+curl -XGET 'http://localhost:8000/workorders/'
+curl -XGET 'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/workorders/'
+
+
+
+curl -XPOST \
+  'http://localhost:8000/workorders/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "planned_start_date": "2024-12-19T00:00:00.000Z",
+  "planned_end_date": "2024-12-19T00:00:00.000Z",
+  "product_cat_id": 2,
+  "quantity": 20,
+  "status": "Created"
+}'
+
+
+
+curl -XPOST \
+  'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/workorders/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "planned_start_date": "2024-12-19T00:00:00.000Z",
+  "planned_end_date": "2024-12-19T00:00:00.000Z",
+  "product_cat_id": 2,
+  "quantity": 20,
+  "status": "Created"
+}'
+
+
+http://ec2-3-91-158-15.compute-1.amazonaws.com:8000
+
+curl -XPOST \
+  'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/jobs/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "work_order_id": "2",
+  "factory" : {
+    "factory_id" : "qro_fact_1",
+    "production_lines" : [
+      {
+        "production_line_id" : 1,
+        "machines" : [1, 2]
+      }
+    ]
+  },
+  "target_output": 20
+}'
+
+
+curl -XPUT \
+  'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/jobs/1' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "nok_products": "2",
+  "quality_rate": "10"
+}'
+
+curl -XGET 'http://ec2-3-91-158-15.compute-1.amazonaws.com:8000/machines/machine_details'
+
+curl -XPUT \
+  'http://localhost:8000/jobs/5' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"nok_products": "0", "quality_rate": "100.0"}'
+
+
+{'nok_products': 0, 'quality_rate': 100.0}
+
+curl -XPUT \
+  'http://localhost:8000/change_values' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "machine_id": "1",
+  "vibration": 7,
+  "temperature": 100
+}'
+
+curl -XPOST 'http://LeafyFactory-1977785329.us-east-1.elb.amazonaws.com:8000/start-simulation'
+curl -XGET 'http://LeafyFactory-1977785329.us-east-1.elb.amazonaws.com/workorders/'
+LeafyFactory-1977785329.us-east-1.elb.amazonaws.com
+
+
+curl -XPOST 'http://localhost:8000/start-simulation'
+
+db.createCollection(
+   "raw_sensor_data_mqtt",
+   {
+      timeseries: {
+         timeField: "timestamp",
+         metaField: "metadata",
+         granularity: "seconds"
+      }
+   }
+)
+
+
+// Replace 'yourDatabase' with the name of your database
+use leafy_factory;
+
+// Replace 'yourCollection' with the name of your time series collection
+const collectionInfo = db.getCollectionInfos({ name: 'raw_sensor_data' });
+if (collectionInfo.length > 0) {
+    const timeSeriesOptions = collectionInfo[0].options.timeSeries;
+    printjson(timeSeriesOptions);
+} else {
+    print("Collection not found");
+}

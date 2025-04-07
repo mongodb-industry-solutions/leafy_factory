@@ -1,0 +1,20 @@
+# Ignores the .venv Python virtual environment
+.venv
+
+#Ignores the .env file
+*.env
+frontend/.next
+
+#Ignores the .pyv files
+*.pyc
+
+/node_modules
+/build
+.DS_Store
+kafka_sql_mdb.tar.gz
+kafka_2*
+
+/mosquitto/license/*.lic
+/mosquitto/data/dyn*
+/mosquitto/data/mosquitto*
+/backend/app/__pycache__/*.pyc
