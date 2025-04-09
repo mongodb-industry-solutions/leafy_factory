@@ -5,7 +5,6 @@
 
 .buttonWrapper {
     display: flex;
-    justify-content: center; /* Centers button horizontally */
-    margin-top: 15px; /* Adds spacing above the button */
+    justify-content: center;
+    margin-top: 15px;
   }
-  

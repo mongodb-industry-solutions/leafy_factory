@@ -6,14 +6,14 @@ import axiosClient from "../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addJob } from "../../redux/slices/JobSlice";
 import { setAllOrders } from "../../redux/slices/WorkOrderslice";
-//import { Combobox, ComboboxOption } from "@leafygreen-ui/combobox";
 import styles from "./createjobform.module.css";
 import Button from "@leafygreen-ui/button";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateJobForm = ({ onCreateSuccess }) => {
   const dispatch = useDispatch();
-
-  const workOrders = useSelector(state => state.WorkOrders.workOrders);
+  const workOrders = useSelector((state) => state.WorkOrders.workOrders);
 
   const machinesReturned = {
     1: [1, 2],
@@ -56,7 +56,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     const fetchWorkOrders = async () => {
       try {
         const response = await axiosClient.get("/workorders");
-        console.log(response.data.list);
+        //console.log(response.data.list);
         dispatch(setAllOrders(response.data.list || []));
       } catch (error) {
         console.error("Error fetching work orders:", error);
@@ -65,13 +65,12 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     fetchWorkOrders();
   }, [dispatch]);
 
-  const handleWorkIdChange = e => {
+  const handleWorkIdChange = (e) => {
     const selectedWorkId = e.target.value;
     const selectedWorkOrder = workOrders.find(
       (order) => order.id_work === parseInt(selectedWorkId, 10)
     );
 
-    // Valid work order retrieved
     if (!selectedWorkOrder) {
       setErrorMessage("Invalid work order selected.");
       return;
@@ -79,16 +78,14 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       setErrorMessage("");
     }
 
-    // Retrieve fields from selected Work Order
-    setJobData(prevData => ({
+    setJobData((prevData) => ({
       ...prevData,
       workId: selectedWorkId,
       targetOutput: selectedWorkOrder.quantity,
     }));
   };
 
-  // Prod line selector handling
-  const handleProductionLineChange = async (e) => {
+  const handleProductionLineChange = (e) => {
     const selectedLineId = e.target.value;
 
     setJobData((prevData) => ({
@@ -99,7 +96,7 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     const machinesForLine = machinesReturned[parseInt(selectedLineId, 10)] || [];
     const machineDetails = machinesForLine.map((id_machine) => ({
       id_machine,
-      machine_status: ""
+      machine_status: "",
     }));
 
     setJobData((prevData) => ({
@@ -108,16 +105,17 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     }));
   };
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    toast.success("Job has been sent!");
 
     if (!jobData.workId) {
-      setErrorMessage("Work ID must be selected.");
+      setErrorMessage("Work ID must be selected");
       return;
     }
 
     if (!jobData.productionLineId) {
-      setErrorMessage("Production Line is required.");
+      setErrorMessage("Production Line is required");
       return;
     }
 
@@ -140,12 +138,14 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     try {
       const response = await axiosClient.post("/jobs", addJobData);
       dispatch(addJob(response.data));
+
       if (onCreateSuccess) {
         onCreateSuccess();
       }
+
     } catch (error) {
-      console.error("Error creating the job:", error);
-      setErrorMessage("Failed to create the job. Please try again.");
+      //console.warn("Error creating the job:", error);
+      toast.error("Failed Job creation");
     }
   };
 

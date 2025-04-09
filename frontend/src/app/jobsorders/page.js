@@ -13,6 +13,8 @@ import Badge from "@leafygreen-ui/badge";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Jobs = () => {
   const dispatch = useDispatch();
@@ -96,6 +98,7 @@ const Jobs = () => {
 
   return (
     <Container fluid className={styles.containerFluid}>
+      <ToastContainer />
       <H2 className={styles.historyHeader}>Jobs: MES System Simulator</H2>
 
       <Row className="align-items-start">
