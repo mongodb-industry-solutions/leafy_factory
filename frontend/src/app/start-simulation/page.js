@@ -57,7 +57,7 @@ function ShopfloorComponent() {
     try {
       const response = await axiosClient.get(`/machines/machine_details/${id_machine}`);
       console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
-      setSelectedMachineDetails(response.data); // Ensure this updates the state
+      setSelectedMachineDetails(response.data);
       dispatch(resetSidebar());
     } catch (error) {
       console.log(`Error fetching machine details for ID ${id_machine}:`, error);
@@ -113,7 +113,8 @@ function ShopfloorComponent() {
     return () => clearInterval(interval);
   }, []);
 
-/*   useEffect(() => {
+/* First webSocket declaration for TimeSeries in Simulator
+   useEffect(() => {
     console.log("Web Socket Start Simulator")
     const wsUrl = "ws://localhost:8000/ws/stream_sensor/1";
     const ws = new WebSocket(wsUrl);
