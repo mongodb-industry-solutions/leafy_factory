@@ -6,6 +6,8 @@ import axiosClient from "../../lib/axios";
 import { useDispatch } from "react-redux";
 import { addOrder } from "../../redux/slices/WorkOrderslice";
 import Button from "@leafygreen-ui/button";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import styles from "./createform.module.css";
 
 
@@ -24,6 +26,7 @@ const CreateForm = ({onSubmitSuccess}) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    toast.success("Work Order has been sent!");
 
     const addWorkOrder = {
       planned_start_date: plannedStartDate,
@@ -37,17 +40,19 @@ const CreateForm = ({onSubmitSuccess}) => {
     try {
       //const response = await axios.post("http://localhost:8000/workorders/", addWorkOrder);
       const response = await axiosClient.post("/workorders", addWorkOrder);
-      console.log("Work order created successfully", response.data);
+      //console.log("Work order created successfully", response.data);
       dispatch(addOrder(response.data));
 
-      //Retrieves the new work Order into the table
+      // Retrieve the new work Order into the table
       if (onSubmitSuccess) {
         onSubmitSuccess();
       }
-    } catch (error) {  
-      console.error("There was an error creating the work order:", error);  
-    }  
-  }; 
+
+    } catch (error) {
+      console.warn("There was an error creating the work order:", error);
+      toast.error("Failed to create Work Order");
+    }
+  };
 
   const handleProductChange = (e) => {
     const selectedProduct = e.target.value;
@@ -73,25 +78,15 @@ const CreateForm = ({onSubmitSuccess}) => {
       </Row>
 
       <Row className="mb-3">
-    {/* <Form.Group as={Col} controlId="wo_status">
-          <Form.Label>Work Order Status</Form.Label>
-          <Form.Control type="text" value="Created" readOnly className={styles.formControl} />
-        </Form.Group> */}
-
         <Form.Group as={Col} controlId="form_quantity">
           <Form.Label>Quantity</Form.Label>
-          <Form.Select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} required>
+          <Form.Select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} required >
             {[...Array(30).keys()].map((number) => (
               <option key={number + 1} value={number + 1}>
                 {number + 1}
               </option>
             ))}
           </Form.Select>
-        </Form.Group>
-
-        <Form.Group as={Col} className="mb-3" controlId="creation_date" style={{ display: "none" }}>
-          <Form.Label>Creation Date</Form.Label>
-          <Form.Control type="text" value={creationDate} readOnly className={styles.formControl} />
         </Form.Group>
 
         <Form.Group as={Col} className="mb-3" controlId="planned_start_date">
@@ -109,7 +104,7 @@ const CreateForm = ({onSubmitSuccess}) => {
 
               if (selectedDate >= minDate) {
                 setPlannedStartDate(selectedDate.toISOString());
-                setPlannedEndDate(""); 
+                setPlannedEndDate("");
               }
             }}
             required
