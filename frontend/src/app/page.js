@@ -13,6 +13,8 @@ import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
 import styles from "./workorders.module.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const WorkOrdersPage = () => {
   const dispatch = useDispatch();
@@ -81,6 +83,7 @@ const WorkOrdersPage = () => {
 
   return (
     <div className={styles.containerFluid}>
+      <ToastContainer />
       <H2 className={styles.historyHeader}>Work Orders: ERP System Simulator</H2>
 
       <Row className="align-items-start">
