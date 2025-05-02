@@ -102,7 +102,7 @@ function ShopfloorComponent() {
         await chart.render(chartDiv.current);
         console.log("Chart info returned");
       } catch (error) {
-        console.warn("Error rendering the chart:", error);
+        console.log("Error rendering the chart:", error);
       }
     })();
 
