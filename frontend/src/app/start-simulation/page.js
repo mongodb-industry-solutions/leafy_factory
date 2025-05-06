@@ -393,7 +393,6 @@ function ShopfloorComponent() {
       </React.Fragment>
     ))}
 </Row>
-
       <div className={styles.buttonWrapper} style={{ display: "none" }}>
         <Button onClick={refreshChart} variant="primary">Refresh Chart</Button>
       </div>
