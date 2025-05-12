@@ -125,7 +125,100 @@ async def retrieve_machine_details():
     """This endpoint retrieves the machine details from the factory collection"""
     try:
 
-        machine_details_docs = kfk_machines_coll.find()
+        # Aggregation to get the machine details + current job
+        aggregation_stages = []
+        
+        # We want to get the status of the running machines, that means they have a current job.
+        MACHINE_STATUS = "Running"
+        JOB_STATUS = "Created"
+
+        stage_lookup_machines_jobs = {
+            "$lookup": {
+                "from": "kafka.public.jobs_machines",
+                "localField": "id_machine",
+                "foreignField": "machine_id",
+                "as": "machines_jobs"
+            }
+        }
+
+        stage_lookup_jobs = {
+            "$lookup": {
+                "from": "kafka.public.jobs",
+                "localField": "machines_jobs.job_id",
+                "foreignField": "id_job",
+                "as": "machines_jobs_status"
+            }
+        }
+
+        stage_filter_job_status = {
+            "$addFields": {
+                "machines_jobs_status": {
+                    "$filter": {
+                        "input": "$machines_jobs_status",
+                        "as": "job",
+                        "cond": { "$eq": ["$$job.job_status", "Created"] }
+                    }
+                }
+            }
+        }
+
+        stage_sort_array_id = {
+            "$addFields": {
+                "machines_jobs_status": {
+                    "$slice": [
+                        {
+                            "$sortArray": {
+                                "input": "$machines_jobs_status",
+                                "sortBy": { "_id": -1 }
+                            }
+                        }, 1
+                    ]
+                }
+            }
+        }
+
+        stage_create_current_job = {
+            "$addFields": {
+                "current_job": {
+                    "$let": {
+                        "vars": {
+                            "first_job": { "$arrayElemAt": ["$machines_jobs_status", 0] }
+                        },
+                        "in": {
+                            "id_job": "$$first_job.id_job",
+                            "job_status": "$$first_job.job_status"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage_match_not_empty_machines = {
+            "$match": {
+                "machines_jobs_status": { "$ne": [] }
+            }    
+        }
+
+        stage_project = {
+            "$project": {
+                "machines_jobs": 0,
+                "machines_jobs_status": 0
+            }
+        }
+
+        aggregation_stages = [
+            stage_lookup_machines_jobs,
+            stage_lookup_jobs,
+            # stage_filter_job_status,
+            stage_sort_array_id,
+            stage_create_current_job,
+            stage_match_not_empty_machines,
+            stage_project
+        ]
+        
+        machine_details_docs = kfk_machines_coll.aggregate(aggregation_stages)
+
+        # machine_details_docs = kfk_machines_coll.find()
         machines_docs_to_list = list(machine_details_docs)
 
         for machine_item in machines_docs_to_list:
@@ -144,7 +237,8 @@ async def retrieve_machine_details():
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to retrieve machine details: {str(e)}")
+        # raise HTTPException(status_code=500, detail=f"Failed to retrieve machine details: {str(e)}")
+        print(e)
     
 
 @router.get("/machines/machine_details/{id_machine}",
