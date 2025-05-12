@@ -374,7 +374,10 @@ function ShopfloorComponent() {
                   <strong>Operator:</strong> {machine.operator}
                 </ListGroup.Item>
                 <ListGroup.Item className={styles.cardItem}>
-                  <strong>Current Job:</strong> {machines.jobs}
+                  <strong>Current Job:</strong>{' '}
+                  {machine.current_job && (machine.current_job.job_status === 'Created')
+                    ? machine.current_job.id_job
+                    : 'No job in progress'}
                 </ListGroup.Item>
               </ListGroup>
 
