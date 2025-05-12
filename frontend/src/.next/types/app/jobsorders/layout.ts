@@ -1,4 +1,4 @@
-// File: /Users/test/Documents/GitHub/leafy_factory/frontend/src/app/jobsorders/layout.js
+// File: /Users/gio.rodriguez/Documents/github_repositories/leafy_factory/frontend/src/app/jobsorders/layout.js
 import * as entry from '../../../../app/jobsorders/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

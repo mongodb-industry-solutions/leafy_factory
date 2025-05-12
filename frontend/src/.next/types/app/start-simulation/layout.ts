@@ -1,4 +1,4 @@
-// File: /Users/test/Documents/GitHub/leafy_factory/frontend/src/app/start-simulation/layout.js
+// File: /Users/gio.rodriguez/Documents/github_repositories/leafy_factory/frontend/src/app/start-simulation/layout.js
 import * as entry from '../../../../app/start-simulation/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
