@@ -4,7 +4,7 @@
     "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
     "tasks.max": "1",
     "topics": "kafka.public.mqtt_data",
-    "connection.uri": "mongodb+srv://leafy_factory:6CZpgCe3qWuWBGqd@ist-shared.n0kts.mongodb.net/?retryWrites=true&w=majority&appName=IST-Shared",
+    "connection.uri": "MONGODB_CONNECTION_STRING",
     "database": "leafy_factory",
     "collection": "raw_sensor_data_mqtt",
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
