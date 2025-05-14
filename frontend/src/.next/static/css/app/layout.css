@@ -227,6 +227,82 @@ body,
   }
 }
 
+/*!*********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./components/Sidebar/sidebar.module.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************/
+.sidebar_sidebar__6HDFv {
+    background-color: #fbfcfc;
+    width: -moz-fit-content;
+    width: fit-content;
+    transition: width 0.3s ease;
+    grid-area: side-nav / side-nav / side-nav / side-nav;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    list-style: none;
+    z-index: 9999;
+    padding: 3px;
+    padding-left: 5px;
+    position: fixed;
+    top: 7%;
+    bottom: 0;
+    right: 0;
+  }
+  
+  .sidebar_sidebar__6HDFv.sidebar_shrunk__rLdfH {
+    width: 0px;  
+    padding-left: 0px;
+  }
+  
+  .sidebar_sidebar__6HDFv.sidebar_shrunk__rLdfH .sidebar_sidebarContent__hRhCw {
+    display: none;  
+  }
+  
+  .sidebar_sidebar__6HDFv.sidebar_shrunk__rLdfH .sidebar_details__P7abK {
+    visibility: hidden;
+    opacity: 0;
+  }
+  
+  .sidebar_toggle-button__Kj7ek {
+    position: absolute;
+    top: 10%;
+    right: 12%;
+    padding: 10px;
+    background-color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 60%;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5);
+    margin-top: 20px;
+    z-index: 10000;
+  }
+
+  .sidebar_close-button__XDlqd {
+    margin-top: 15px;
+  }
+  
+  .sidebar_toggle-button__Kj7ek:hover {
+    background-color: #c07cf1;
+  }
+  
+  .sidebar_cardItem__oaQ8K {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  
+  .sidebar_sidebar__6HDFv.sidebar_shrunk__rLdfH .sidebar_cardItem__oaQ8K {
+    display: none;
+  }
+
+  .sidebar_tabs__KeaMl {
+    display: flex;
+    margin: 72px;
+  }
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./node_modules/bootstrap/dist/css/bootstrap.min.css ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************************/
