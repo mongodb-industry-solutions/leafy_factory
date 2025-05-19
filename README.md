@@ -21,6 +21,8 @@
 
 * **Python** (3.12 or higher): The project relies on Python to run the backend and manage dependencies.
 
+* **Docker** (27.4.0 or higher): The project relies on Docker to run the frontend and backend components.
+
 * **PostgreSQL** (15.10 or higher): The demo will use a hosted PostgreSQL cluster.
 
 * **MongoDB Atlas Cluster** (8.0.4 or higher): Under `atlasAdmin` role:
