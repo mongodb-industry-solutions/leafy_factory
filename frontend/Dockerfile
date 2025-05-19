@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:23 AS build
+FROM node:23.11.1 AS build
 
 # Set the working directory
 WORKDIR /app
