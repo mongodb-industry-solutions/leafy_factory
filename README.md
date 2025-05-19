@@ -21,6 +21,8 @@
 
 * **Python** (3.12 or higher): The project relies on Python to run the backend and manage dependencies.
 
+* **Docker** (27.4.0 or higher): The project relies on Docker to run the frontend and backend components.
+
 * **PostgreSQL** (15.10 or higher): The demo will use a hosted PostgreSQL cluster.
 
 * **MongoDB Atlas Cluster** (8.0.4 or higher): Under `atlasAdmin` role:
@@ -38,9 +40,31 @@
 * Create a .env file and add the following lines:
 
 ```
-MONGO_URI=“your_connection_string”
+MONGO_URI="<YOUR_CONNECTION_STRING>"
 NEXT_PUBLIC_BACKEND_URL="http://localhost:8000"
 ```
+
+## Inside your `backend/app` folder:
+
+* Create a .env file and add the following lines:
+
+```
+MONGO_URI="<YOUR_CONNECTION_STRING>"
+BACKEND_URL="http://localhost:8000/"
+SQL_USERNAME="<YOUR_SQL_DEPLOYMENT_USER>"
+SQL_PASSWORD="<YOUR_SQL_DEPLOYMENT_PASSWORD>"
+SQL_HOSTNAME="<YOUR_CONNECTION_STRING_TO_YOUR_SQL_DEPLOYMENT>"
+SQL_DATABASE="leafyfactorydb"
+MQTT_TOPIC = "sensor/data"
+```
+
+## For the project execution (Docker): 
+* Once you have created the .env files, now you can run the following command on the `leafy_factory` folder:
+```
+docker-compose up --build -d
+```
+
+## Run the following instructions in case you want to deploy it without Docker
 
 * To install the dependencies and packages, execute `npm install` in your Terminal.
 
