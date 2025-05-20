@@ -45,7 +45,7 @@
 }
 
 .prodCards{
-    margin-top: 40px;
+    margin-top: 40px !important;
 }
 
 .card {
@@ -58,7 +58,7 @@
 }
 
 .cardImg {
-    width: 100px;
+    width: 100px !important;
     height: auto;
     display: block;
     margin-left: auto;
