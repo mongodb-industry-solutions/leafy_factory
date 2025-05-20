@@ -1,8 +1,8 @@
 "use client";
 
-import "./styles.css";
+import "../styles.css";
 import React from "react";
-import demoImage from "../images/demoOverview.png";
+import demoImage from "../../public/demoOverview.png";
 import { Card } from "react-bootstrap";
 
 function ArchOverview() {

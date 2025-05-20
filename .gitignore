@@ -3,7 +3,7 @@
 
 #Ignores the .env file
 *.env
-frontend/.next
+**/.next/
 
 #Ignores the .pyv files
 *.pyc
@@ -17,4 +17,11 @@ kafka_2*
 /mosquitto/license/*.lic
 /mosquitto/data/dyn*
 /mosquitto/data/mosquitto*
-/backend/app/__pycache__/*.pyc
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+.vscode
