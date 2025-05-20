@@ -1,8 +1,8 @@
 
-import './styles.css'
+import '../styles.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { GeistSans } from "geist/font/sans";
-import ClientProvider from "./ClientProvider";
+import ClientProvider from "../ClientProvider";
 import Header from "@/components/Header/Header";
 import NavigationBar from "@/components/NavigationBar/NavigationBar";
 
