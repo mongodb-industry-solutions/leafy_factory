@@ -71,7 +71,7 @@ docker-compose up --build -d
 * You're all set, now you can run `npm run dev` 
 
 
-## [Go to the `backend` folder](../backend) 
+## [Go to the `backend` folder](./backend) 
 
 * To execute the backend dependencies and start your server.
 
