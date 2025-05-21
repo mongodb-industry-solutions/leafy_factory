@@ -94,7 +94,7 @@ function ShopfloorComponent() {
       baseUrl: "https://charts.mongodb.com/charts-jeffn-zsdtj"
     });
     const chart = sdk.createChart({
-      chartId: "2999c40d-d187-440a-8b27-99e9abec89f1"
+      chartId: "5a8ef0bf-0341-4742-8eb2-99fd757f2e12"
     });
     chartRef.current = chart;
     (async () => {
@@ -396,11 +396,11 @@ function ShopfloorComponent() {
       </React.Fragment>
     ))}
 </Row>
-      <div className={styles.buttonWrapper} style={{ display: "none" }}>
+      <div className={styles.buttonWrapper}>
         <Button onClick={refreshChart} variant="primary">Refresh Chart</Button>
       </div>
 
-      <div className="chart" style={{ display: "none" }}>
+      <div className="chart" >
         <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
       </div>
     </div>
