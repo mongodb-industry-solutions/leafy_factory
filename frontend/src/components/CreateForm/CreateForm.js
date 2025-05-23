@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./createform.module.css";
 
-
 const CreateForm = ({onSubmitSuccess}) => {
 
   const dispatch = useDispatch();
@@ -23,9 +22,15 @@ const CreateForm = ({onSubmitSuccess}) => {
     return today.toISOString();
   });
   const [plannedEndDate, setPlannedEndDate] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (isSubmitting) {
+      toast.warn("Please wait before submitting again.");
+      return;
+    }
+    setIsSubmitting(true);
     toast.success("Work Order has been sent!");
 
     const addWorkOrder = {
@@ -51,6 +56,8 @@ const CreateForm = ({onSubmitSuccess}) => {
     } catch (error) {
       console.warn("There was an error creating the work order:", error);
       toast.error("Failed to create Work Order");
+    } finally {
+      setTimeout(() => setIsSubmitting(false), 4000);
     }
   };
 
@@ -137,7 +144,7 @@ const CreateForm = ({onSubmitSuccess}) => {
       </Row>
 
       <div className={styles.buttonWrapper}>
-        <Button type="submit" variant="baseGreen">
+        <Button type="submit" variant="baseGreen" disabled={isSubmitting}>
           Submit Work Order
         </Button>
       </div>
