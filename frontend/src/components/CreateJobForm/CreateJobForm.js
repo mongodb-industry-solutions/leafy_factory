@@ -36,13 +36,24 @@ const CreateJobForm = ({ onCreateSuccess }) => {
   const [loadingMachines, setLoadingMachines] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Retrieve machines
+  // Track used production lines & work orders
+  const [usedProductionLines, setUsedProductionLines] = useState([]);
+  const [usedWorkOrders, setUsedWorkOrders] = useState([]);
+
+  // Availability machines check
+  const [machineDetails, setMachineDetails] = useState({});
+
   useEffect(() => {
     const fetchMachines = async () => {
       setLoadingMachines(true);
       try {
         const response = await axiosClient.get("/machines/machine_details");
-        console.log("Fetched machines details:", response.data.result);
+        // Store details by machine ID for quick lookup
+        const details = {};
+        (response.data.result || []).forEach((m) => {
+          details[m.id_machine] = m;
+        });
+        setMachineDetails(details);
       } catch (error) {
         console.error("Error fetching machine details:", error);
       } finally {
@@ -56,7 +67,6 @@ const CreateJobForm = ({ onCreateSuccess }) => {
     const fetchWorkOrders = async () => {
       try {
         const response = await axiosClient.get("/workorders");
-        //console.log(response.data.list);
         dispatch(setAllOrders(response.data.list || []));
       } catch (error) {
         console.error("Error fetching work orders:", error);
@@ -87,21 +97,29 @@ const CreateJobForm = ({ onCreateSuccess }) => {
 
   const handleProductionLineChange = (e) => {
     const selectedLineId = e.target.value;
+    const machinesForLine = machinesReturned[parseInt(selectedLineId, 10)] || [];
+    const unavailable = machinesForLine.some(
+      (id) => machineDetails[id] && machineDetails[id].machine_status !== "Available"
+    );
+    if (unavailable) {
+      setErrorMessage("One or more machines on this line are not available.");
+      setJobData((prevData) => ({
+        ...prevData,
+        productionLineId: "",
+        machines: [],
+      }));
+      return;
+    } else {
+      setErrorMessage("");
+    }
 
     setJobData((prevData) => ({
       ...prevData,
       productionLineId: selectedLineId,
-    }));
-
-    const machinesForLine = machinesReturned[parseInt(selectedLineId, 10)] || [];
-    const machineDetails = machinesForLine.map((id_machine) => ({
-      id_machine,
-      machine_status: "",
-    }));
-
-    setJobData((prevData) => ({
-      ...prevData,
-      machines: machineDetails,
+      machines: machinesForLine.map((id_machine) => ({
+        id_machine,
+        machine_status: machineDetails[id_machine]?.machine_status || "",
+      })),
     }));
   };
 
@@ -116,6 +134,16 @@ const CreateJobForm = ({ onCreateSuccess }) => {
 
     if (!jobData.productionLineId) {
       setErrorMessage("Production Line is required");
+      return;
+    }
+
+    // Conditional for form's submission
+    if (usedProductionLines.includes(jobData.productionLineId)) {
+      setErrorMessage("This production line has already been used for a job.");
+      return;
+    }
+    if (usedWorkOrders.includes(jobData.workId)) {
+      setErrorMessage("This work order has already been used for a job.");
       return;
     }
 
@@ -139,12 +167,22 @@ const CreateJobForm = ({ onCreateSuccess }) => {
       const response = await axiosClient.post("/jobs", addJobData);
       dispatch(addJob(response.data));
 
+      // Make production line & work order already snet
+      setUsedProductionLines((prev) => [...prev, jobData.productionLineId]);
+      setUsedWorkOrders((prev) => [...prev, jobData.workId]);
+
       if (onCreateSuccess) {
         onCreateSuccess();
       }
 
+      setJobData({
+        workId: "",
+        targetOutput: 0,
+        jobStatus: "Created",
+        productionLineId: "",
+        machines: [],
+      });
     } catch (error) {
-      //console.warn("Error creating the job:", error);
       toast.error("Failed Job creation");
     }
   };
@@ -165,8 +203,13 @@ const CreateJobForm = ({ onCreateSuccess }) => {
               .filter((order) => order.wo_status === "Created")
               .sort((a, b) => b.id_work - a.id_work)
               .map((order) => (
-                <option key={order.id_work} value={order.id_work}>
+                <option
+                  key={order.id_work}
+                  value={order.id_work}
+                  disabled={usedWorkOrders.includes(String(order.id_work)) || usedWorkOrders.includes(order.id_work)}
+                >
                   {order.id_work} - {order.product_name}
+                  {usedWorkOrders.includes(String(order.id_work)) || usedWorkOrders.includes(order.id_work) ? " (Used)" : ""}
                 </option>
               ))}
           </Form.Select>
@@ -179,8 +222,13 @@ const CreateJobForm = ({ onCreateSuccess }) => {
           <Form.Select value={jobData.productionLineId} onChange={handleProductionLineChange} required>
             <option value="">Select Production Line</option>
             {productionLines.map((line) => (
-              <option key={line.production_line_id} value={line.production_line_id}>
+              <option
+                key={line.production_line_id}
+                value={line.production_line_id}
+                disabled={usedProductionLines.includes(String(line.production_line_id)) || usedProductionLines.includes(line.production_line_id)}
+              >
                 {line.name}
+                {usedProductionLines.includes(String(line.production_line_id)) || usedProductionLines.includes(line.production_line_id) ? " (Used)" : ""}
               </option>
             ))}
           </Form.Select>

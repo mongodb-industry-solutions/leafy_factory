@@ -37,17 +37,6 @@ function ShopfloorComponent() {
       const response = await axiosClient.get("/machines/machine_details");
       console.log("Fetched Machine Details: ", response.data.result);
       setMachines(response.data.result);
-/*       const machinesWithJobs = response.data.result.map((machine) => {
-        const allJobs = machine.work_orders?.flatMap((order) => order.jobs || []) || [];
-        const latestJob = allJobs.reduce((max, job) => (job.id_job > (max?.id_job || 0) ? job : max), null);
-        return {
-          ...machine,
-          currentJob: latestJob ? `Job ID ${latestJob.id_job}` : "No jobs available",
-        };
-      });
-
-      console.log("Machines with Current Job: ", machinesWithJobs);
-      setMachines(machinesWithJobs); */
     } catch (error) {
       console.log("Error fetching machine details:", error);
     }
@@ -69,17 +58,6 @@ function ShopfloorComponent() {
       console.log(`Fetched Machine Details for ID ${id_machine}:`, response.data);
       setSelectedMachineDetails(response.data);
       dispatch(resetSidebar());
-/*       const machine = response.data;
-      const allJobs = machine.work_orders?.flatMap((order) => order.jobs || []) || [];
-      const latestJob = allJobs.reduce((max, job) => (job.id_job > (max?.id_job || 0) ? job : max), null);
-      const machineWithJob = {
-        ...machine,
-        currentJob: latestJob ? `Job ID ${latestJob.id_job}` : "No jobs available",
-      };
-
-      console.log("Machine with Current Job: ", machineWithJob);
-      setSelectedMachineDetails(machineWithJob);
-      dispatch(resetSidebar()); */
     } catch (error) {
       console.log(`Error fetching machine details for ID ${id_machine}:`, error);
     }
@@ -240,13 +218,24 @@ function ShopfloorComponent() {
   };
 
   return (
-    <div className="shopfloor-container">
-      <ToastContainer />
-
-      <Sidebar 
-        selectedMachineDetails={selectedMachineDetails} 
-        fetchMachineDetailsById={fetchMachineDetailsById} 
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ zIndex: 2147483647, position: "fixed", top: 16, right: 16, pointerEvents: "auto" }}
       />
+      <div className="shopfloor-container">
+        <Sidebar 
+          selectedMachineDetails={selectedMachineDetails} 
+          fetchMachineDetailsById={fetchMachineDetailsById} 
+        />
 
       <div className={styles.buttonWrapper}>
         <Button variant={isRunning ? "danger" : "baseGreen"} onClick={toggleSimulation}>
@@ -404,6 +393,7 @@ function ShopfloorComponent() {
         <div ref={chartDiv} style={{ width: "100%", height: "100%" }}></div>
       </div>
     </div>
+    </>
   );
 }
 
