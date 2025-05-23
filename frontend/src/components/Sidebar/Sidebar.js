@@ -32,6 +32,11 @@ const Sidebar = ({ selectedMachineDetails }) => {
   const isJobsPage = pathname.includes("/jobs");
   const isStartSimulationPage = pathname.includes("/start-simulation");
 
+  // Close sidebar when route changes
+  useEffect(() => {
+    dispatch(setSidebarShrunk(true));
+  }, [pathname]);
+
   const fetchWorkOrderDetails = async (id_work) => {
     console.log("Fetching work order details for id:", id_work);
     try {
