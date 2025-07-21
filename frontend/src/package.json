@@ -49,6 +49,7 @@
     "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
+    "license-checker": "^25.0.1",
     "webpack": "^5.98.0"
   }
 }
