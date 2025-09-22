@@ -12,7 +12,8 @@ import os
 load_dotenv()
 
 # Access the MongoDB_URI and MARIADB variables.
-BACKEND_URL = os.getenv("BACKEND_URL")
+# Use INTERNAL_API_URL (from Kubernetes) or BACKEND_URL (local) or fallback to localhost
+BACKEND_URL = os.getenv("INTERNAL_API_URL") or os.getenv("BACKEND_URL") or "http://localhost:8000"
 
 # Initialize APScheduler
 scheduler = BackgroundScheduler()
@@ -39,10 +40,18 @@ def complete_job_task(job_id, quantity, machines_list):
             # Temperature and vibration will be read from MongoDB raw_sensor_data collection
 
             part_sensor_data = raw_sensor_data_coll.find({"metadata.machine_id": machine_to_insert},{"temperature_status": 1, "vibration_status": 1, "_id":0}).sort({"timestamp": -1}).limit(1)
-        
+
             # Get the single document from the cursor
             sensor_data_status = next(part_sensor_data, None)
-            if (sensor_data_status["temperature_status"] == "Normal") and (sensor_data_status["vibration_status"] == "Normal"):
+
+            # Handle case when no sensor data exists (simulator not running)
+            if sensor_data_status is None:
+                # Default behavior when no sensor data: assume normal conditions
+                # You can adjust this logic - e.g., fail the job, use random quality, etc.
+                print(f"Warning: No sensor data found for machine {machine_to_insert}. Using default quality.")
+                # Use 80% OK rate as default when no sensor data
+                part_status = random.choices(part_status_list, weights=[80, 20])[0]
+            elif (sensor_data_status["temperature_status"] == "Normal") and (sensor_data_status["vibration_status"] == "Normal"):
                 # If sensor status is Normal the part status will be ok
                 # part_status = OK
                 part_status = part_status_list[0]
@@ -53,6 +62,9 @@ def complete_job_task(job_id, quantity, machines_list):
                 # If sensor status is Excessive the part status will be nOK
                 # part_status = nOK
                 part_status = part_status_list[1]
+            else:
+                # Fallback for any unexpected status
+                part_status = random.choice(part_status_list)
             
             
             if part_status == "nOK":

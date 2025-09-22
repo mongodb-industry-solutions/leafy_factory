@@ -1,0 +1,19 @@
+env:
+  NODE_ENV: staging
+  INTERNAL_API_URL: http://leafy-factory-backend-web-app:80
+  INTERNAL_WS_URL: ws://leafy-factory-backend-web-app:80
+  NEXT_PUBLIC_BACKEND_URL: http://leafy-factory-backend-web-app:80
+
+envSecrets:
+  # MongoDB Configuration
+  MONGO_URI: factory-mongodb-staging
+  
+  # PostgreSQL Configuration (placeholders - update later)
+  SQL_USERNAME: factory-mongodb-staging
+  SQL_PASSWORD: factory-mongodb-staging
+  SQL_HOSTNAME: factory-mongodb-staging
+  SQL_DATABASE: factory-mongodb-staging
+
+# serviceAccount:
+#   enabled: true
+#   name: irsa-staging

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL
+  baseURL: '/api/backend'  // Use Next.js API proxy for Kanopy compatibility
 });
 
 export default axiosClient;

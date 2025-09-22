@@ -52,8 +52,18 @@ kfk_machines_coll = db["kafka.public.machines"]
 # MongoDB Production Data
 kfk_production_data_coll = db["kafka.public.production_data"]
 
-def get_sql_connection(retries=5, delay=5):
-    """Attempt to connect to PostgreSQL with retries."""
+# PostgreSQL connection with graceful fallback
+sql_conn = None
+
+def get_sql_connection(retries=3, delay=2):
+    """Attempt to connect to PostgreSQL with retries and graceful failure."""
+    global sql_conn
+    
+    # Skip if credentials are placeholders
+    if SQL_USERNAME == "placeholder" or SQL_PASSWORD == "placeholder":
+        print("PostgreSQL credentials not configured - running without SQL connection")
+        return None
+    
     for attempt in range(retries):
         try:
             print(f"Attempt {attempt + 1} to connect to PostgreSQL...")

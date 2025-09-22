@@ -15,7 +15,8 @@ import os
 load_dotenv()
 
 # Access the MongoDB_URI and MARIADB variables.
-BACKEND_URL = os.getenv("BACKEND_URL")
+# Use INTERNAL_API_URL (from Kubernetes) or BACKEND_URL (local) or fallback to localhost
+BACKEND_URL = os.getenv("INTERNAL_API_URL") or os.getenv("BACKEND_URL") or "http://localhost:8000"
 MQTT_TOPIC = os.getenv("MQTT_TOPIC")
 
 router = APIRouter()

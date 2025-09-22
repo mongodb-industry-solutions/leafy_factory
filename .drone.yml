@@ -1,0 +1,216 @@
+---
+kind: pipeline
+type: kubernetes
+name: staging
+
+trigger:
+  branch:
+    - staging
+
+steps:
+  # Step 1: Publish backend (runs first)
+  - name: publish-backend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-factory-backend
+      dockerfile: backend/Dockerfile
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  # Step 2: Deploy backend (waits for backend publish)
+  - name: deploy-backend-staging
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: leafy-factory-backend
+      values_files: ["environments/staging.yaml"]
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-factory-backend"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-factory-backend.industrysolutions.staging.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.memory=1Gi"
+        - "resources.limits.cpu=500m"
+        - "resources.requests.memory=512Mi"
+        - "resources.requests.cpu=250m"
+      api_server: https://api.staging.corp.mongodb.com
+      kubernetes_token:
+        from_secret: staging_kubernetes_token
+    when:
+      branch:
+        - staging
+      event:
+        - push
+
+  # Step 3: Publish frontend (waits for backend deployment)
+  - name: publish-frontend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-factory-frontend
+      dockerfile: frontend/Dockerfile
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  # Step 4: Deploy frontend (waits for frontend publish)
+  - name: deploy-frontend-staging
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: leafy-factory-frontend
+      values_files: ["environments/staging.yaml"]
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-factory-frontend"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-factory-frontend.industrysolutions.staging.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.memory=1Gi"
+        - "resources.limits.cpu=500m"
+        - "resources.requests.memory=512Mi"
+        - "resources.requests.cpu=250m"
+      api_server: https://api.staging.corp.mongodb.com
+      kubernetes_token:
+        from_secret: staging_kubernetes_token
+    # Remove depends_on - let it run sequentially
+    when:
+      branch:
+        - staging
+      event:
+        - push
+
+
+---
+kind: pipeline
+type: kubernetes
+name: main
+
+trigger:
+  branch:
+    - main
+
+steps:
+  # Step 1: Publish backend (runs first)
+  - name: publish-backend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-factory-backend-prod
+      dockerfile: backend/Dockerfile
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  # Step 2: Deploy backend (waits for backend publish)
+  - name: deploy-backend-main
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: leafy-factory-backend-prod
+      values_files: ["environments/production.yaml"]
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-factory-backend-prod"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-factory-backend.industrysolutions.prod.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.memory=1Gi"
+        - "resources.limits.cpu=500m"
+        - "resources.requests.memory=512Mi"
+        - "resources.requests.cpu=250m"
+      api_server: https://api.prod.corp.mongodb.com
+      kubernetes_token:
+        from_secret: prod_kubernetes_token
+    when:
+      branch:
+        - main
+      event:
+        - push
+
+  # Step 3: Publish frontend (waits for backend deployment)
+  - name: publish-frontend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-factory-frontend-prod
+      dockerfile: frontend/Dockerfile
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  # Step 4: Deploy frontend (waits for frontend publish)
+  - name: deploy-frontend-prod
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: leafy-factory-frontend-prod
+      values_files: ["environments/production.yaml"]
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-factory-frontend-prod"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-factory-frontend.industrysolutions.prod.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.memory=1Gi"
+        - "resources.limits.cpu=500m"
+        - "resources.requests.memory=512Mi"
+        - "resources.requests.cpu=250m"
+      api_server: https://api.prod.corp.mongodb.com
+      kubernetes_token:
+        from_secret: prod_kubernetes_token
+    # Remove depends_on - let it run sequentially
+    when:
+      branch:
+        - main
+      event:
+        - push
+
+

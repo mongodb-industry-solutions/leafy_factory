@@ -78,29 +78,50 @@ const Sidebar = ({ selectedMachineDetails }) => {
 
     console.log("Web Socket Sidebar");
 
-    // Create WebSocket URL based on backend URL (replace http with ws)
-    const wsUrl = `ws://localhost:8000/ws/stream_sensor/${selectedOption}`;
-    const ws = new WebSocket(wsUrl);
+    // Connect WebSocket using proxy for Kanopy compatibility
+    const connectWebSocket = async () => {
+      try {
+        // Get WebSocket URL from proxy API
+        const wsConfig = await fetch(`/api/ws/stream_sensor/${selectedOption}`);
+        const { wsUrl } = await wsConfig.json();
 
-    // Handle WebSocket events
-    ws.onopen = () => {
-      console.log(`WebSocket connected to MongoDB Change Stream for option: ${selectedOption}`);
+        const ws = new WebSocket(wsUrl);
+
+        // Handle WebSocket events
+        ws.onopen = () => {
+          console.log(`WebSocket connected to MongoDB Change Stream for option: ${selectedOption}`);
+        };
+        ws.onclose = () => {
+          console.log('WebSocket disconnected');
+        };
+        ws.onerror = (error) => {
+          console.warn('WebSocket error:', error);
+        };
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          dispatch(addSensorData(data));
+          console.log("Received sensor data:", data);
+        };
+
+        // Store WebSocket reference for cleanup
+        return ws;
+      } catch (error) {
+        console.error('Failed to connect WebSocket:', error);
+        return null;
+      }
     };
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
-    ws.onerror = (error) => {
-      console.warn('WebSocket error:', error);
-    };
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      dispatch(addSensorData(data)); 
-      console.log("Received sensor data:", data);
-    };
+
+    // Initialize WebSocket connection
+    let ws = null;
+    connectWebSocket().then(socket => {
+      ws = socket;
+    });
 
     // Clean up on component unmount or when selectedOption changes
     return () => {
-      ws.close();
+      if (ws) {
+        ws.close();
+      }
     };
   }, [selectedOption]); 
 
