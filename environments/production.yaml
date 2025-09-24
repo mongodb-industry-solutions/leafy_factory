@@ -2,7 +2,7 @@ env:
   NODE_ENV: production
   INTERNAL_API_URL: http://factory-backend-web-app:80
   INTERNAL_WS_URL: ws://factory-backend-web-app:80
-  # NEXT_PUBLIC_BACKEND_URL: http://factory-backend-web-app:80
+  NEXT_PUBLIC_BACKEND_URL: http://factory-backend-web-app:80
 
 envSecrets:
   MONGO_URI: factory-mongodb-prod

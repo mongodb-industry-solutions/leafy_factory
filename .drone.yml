@@ -136,7 +136,7 @@ steps:
         - push
 
   # Step 2: Deploy backend (waits for backend publish)
-  - name: deploy-backend-main
+  - name: deploy-backend-prod
     image: public.ecr.aws/kanopy/drone-helm:v3
     settings:
       chart: mongodb/web-app
