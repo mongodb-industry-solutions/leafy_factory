@@ -1,0 +1,59 @@
+# Environment configuration for combined frontend and backend deployment
+# Used with multi-container pod deployment in .drone.yml
+
+# Environment variables for main container (frontend)
+env:
+  NODE_ENV: staging
+  INTERNAL_API_URL: http://127.0.0.1:8000  # Frontend connects to backend via loopback (required for Istio)
+  INTERNAL_WS_URL: ws://127.0.0.1:8000     # WebSocket connection via loopback
+  NEXT_PUBLIC_BACKEND_URL: http://127.0.0.1:8000  # Public backend URL is loopback
+  BACKEND_URL: http://127.0.0.1:8000
+
+# Secrets for main container (frontend)
+envSecrets:
+  # MongoDB Configuration
+  MONGO_URI: factory-mongodb-staging
+
+  # PostgreSQL Configuration
+  SQL_USERNAME: factory-mongodb-staging
+  SQL_PASSWORD: factory-mongodb-staging
+  SQL_HOSTNAME: factory-mongodb-staging
+  SQL_DATABASE: factory-mongodb-staging
+
+# Sidecar containers configuration
+sidecarContainers:
+  - name: backend
+    image: 795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-factory-backend:latest
+    ports:
+      - containerPort: 8000
+        name: backend
+    env:
+      - name: NODE_ENV
+        value: staging
+      - name: BACKEND_URL
+        value: http://127.0.0.1:8000
+      - name: MONGO_URI
+        valueFrom:
+          secretKeyRef:
+            name: factory-mongodb-staging
+            key: MONGO_URI
+      - name: SQL_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: factory-mongodb-staging
+            key: SQL_USERNAME
+      - name: SQL_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: factory-mongodb-staging
+            key: SQL_PASSWORD
+      - name: SQL_HOSTNAME
+        valueFrom:
+          secretKeyRef:
+            name: factory-mongodb-staging
+            key: SQL_HOSTNAME
+      - name: SQL_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: factory-mongodb-staging
+            key: SQL_DATABASE

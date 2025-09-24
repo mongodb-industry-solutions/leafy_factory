@@ -30,3 +30,4 @@ cicd-kanopy/
 frontend/src/components/Sidebar/Sidebar.js
 CLAUDE.md
 backend/cleanup_stuck_orders.py
+DEPLOY_COMBINED.md
