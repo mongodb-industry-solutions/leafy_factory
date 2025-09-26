@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.work_orders import router as work_orders_router
 from app.routes.products import router as products_router
@@ -8,21 +8,19 @@ from app.routes.machines import router as machines_status
 from app.routes.change_stream_listener import router as ws_stream_sensor
 from app.routes.stream_workorders import router as ws_stream_workorders
 from app.routes.stream_jobs import router as ws_stream_jobs
-from app.database import mongo_conn, sql_conn
-
-def is_sql_available():
-    """Check if SQL connection is available and working"""
-    try:
-        if sql_conn is None:
-            return False
-        with sql_conn.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            return True
-    except Exception:
-        return False
+from app.database import mongo_conn, check_sql_health, reconnect_sql_if_needed
 
 app = FastAPI(title="Leafy Factory APIs")
 
+# Middleware to check and reconnect PostgreSQL if needed
+@app.middleware("http")
+async def check_postgres_connection(request: Request, call_next):
+    # Only check for endpoints that might use PostgreSQL
+    if request.url.path.startswith(("/workorders", "/jobs")):
+        reconnect_sql_if_needed()
+
+    response = await call_next(request)
+    return response
 
 # Configure CORS (Allow React app origin)
 app.add_middleware(
@@ -57,8 +55,9 @@ async def health():
         except:
             mongo_status = "disconnected"
             
-        # Check SQL status
-        sql_status = "connected" if is_sql_available() else "not_configured"
+        # Check SQL status and attempt reconnection if needed
+        reconnect_sql_if_needed()
+        sql_status = "connected" if check_sql_health() else "not_configured"
         
         return {
             "status": "healthy",
