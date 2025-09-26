@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from app.models.job_task import JobTask, UpdateJob
 from app.database import sql_conn, kfk_work_jobs_coll, raw_sensor_data_coll, kfk_work_orders_coll
 from pymongo.errors import DuplicateKeyError, PyMongoError
+from psycopg import Error as PsycopgError
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime, random, time, requests
 from dotenv import load_dotenv
@@ -77,21 +78,21 @@ def complete_job_task(job_id, quantity, machines_list):
                                     VALUES (%s,%s,%s,%s)
                                     RETURNING id_production_data;
                                 """
-            
-            db_cur = sql_conn.cursor()
-            
-            db_cur.execute(insert_part_query, 
-            (
-                machine_to_insert,
-                part_status,
-                job_id,
-                datetime.datetime.now(),
-            ))
-            
-            print(f"Part ID: {db_cur.fetchone()[0]}, Status: Created")
+
+            with sql_conn.cursor() as db_cur:
+                db_cur.execute(insert_part_query,
+                (
+                    machine_to_insert,
+                    part_status,
+                    job_id,
+                    datetime.datetime.now(),
+                ))
+
+                part_id = db_cur.fetchone()[0]
+                print(f"Part ID: {part_id}, Status: Created")
+
             time.sleep(time_to_produce_part)
             sql_conn.commit()
-        
 
         backend_update_job_url = f"{BACKEND_URL}/jobs/{job_id}"
         quality_rate = ((quantity - nok_products) * 100) / quantity
@@ -112,10 +113,14 @@ def complete_job_task(job_id, quantity, machines_list):
             print(f"API called successfully for work_order_id: {job_id}")
         else:
             print(f"Failed to call API: {response.status_code}, {response.text}")
-    except sql_conn.Error as e:
+    except PsycopgError as e:
         print(f"Error completing Jobs: {e}")
+        sql_conn.rollback()
     except requests.RequestException as e:
         print(f"Error calling API: {e}")
+    except Exception as e:
+        print(f"Unexpected error in complete_job_task: {e}")
+        sql_conn.rollback()
 
 
 # Create a Job Task into an SQL table.

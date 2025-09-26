@@ -95,7 +95,7 @@ def create_postgres_pool():
                 logger.info("PostgreSQL connection pool created successfully")
 
         # Set sql_conn for backward compatibility
-        sql_conn = PostgreSQLConnectionProxy(sql_pool)
+        sql_conn = SQLConnection(sql_pool)
         return sql_pool
 
     except Exception as e:
@@ -108,59 +108,62 @@ def configure_connection(conn):
     conn.prepare_threshold = 5
     return conn
 
-class PostgreSQLConnectionProxy:
+class SQLConnection:
     """
-    Proxy class to provide backward compatibility for sql_conn usage
-    while actually using the connection pool.
+    Simple wrapper that gets a fresh connection from the pool for each request.
+    Uses contextvars to ensure thread/async safety.
     """
     def __init__(self, pool):
         self.pool = pool
-        self._connection = None
-        self._connection_context = None
+        from contextvars import ContextVar
+        self._connection_var = ContextVar('sql_connection', default=None)
+        self._context_var = ContextVar('sql_context', default=None)
+
+    def _get_connection(self):
+        """Get or create connection for current context."""
+        conn = self._connection_var.get()
+        if conn is None:
+            if not self.pool:
+                raise OperationalError("PostgreSQL connection pool not available")
+            ctx = self.pool.connection()
+            conn = ctx.__enter__()
+            self._connection_var.set(conn)
+            self._context_var.set(ctx)
+        return conn
+
+    def _close_connection(self):
+        """Close current context's connection and return to pool."""
+        ctx = self._context_var.get()
+        if ctx:
+            try:
+                ctx.__exit__(None, None, None)
+            except Exception as e:
+                logger.warning(f"Error closing connection: {e}")
+            finally:
+                self._connection_var.set(None)
+                self._context_var.set(None)
 
     def cursor(self):
-        """Get a cursor from a pooled connection."""
-        if not self.pool:
-            raise OperationalError("PostgreSQL connection pool not available")
-
-        # Get a new connection from the pool for this cursor
-        if not self._connection:
-            self._connection_context = self.pool.connection()
-            self._connection = self._connection_context.__enter__()
-
-        return self._connection.cursor()
+        """Get a cursor from the current context's connection."""
+        return self._get_connection().cursor()
 
     def commit(self):
-        """Commit the current transaction."""
-        if self._connection:
-            self._connection.commit()
-            # Return connection to pool after commit
-            self._close_current_connection()
+        """Commit and release connection back to pool."""
+        conn = self._connection_var.get()
+        if conn:
+            conn.commit()
+            self._close_connection()
 
     def rollback(self):
-        """Rollback the current transaction."""
-        if self._connection:
-            self._connection.rollback()
-            # Return connection to pool after rollback
-            self._close_current_connection()
-
-    def _close_current_connection(self):
-        """Return the current connection to the pool."""
-        if self._connection_context:
-            try:
-                self._connection_context.__exit__(None, None, None)
-            except Exception:
-                pass
-            finally:
-                self._connection = None
-                self._connection_context = None
+        """Rollback and release connection back to pool."""
+        conn = self._connection_var.get()
+        if conn:
+            conn.rollback()
+            self._close_connection()
 
     def __getattr__(self, name):
-        """Forward any other attributes to the underlying connection."""
-        if not self._connection:
-            self._connection_context = self.pool.connection()
-            self._connection = self._connection_context.__enter__()
-        return getattr(self._connection, name)
+        """Forward any other attributes to the connection."""
+        return getattr(self._get_connection(), name)
 
 def get_sql_connection():
     """
