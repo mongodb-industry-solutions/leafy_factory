@@ -93,6 +93,9 @@ const Sidebar = ({ selectedMachineDetails }) => {
 
         ws = new WebSocket(wsUrl);
 
+        // Set binary type to handle data properly
+        ws.binaryType = 'blob';
+
         // Handle WebSocket events
         ws.onopen = () => {
           console.log(`WebSocket connected for machine ${selectedOption}`);
@@ -106,11 +109,23 @@ const Sidebar = ({ selectedMachineDetails }) => {
           console.error(`WebSocket error for machine ${selectedOption}:`, error);
         };
 
-        ws.onmessage = (event) => {
+        ws.onmessage = async (event) => {
           if (!isCleanedUp) {
-            const data = JSON.parse(event.data);
-            dispatch(addSensorData(data));
-            console.log("Received sensor data:", data);
+            try {
+              // Handle both string and Blob data
+              let jsonString = event.data;
+
+              if (event.data instanceof Blob) {
+                // If data is a Blob, convert it to text first
+                jsonString = await event.data.text();
+              }
+
+              const data = JSON.parse(jsonString);
+              dispatch(addSensorData(data));
+              console.log("Received sensor data:", data);
+            } catch (error) {
+              console.error("Error parsing WebSocket message:", error, "Data:", event.data);
+            }
           }
         };
       } catch (error) {
