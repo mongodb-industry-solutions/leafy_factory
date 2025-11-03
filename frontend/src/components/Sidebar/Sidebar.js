@@ -76,54 +76,75 @@ const Sidebar = ({ selectedMachineDetails }) => {
   useEffect(() => {
     if (!selectedOption) return;
 
-    console.log("Web Socket Sidebar");
+    console.log("Web Socket Sidebar - Connecting to machine:", selectedOption);
 
-    // Connect WebSocket using proxy for Kanopy compatibility
-    const connectWebSocket = async () => {
+    let ws = null;
+    let isCleanedUp = false;
+
+    // Connect WebSocket using relative URL (proxied through Next.js server)
+    const connectWebSocket = () => {
       try {
-        // Get WebSocket URL from proxy API
-        const wsConfig = await fetch(`/api/ws/stream_sensor/${selectedOption}`);
-        const { wsUrl } = await wsConfig.json();
+        // Use relative WebSocket URL - will be proxied through frontend server
+        // The protocol is determined by the current page protocol
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws/stream_sensor/${selectedOption}`;
 
-        const ws = new WebSocket(wsUrl);
+        console.log(`Connecting to WebSocket: ${wsUrl}`);
+
+        ws = new WebSocket(wsUrl);
+
+        // Set binary type to handle data properly
+        ws.binaryType = 'blob';
 
         // Handle WebSocket events
         ws.onopen = () => {
-          console.log(`WebSocket connected to MongoDB Change Stream for option: ${selectedOption}`);
-        };
-        ws.onclose = () => {
-          console.log('WebSocket disconnected');
-        };
-        ws.onerror = (error) => {
-          console.warn('WebSocket error:', error);
-        };
-        ws.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          dispatch(addSensorData(data));
-          console.log("Received sensor data:", data);
+          console.log(`WebSocket connected for machine ${selectedOption}`);
         };
 
-        // Store WebSocket reference for cleanup
-        return ws;
+        ws.onclose = () => {
+          console.log(`WebSocket disconnected for machine ${selectedOption}`);
+        };
+
+        ws.onerror = (error) => {
+          console.error(`WebSocket error for machine ${selectedOption}:`, error);
+        };
+
+        ws.onmessage = async (event) => {
+          if (!isCleanedUp) {
+            try {
+              // Handle both string and Blob data
+              let jsonString = event.data;
+
+              if (event.data instanceof Blob) {
+                // If data is a Blob, convert it to text first
+                jsonString = await event.data.text();
+              }
+
+              const data = JSON.parse(jsonString);
+              dispatch(addSensorData(data));
+              console.log("Received sensor data:", data);
+            } catch (error) {
+              console.error("Error parsing WebSocket message:", error, "Data:", event.data);
+            }
+          }
+        };
       } catch (error) {
         console.error('Failed to connect WebSocket:', error);
-        return null;
       }
     };
 
     // Initialize WebSocket connection
-    let ws = null;
-    connectWebSocket().then(socket => {
-      ws = socket;
-    });
+    connectWebSocket();
 
     // Clean up on component unmount or when selectedOption changes
     return () => {
-      if (ws) {
+      isCleanedUp = true;
+      if (ws && ws.readyState !== WebSocket.CLOSED) {
+        console.log(`Closing WebSocket for machine ${selectedOption}`);
         ws.close();
       }
     };
-  }, [selectedOption]); 
+  }, [selectedOption, dispatch]); 
 
   const toggleShrink = () => {
     dispatch(toggleSidebar());

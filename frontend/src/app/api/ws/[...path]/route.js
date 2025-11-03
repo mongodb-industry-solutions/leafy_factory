@@ -20,7 +20,7 @@ export async function GET(request, { params }) {
     backendWsUrl = process.env.NEXT_PUBLIC_BACKEND_URL.replace('http://', 'ws://').replace('https://', 'wss://');
   } else {
     // Default for local development
-    backendWsUrl = 'ws://localhost:8080';
+    backendWsUrl = 'ws://localhost:8000';
   }
 
   // Build the complete WebSocket URL

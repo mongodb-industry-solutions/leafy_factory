@@ -18,4 +18,6 @@ RUN npm run build
 EXPOSE 8080
 
 # Start the application on port 8080 (not default 3000)
-CMD ["npm", "start", "--", "-p", "8080"]
+# Set PORT environment variable for custom server
+ENV PORT=8080
+CMD ["npm", "start"]
